@@ -10,26 +10,48 @@ Dự án xây dựng nền tảng quản lý dữ liệu bệnh nhân cho bác s
 
 ## Cấu trúc thư mục
 
+### File cấu hình chung (ở thư mục gốc)
+
+Các file này dùng để setup toàn bộ hệ thống, không thuộc riêng backend hay frontend:
+
 ```
 patient-data-system/
-├── backend/               # API FastAPI
-│   ├── app/
-│   │   ├── core/          # config, database, security, dependencies
-│   │   ├── modules/       # auth, patients, documents, import_export
-│   │   └── main.py        # entry point
-│   ├── migrations/        # Alembic migrations
-│   └── tests/             # unit test cơ bản
-├── frontend/              # Giao diện React
-│   └── src/
-│       ├── app/           # router, providers, auth context
-│       ├── features/      # API wrappers
-│       └── routes/        # pages: login, patients, new patient
-├── docker/                # Dockerfile
-├── reports/               # File báo cáo .docx/.pdf/.pptx (không commit)
-├── storage/               # File upload (không commit)
-├── docker-compose.yml     # Postgres + backend
-└── .env.example           # Mẫu biến môi trường
+├── .env.example           # Mẫu biến môi trường
+├── .gitignore            # Danh sách file/folder không commit
+├── docker-compose.yml    # Khởi động Postgres + backend
+├── README.md             # Hướng dẫn này
+└── docker/               # Dockerfile (dùng chung cho Docker Compose)
 ```
+
+### Backend
+
+```
+backend/
+├── app/
+│   ├── core/              # config, database, security, dependencies
+│   ├── modules/           # auth, patients, documents, import_export
+│   └── main.py            # entry point
+├── migrations/            # Alembic migrations
+├── requirements.txt       # Thư viện Python
+├── pyproject.toml         # Cấu hình project/test
+├── alembic.ini            # Cấu hình Alembic
+└── tests/                 # unit test cơ bản
+```
+
+### Frontend
+
+```
+frontend/
+└── src/
+    ├── app/               # router, providers, auth context
+    ├── features/          # API wrappers
+    └── routes/            # pages: login, patients, new patient
+```
+
+### Dữ liệu cục bộ (không commit)
+
+- `storage/` — chứa file upload (đã được push folder rỗng)
+- `reports/` — file báo cáo `.docx`/`.pdf`/`.pptx` cá nhân
 
 ## Cài đặt nhanh
 
