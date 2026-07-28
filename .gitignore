@@ -41,7 +41,7 @@ dist-ssr/
 *~
 
 # Storage (user data)
-storage/
+storage/*
 !storage/.gitkeep
 
 # Local reports/documents (docx/pdf/pptx)
