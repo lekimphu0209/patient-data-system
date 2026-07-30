@@ -19,6 +19,7 @@ class Patient(Base):
     age: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     disease_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     diagnosis: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    hometown: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     status: Mapped[str] = mapped_column(String(50), default="active")
     contact_info: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
     patient_metadata: Mapped[Optional[dict[str, Any]]] = mapped_column("metadata", JSON, nullable=True)

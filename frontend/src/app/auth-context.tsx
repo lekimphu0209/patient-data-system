@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
+import { getMe } from '@/features/auth/api'
+
 interface User {
   id: number
   email: string
@@ -26,6 +28,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (storedToken && storedUser) {
       setToken(storedToken)
       setUser(JSON.parse(storedUser))
+      getMe().catch(() => {
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('user')
+        setToken(null)
+        setUser(null)
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
+      })
     }
   }, [])
 

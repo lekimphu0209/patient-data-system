@@ -1,7 +1,8 @@
-import { createRoute, useNavigate } from '@tanstack/react-router'
+import { createRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import { useAuth } from '@/app/auth-context'
+import { Button, Card, Input } from '@/components/ui'
 import { rootRoute } from '@/routes/__root'
 import { login } from '@/features/auth/api'
 
@@ -36,42 +37,41 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center">Đăng nhập</h1>
+      <Card size="xs" className="shadow-md">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-900">Đăng nhập</h1>
         {error && (
           <div className="mb-4 text-red-600 text-sm">{error}</div>
         )}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border rounded px-3 py-2"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Mật khẩu</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border rounded px-3 py-2"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-        </button>
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <Button type="submit" isLoading={loading} variant="secondary" className="w-full">
+            Đăng nhập
+          </Button>
+        </form>
+        <p className="mt-4 text-sm text-center text-gray-600">
+          Chưa có tài khoản?{' '}
+          <Link to="/register" className="text-teal-700 hover:underline">
+            Đăng ký
+          </Link>
+        </p>
+      </Card>
     </div>
   )
 }

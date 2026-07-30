@@ -1,0 +1,16 @@
+node_modules
+dist
+.git
+.github
+storage
+reports
+*.md
+.env
+__pycache__
+*.pyc
+*.pyo
+.pycache
+.pytest_cache
+.mypy_cache
+.vscode
+.idea

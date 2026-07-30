@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, File, Query, UploadFile
@@ -52,8 +53,21 @@ def export_patients(
     current_user: User = Depends(get_current_active_user),
 ):
     service = ImportExportService(db)
-    filepath = service.export_patients(ids=request.ids)
-    return {"download_url": f"/api/v1/exports/download?path={filepath}"}
+    filepath = service.export_patients(
+        current_user=current_user,
+        ids=request.ids,
+        format=request.format,
+        q=request.q,
+        diagnosis=request.diagnosis,
+        disease_type=request.disease_type,
+        birth_date_from=request.birth_date_from,
+        birth_date_to=request.birth_date_to,
+    )
+    filename = Path(filepath).name
+    return {
+        "download_url": f"/api/v1/exports/download?path={filepath}",
+        "filename": filename,
+    }
 
 
 @router.get("/exports/download")
@@ -61,4 +75,11 @@ def download_export(
     path: str = Query(...),
     current_user: User = Depends(get_current_active_user),
 ):
-    return FileResponse(path)
+    filename = Path(path).name
+    if filename.endswith(".xlsx"):
+        media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    elif filename.endswith(".csv"):
+        media_type = "text/csv"
+    else:
+        media_type = "application/octet-stream"
+    return FileResponse(path, filename=filename, media_type=media_type)

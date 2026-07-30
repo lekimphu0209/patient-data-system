@@ -19,8 +19,25 @@ class PatientService:
     def __init__(self, db: Session):
         self.repo = PatientRepository(db)
 
-    def list_patients(self, page: int, limit: int, search: str | None = None):
-        return self.repo.get_list(page=page, limit=limit, search=search)
+    def list_patients(
+        self,
+        page: int,
+        limit: int,
+        search: str | None = None,
+        diagnosis: str | None = None,
+        disease_type: str | None = None,
+        birth_date_from: date | None = None,
+        birth_date_to: date | None = None,
+    ):
+        return self.repo.get_list(
+            page=page,
+            limit=limit,
+            search=search,
+            diagnosis=diagnosis,
+            disease_type=disease_type,
+            birth_date_from=birth_date_from,
+            birth_date_to=birth_date_to,
+        )
 
     def get_patient(self, patient_id: int) -> Patient:
         patient = self.repo.get_by_id(patient_id)
@@ -53,5 +70,5 @@ class PatientService:
             raise NotFoundException("Patient not found")
         self.repo.delete(patient, hard=hard)
 
-    def bulk_delete_patients(self, ids: list[int], hard: bool = False) -> int:
-        return self.repo.bulk_delete_by_ids(ids, hard=hard)
+    def bulk_delete_patients(self, patient_codes: list[str], hard: bool = False) -> int:
+        return self.repo.bulk_delete_by_patient_codes(patient_codes, hard=hard)
