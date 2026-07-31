@@ -80,8 +80,8 @@ export function PatientTable({
                 className={CHECKBOX_CLASS}
               />
             </th>
-            <th scope="col" className={cn(TH_CLASS, 'w-32')}>
-              Mã BN
+            <th scope="col" className={cn(TH_CLASS, 'w-40')}>
+              Mã bệnh nhân
             </th>
             <th scope="col" className={TH_CLASS}>
               Họ và tên
@@ -133,10 +133,18 @@ interface PatientRowProps {
 }
 
 function PatientRow({ patient, selected, onToggle, onDelete }: PatientRowProps) {
-  const meta = CONDITION_META[detectCondition(patient)]
+  const condition = detectCondition(patient)
+  const meta = CONDITION_META[condition]
+
+  const rowBgClass =
+    condition === 'depression'
+      ? 'bg-yellow-50'
+      : condition === 'schizophrenia'
+        ? 'bg-violet-50'
+        : ''
 
   return (
-    <tr className={cn('transition-colors hover:bg-slate-50', selected && 'bg-brand-50/50')}>
+    <tr className={cn('transition-colors hover:opacity-90', rowBgClass, selected && 'ring-2 ring-inset ring-brand-700')}>
       <td className="px-4 py-3 text-center">
         <input
           type="checkbox"
