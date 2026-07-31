@@ -1,3 +1,6 @@
+from datetime import date
+from typing import Any
+
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
@@ -23,28 +26,89 @@ class PatientRepository:
             .first()
         )
 
-    def get_list(
-        self, page: int, limit: int, search: str | None = None
-    ) -> tuple[list[Patient], int]:
-        query = self.db.query(Patient).filter(Patient.deleted_at.is_(None))
+    def _apply_filters(
+        self,
+        query,
+        search: str | None = None,
+        diagnosis: str | None = None,
+        disease_type: str | None = None,
+        birth_date_from: date | None = None,
+        birth_date_to: date | None = None,
+    ):
         if search:
             like = f"%{search}%"
             query = query.filter(
-                or_(Patient.full_name.ilike(like), Patient.patient_code.ilike(like))
+                or_(
+                    Patient.full_name.ilike(like),
+                    Patient.patient_code.ilike(like),
+                    Patient.diagnosis.ilike(like),
+                )
             )
+        if diagnosis:
+            query = query.filter(Patient.diagnosis.ilike(f"%{diagnosis}%"))
+        if disease_type:
+            query = query.filter(Patient.disease_type.ilike(f"%{disease_type}%"))
+        if birth_date_from:
+            query = query.filter(Patient.birth_date >= birth_date_from)
+        if birth_date_to:
+            query = query.filter(Patient.birth_date <= birth_date_to)
+        return query
+
+    def get_list(
+        self,
+        page: int,
+        limit: int,
+        search: str | None = None,
+        diagnosis: str | None = None,
+        disease_type: str | None = None,
+        birth_date_from: date | None = None,
+        birth_date_to: date | None = None,
+    ) -> tuple[list[Patient], int]:
+        query = self._apply_filters(
+            self.db.query(Patient).filter(Patient.deleted_at.is_(None)),
+            search=search,
+            diagnosis=diagnosis,
+            disease_type=disease_type,
+            birth_date_from=birth_date_from,
+            birth_date_to=birth_date_to,
+        )
         total = query.count()
         items = query.offset((page - 1) * limit).limit(limit).all()
         return items, total
 
+    def get_all(
+        self,
+        search: str | None = None,
+        diagnosis: str | None = None,
+        disease_type: str | None = None,
+        birth_date_from: date | None = None,
+        birth_date_to: date | None = None,
+    ) -> list[Patient]:
+        query = self._apply_filters(
+            self.db.query(Patient).filter(Patient.deleted_at.is_(None)),
+            search=search,
+            diagnosis=diagnosis,
+            disease_type=disease_type,
+            birth_date_from=birth_date_from,
+            birth_date_to=birth_date_to,
+        )
+        return query.all()
+
+    def _to_model_kwargs(self, data: dict[str, Any]) -> dict[str, Any]:
+        kwargs = dict(data)
+        if "metadata" in kwargs:
+            kwargs["patient_metadata"] = kwargs.pop("metadata")
+        return kwargs
+
     def create(self, data: PatientCreate) -> Patient:
-        patient = Patient(**data.model_dump(exclude_unset=True))
+        patient = Patient(**self._to_model_kwargs(data.model_dump(exclude_unset=True)))
         self.db.add(patient)
         self.db.commit()
         self.db.refresh(patient)
         return patient
 
     def update(self, patient: Patient, data: PatientUpdate) -> Patient:
-        update_data = data.model_dump(exclude_unset=True)
+        update_data = self._to_model_kwargs(data.model_dump(exclude_unset=True))
         for field, value in update_data.items():
             setattr(patient, field, value)
         self.db.commit()
@@ -60,9 +124,11 @@ class PatientRepository:
             self.db.add(patient)
         self.db.commit()
 
-    def bulk_delete_by_ids(self, ids: list[int], hard: bool = False) -> int:
+    def bulk_delete_by_patient_codes(self, patient_codes: list[str], hard: bool = False) -> int:
         patients = (
-            self.db.query(Patient).filter(Patient.id.in_(ids), Patient.deleted_at.is_(None)).all()
+            self.db.query(Patient)
+            .filter(Patient.patient_code.in_(patient_codes), Patient.deleted_at.is_(None))
+            .all()
         )
         if hard:
             for p in patients:
