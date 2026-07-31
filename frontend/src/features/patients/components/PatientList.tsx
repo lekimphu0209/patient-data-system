@@ -1,13 +1,17 @@
-import { useNavigate, useSearch } from '@tanstack/react-router'
-import { useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useAuth } from '@/app/auth-context'
-import { Toast } from '@/components/ui'
+import { AppShell } from '@/components/layout/AppShell'
+import { ConfirmDialog, Toast } from '@/components/ui'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { useToast } from '@/hooks/useToast'
+import { errorMessage } from '@/lib/utils'
+import type { PatientSearch } from '@/routes/patients'
 import type {
   ImportPreviewResponse,
   ImportPreviewRow,
+  Patient,
   PatientListFilters,
 } from '../api'
 import {
@@ -20,95 +24,71 @@ import {
   listPatients,
   previewImportPatients,
 } from '../api'
-import { AddPatientDialog } from './AddPatientDialog'
 import { CardHeader } from './CardHeader'
 import { ImportDialog } from './ImportDialog'
-import { PatientTable } from './PatientTable'
 import { Pagination } from './Pagination'
+import { PatientTable } from './PatientTable'
 import { PatientToolbar } from './PatientToolbar'
-import { StatusLegend } from './StatusLegend'
-import { TopBar } from './TopBar'
 
-interface PatientSearch {
-  page?: number
-  q?: string
-  diagnosis?: string
-  birthDateFrom?: string
-  birthDateTo?: string
-}
+type PendingDelete =
+  | { kind: 'single'; patient: Patient }
+  | { kind: 'bulk'; codes: string[]; count: number }
 
 export function PatientList() {
-  const { user, logout } = useAuth()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const search = useSearch({ from: '/patients' }) as PatientSearch
+  const { page, limit, q, diagnosis } = useSearch({ from: '/patients' }) as PatientSearch
 
-  const page = search.page || 1
-  const q = search.q || ''
-  const diagnosis = search.diagnosis || ''
-  const birthDateFrom = search.birthDateFrom || ''
-  const birthDateTo = search.birthDateTo || ''
+  const { toast, showToast, clearToast } = useToast()
 
+  // --- Filters -----------------------------------------------------------
   const [searchInput, setSearchInput] = useState(q)
+  const debouncedSearch = useDebouncedValue(searchInput, 350)
 
-  const [localDiagnosis, setLocalDiagnosis] = useState(diagnosis)
-  const [localFrom, setLocalFrom] = useState(birthDateFrom)
-  const [localTo, setLocalTo] = useState(birthDateTo)
-
-  useEffect(() => setLocalDiagnosis(diagnosis), [diagnosis])
-  useEffect(() => setLocalFrom(birthDateFrom), [birthDateFrom])
-  useEffect(() => setLocalTo(birthDateTo), [birthDateTo])
-
-  const filters: PatientListFilters = useMemo(
-    () => ({
-      q,
-      diagnosis,
-      birthDateFrom,
-      birthDateTo,
-    }),
-    [q, diagnosis, birthDateFrom, birthDateTo]
+  const updateSearch = useCallback(
+    (patch: Partial<PatientSearch>) => {
+      navigate({
+        to: '/patients',
+        search: (prev) => ({ ...(prev as PatientSearch), ...patch }),
+      })
+    },
+    [navigate]
   )
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['patients', page, filters],
-    queryFn: () => listPatients(page, 10, filters),
+  // Keep the box in sync when the URL changes from elsewhere (back/forward).
+  useEffect(() => setSearchInput(q), [q])
+
+  // Typing applies the filter on its own — there is no search button.
+  useEffect(() => {
+    if (debouncedSearch === q) return
+    updateSearch({ q: debouncedSearch, page: 1 })
+  }, [debouncedSearch, q, updateSearch])
+
+  const filters: PatientListFilters = useMemo(() => ({ q, diagnosis }), [q, diagnosis])
+  const hasFilters = Boolean(q || diagnosis)
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ['patients', page, limit, filters],
+    queryFn: () => listPatients(page, limit, filters),
+    placeholderData: (previous) => previous,
   })
 
   const patients = data?.data ?? []
   const pagination = data?.pagination
+  const total = pagination?.total ?? 0
+  const totalPages = pagination?.total_pages ?? 0
 
+  // A page beyond the end (after deleting or shrinking the page size) would
+  // render an empty table, so walk back to the last page that has rows.
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages) {
+      updateSearch({ page: totalPages })
+    }
+  }, [page, totalPages, updateSearch])
+
+  // --- Selection ---------------------------------------------------------
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
-  useEffect(() => setSelectedIds(new Set()), [page])
-
-  const [showAddDialog, setShowAddDialog] = useState(false)
-
-  const [showImport, setShowImport] = useState(false)
-  const [importPreview, setImportPreview] = useState<ImportPreviewResponse | null>(null)
-  const [importLoading, setImportLoading] = useState(false)
-  const [importMessage, setImportMessage] = useState('')
-
-  const { toast, showToast } = useToast()
-
-  const applyFilters = () => {
-    navigate({
-      to: '/patients',
-      search: (prev) => ({
-        ...(prev as object),
-        q: searchInput,
-        diagnosis: localDiagnosis,
-        birthDateFrom: localFrom,
-        birthDateTo: localTo,
-        page: 1,
-      }),
-    })
-  }
-
-  const handlePageChange = (newPage: number) => {
-    navigate({
-      to: '/patients',
-      search: (prev) => ({ ...(prev as object), page: newPage }),
-    })
-  }
+  useEffect(() => setSelectedIds(new Set()), [page, limit, q, diagnosis])
 
   const toggleSelection = (id: number) => {
     setSelectedIds((prev) => {
@@ -121,63 +101,94 @@ export function PatientList() {
 
   const toggleSelectAll = () => {
     const ids = patients.map((p) => p.id)
-    if (selectedIds.size === ids.length && ids.length > 0) {
-      setSelectedIds(new Set())
-    } else {
-      setSelectedIds(new Set(ids))
-    }
+    const allSelected = ids.length > 0 && ids.every((id) => selectedIds.has(id))
+    setSelectedIds(allSelected ? new Set() : new Set(ids))
   }
 
   const selectedCount = selectedIds.size
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Xóa bệnh nhân này?')) return
-    try {
-      await deletePatient(id)
-      queryClient.invalidateQueries({ queryKey: ['patients'] })
-      showToast('Đã xóa bệnh nhân')
-    } catch (err: any) {
-      showToast(err.message || 'Lỗi khi xóa', 'error')
-    }
-  }
+  // --- Delete ------------------------------------------------------------
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
-  const handleBulkDelete = async () => {
-    if (!confirm(`Xóa ${selectedCount} bệnh nhân đã chọn?`)) return
+  const confirmDelete = async () => {
+    if (!pendingDelete) return
+    setDeleting(true)
     try {
-      const codes = patients
-        .filter((p) => selectedIds.has(p.id))
-        .map((p) => p.patient_code)
-      await bulkDeletePatients(codes)
+      if (pendingDelete.kind === 'single') {
+        await deletePatient(pendingDelete.patient.id)
+        showToast(`Đã xóa bệnh nhân ${pendingDelete.patient.full_name}`)
+      } else {
+        await bulkDeletePatients(pendingDelete.codes)
+        showToast(`Đã xóa ${pendingDelete.count} bệnh nhân`)
+      }
       setSelectedIds(new Set())
       queryClient.invalidateQueries({ queryKey: ['patients'] })
-      showToast('Đã xóa các bệnh nhân đã chọn')
-    } catch (err: any) {
-      showToast(err.message || 'Lỗi khi xóa hàng loạt', 'error')
+      setPendingDelete(null)
+    } catch (err) {
+      showToast(errorMessage(err, 'Xóa bệnh nhân thất bại.'), 'error')
+    } finally {
+      setDeleting(false)
     }
   }
+
+  const requestBulkDelete = () => {
+    const codes = patients.filter((p) => selectedIds.has(p.id)).map((p) => p.patient_code)
+    if (codes.length === 0) return
+    setPendingDelete({ kind: 'bulk', codes, count: codes.length })
+  }
+
+  // --- Export ------------------------------------------------------------
+  const [exporting, setExporting] = useState(false)
 
   const handleExport = async () => {
-    if (selectedIds.size === 0) return
+    setExporting(true)
     try {
-      const result = await exportPatients(filters, 'xlsx', Array.from(selectedIds))
+      // No selection means "export everything matching the current filters".
+      const ids = selectedCount > 0 ? Array.from(selectedIds) : undefined
+      const result = await exportPatients(filters, 'xlsx', ids)
       await downloadExportedFile(result.download_url, result.filename)
-      showToast('Xuất danh sách bệnh nhân thành công')
-    } catch (err: any) {
-      showToast(err.message || 'Lỗi khi xuất', 'error')
+      showToast(
+        ids
+          ? `Đã xuất ${ids.length} bệnh nhân đã chọn`
+          : `Đã xuất toàn bộ ${total} bệnh nhân${hasFilters ? ' theo bộ lọc hiện tại' : ''}`
+      )
+    } catch (err) {
+      showToast(errorMessage(err, 'Xuất dữ liệu thất bại.'), 'error')
+    } finally {
+      setExporting(false)
     }
   }
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setImportLoading(true)
-    setImportMessage('')
+  // --- Import ------------------------------------------------------------
+  const [showImport, setShowImport] = useState(false)
+  const [importPreview, setImportPreview] = useState<ImportPreviewResponse | null>(null)
+  const [importLoading, setImportLoading] = useState(false)
+  const [importError, setImportError] = useState('')
+  const [importSuccess, setImportSuccess] = useState('')
+  const [importFileName, setImportFileName] = useState('')
+  const [templateLoading, setTemplateLoading] = useState(false)
+
+  const resetImport = () => {
     setImportPreview(null)
+    setImportError('')
+    setImportSuccess('')
+    setImportFileName('')
+  }
+
+  const closeImport = () => {
+    setShowImport(false)
+    resetImport()
+  }
+
+  const handleFileSelected = async (file: File) => {
+    resetImport()
+    setImportFileName(file.name)
+    setImportLoading(true)
     try {
-      const preview = await previewImportPatients(file)
-      setImportPreview(preview)
-    } catch (err: any) {
-      setImportMessage(err.message || 'Lỗi khi xem trước file')
+      setImportPreview(await previewImportPatients(file))
+    } catch (err) {
+      setImportError(errorMessage(err, 'Không đọc được file, vui lòng kiểm tra lại định dạng.'))
     } finally {
       setImportLoading(false)
     }
@@ -187,119 +198,112 @@ export function PatientList() {
     if (!importPreview) return
     const validRows = importPreview.rows.filter((r: ImportPreviewRow) => r.valid)
     if (validRows.length === 0) return
+
     setImportLoading(true)
+    setImportError('')
     try {
       const result = await commitImportPatients(validRows)
-      setImportMessage(`Đã nhập thành công ${result.created} bệnh nhân.`)
       queryClient.invalidateQueries({ queryKey: ['patients'] })
-      setImportPreview(null)
-      setTimeout(() => setShowImport(false), 1200)
       showToast(`Đã nhập thành công ${result.created} bệnh nhân`)
-    } catch (err: any) {
-      setImportMessage(err.message || 'Lỗi khi nhập dữ liệu')
-      showToast(err.message || 'Lỗi khi nhập dữ liệu', 'error')
+      setImportPreview(null)
+      setImportSuccess(`Đã nhập thành công ${result.created} bệnh nhân vào hệ thống.`)
+      window.setTimeout(closeImport, 1400)
+    } catch (err) {
+      setImportError(errorMessage(err, 'Nhập dữ liệu thất bại.'))
     } finally {
       setImportLoading(false)
     }
   }
 
+  const handleDownloadTemplate = async () => {
+    setTemplateLoading(true)
+    try {
+      await downloadImportTemplate()
+      showToast('Đã tải file mẫu')
+    } catch (err) {
+      showToast(errorMessage(err, 'Tải file mẫu thất bại.'), 'error')
+    } finally {
+      setTemplateLoading(false)
+    }
+  }
+
+  // --- Render ------------------------------------------------------------
+  const goToNewPatient = () => navigate({ to: '/patients/new' })
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <TopBar
-        user={user}
-        onLogout={() => {
-          logout()
-          navigate({ to: '/login' })
-        }}
-      />
-
-      <main className="max-w-7xl mx-auto p-6">
-        
-
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
-          <CardHeader
-            onImport={() => setShowImport(true)}
-            onToggleAdd={() => setShowAddDialog(true)}
-          />
-
-          <PatientToolbar
-            search={searchInput}
-            onSearchChange={setSearchInput}
-            diagnosis={localDiagnosis}
-            onDiagnosisChange={setLocalDiagnosis}
-            birthDateFrom={localFrom}
-            onBirthDateFromChange={setLocalFrom}
-            birthDateTo={localTo}
-            onBirthDateToChange={setLocalTo}
-            onSearch={applyFilters}
-            selectedCount={selectedCount}
-            onExport={handleExport}
-            onDelete={handleBulkDelete}
-          />
-
-          <div className="mt-6">
-            <div className="overflow-x-auto">
-              <PatientTable
-                patients={patients}
-                isLoading={isLoading}
-                selectedIds={selectedIds}
-                onToggle={toggleSelection}
-                onToggleAll={toggleSelectAll}
-                onDelete={handleDelete}
-              />
-            </div>
-
-            <StatusLegend />
-
-            {pagination && pagination.total_pages > 0 && (
-              <Pagination
-                page={page}
-                totalPages={pagination.total_pages}
-                onChange={handlePageChange}
-              />
-            )}
-          </div>
-        </div>
-      </main>
-
-      {showAddDialog && (
-        <AddPatientDialog
-          open={showAddDialog}
-          onClose={() => setShowAddDialog(false)}
-          onSuccess={() => showToast('Đã thêm bệnh nhân')}
+    <AppShell>
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-card">
+        <CardHeader
+          total={pagination ? total : undefined}
+          onImport={() => setShowImport(true)}
+          onCreate={goToNewPatient}
         />
-      )}
+
+        <PatientToolbar
+          search={searchInput}
+          onSearchChange={setSearchInput}
+          diagnosis={diagnosis}
+          onDiagnosisChange={(value) => updateSearch({ diagnosis: value, page: 1 })}
+          selectedCount={selectedCount}
+          exporting={exporting}
+          onExport={handleExport}
+          onDelete={requestBulkDelete}
+        />
+
+        <PatientTable
+          patients={patients}
+          isLoading={isLoading || (isFetching && patients.length === 0)}
+          hasFilters={hasFilters}
+          selectedIds={selectedIds}
+          onToggle={toggleSelection}
+          onToggleAll={toggleSelectAll}
+          onDelete={(patient) => setPendingDelete({ kind: 'single', patient })}
+          onCreate={goToNewPatient}
+        />
+
+        {totalPages > 0 && (
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            totalPages={totalPages}
+            onPageChange={(next) => updateSearch({ page: next })}
+            onLimitChange={(next) => updateSearch({ limit: next, page: 1 })}
+          />
+        )}
+      </div>
 
       {showImport && (
         <ImportDialog
           loading={importLoading}
-          message={importMessage}
+          error={importError}
+          successMessage={importSuccess}
+          fileName={importFileName}
           preview={importPreview}
-          onClose={() => {
-            setShowImport(false)
-            setImportPreview(null)
-            setImportMessage('')
-          }}
-          onFileChange={handleFileChange}
+          onClose={closeImport}
+          onFileSelected={handleFileSelected}
           onCommit={handleImportCommit}
-          onDownloadTemplate={async () => {
-            try {
-              await downloadImportTemplate()
-              showToast('Đã tải file mẫu')
-            } catch {
-              showToast('Lỗi khi tải file mẫu', 'error')
-            }
-          }}
+          onReset={resetImport}
+          onDownloadTemplate={handleDownloadTemplate}
+          templateLoading={templateLoading}
         />
       )}
 
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => showToast('', 'success')}
-        />
-      )}
-    </div>
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title={pendingDelete?.kind === 'bulk' ? 'Xóa các bệnh nhân đã chọn?' : 'Xóa bệnh nhân này?'}
+        message={
+          pendingDelete?.kind === 'bulk'
+            ? `${pendingDelete.count} hồ sơ bệnh nhân sẽ bị xóa khỏi danh sách. Bạn có chắc chắn không?`
+            : `Hồ sơ của ${pendingDelete?.kind === 'single' ? pendingDelete.patient.full_name : ''} sẽ bị xóa khỏi danh sách. Bạn có chắc chắn không?`
+        }
+        confirmLabel="Xóa"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={clearToast} />}
+    </AppShell>
   )
 }

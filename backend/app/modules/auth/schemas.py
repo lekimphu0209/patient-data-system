@@ -1,4 +1,7 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
+from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
 
 
 class UserBase(BaseModel):
@@ -21,11 +24,17 @@ class UserResponse(UserBase):
     id: int
     is_active: bool
     role: str
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+class UpdateProfileRequest(BaseModel):
+    full_name: str = Field(..., min_length=1, max_length=255)
 
 
 class ChangePasswordRequest(BaseModel):
     current_password: str
-    new_password: str
+    new_password: str = Field(..., min_length=6, max_length=128)
     confirm_password: str
 
     @model_validator(mode="after")

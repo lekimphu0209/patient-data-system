@@ -12,14 +12,19 @@ export interface FormRowProps {
 
 export function FormRow({ label, htmlFor, required, children, error, className }: FormRowProps) {
   return (
-    <div className={cn('grid grid-cols-1 md:grid-cols-[minmax(140px,auto)_1fr] gap-4 items-start', className)}>
-      <label htmlFor={htmlFor} className="text-sm text-gray-500 pt-2">
+    <div
+      className={cn(
+        'grid grid-cols-1 items-start gap-2 md:grid-cols-[minmax(160px,auto)_1fr] md:gap-4',
+        className
+      )}
+    >
+      <label htmlFor={htmlFor} className="text-sm text-slate-500 md:pt-2.5">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="ml-0.5 text-red-500">*</span>}
       </label>
-      <div>
+      <div className="min-w-0">
         {children}
-        {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+        {error && <p className="mt-1.5 text-xs font-medium text-red-600">{error}</p>}
       </div>
     </div>
   )

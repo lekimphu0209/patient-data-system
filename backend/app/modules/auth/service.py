@@ -66,6 +66,14 @@ class AuthService:
             )
         self.repo.update_password_hash(user_id, get_password_hash(new_password))
 
+    def update_profile(self, user_id: int, full_name: str) -> UserResponse:
+        user = self.repo.update_profile(user_id, full_name.strip())
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            )
+        return UserResponse.model_validate(user)
+
     def get_me(self, user_id: int) -> UserResponse:
         user = self.repo.get_by_id(user_id)
         if not user:

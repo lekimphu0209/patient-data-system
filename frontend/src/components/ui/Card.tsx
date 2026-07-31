@@ -4,22 +4,31 @@ import { cn } from '@/lib/utils'
 export interface CardProps {
   children: ReactNode
   className?: string
-  size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'full'
+  padding?: 'none' | 'sm' | 'md'
 }
 
 const sizes = {
-  xs: 'max-w-sm',
+  xs: 'max-w-md',
   sm: 'max-w-2xl',
   md: 'max-w-3xl',
-  lg: 'max-w-4xl',
+  lg: 'max-w-5xl',
+  full: 'max-w-none',
 }
 
-export function Card({ children, className, size = 'md' }: CardProps) {
+const paddings = {
+  none: '',
+  sm: 'p-4 sm:p-5',
+  md: 'p-5 sm:p-6',
+}
+
+export function Card({ children, className, size = 'md', padding = 'md' }: CardProps) {
   return (
     <div
       className={cn(
-        'bg-white border border-gray-200 rounded-xl shadow-sm p-6 sm:p-8 mx-auto',
+        'mx-auto rounded-xl border border-slate-200 bg-white shadow-card',
         sizes[size],
+        paddings[padding],
         className
       )}
     >

@@ -1,4 +1,5 @@
 import { api } from '@/lib/api'
+import { downloadBlob } from '@/lib/utils'
 
 export interface Patient {
   id: number
@@ -42,9 +43,6 @@ export interface PaginatedResponse<T> {
 export interface PatientListFilters {
   q?: string
   diagnosis?: string
-  diseaseType?: string
-  birthDateFrom?: string
-  birthDateTo?: string
 }
 
 export async function listPatients(
@@ -55,9 +53,6 @@ export async function listPatients(
   const params: Record<string, unknown> = { page, limit }
   if (filters.q) params.q = filters.q
   if (filters.diagnosis) params.diagnosis = filters.diagnosis
-  if (filters.diseaseType) params.disease_type = filters.diseaseType
-  if (filters.birthDateFrom) params.birth_date_from = filters.birthDateFrom
-  if (filters.birthDateTo) params.birth_date_to = filters.birthDateTo
   const response = await api.get('/patients', { params })
   return response.data
 }
@@ -99,9 +94,6 @@ export async function exportPatients(
   if (ids && ids.length > 0) payload.ids = ids
   if (filters.q) payload.q = filters.q
   if (filters.diagnosis) payload.diagnosis = filters.diagnosis
-  if (filters.diseaseType) payload.disease_type = filters.diseaseType
-  if (filters.birthDateFrom) payload.birth_date_from = filters.birthDateFrom
-  if (filters.birthDateTo) payload.birth_date_to = filters.birthDateTo
 
   const response = await api.post('/patients/export', payload)
   const { download_url, filename } = response.data as { download_url: string; filename: string }
@@ -111,33 +103,24 @@ export async function exportPatients(
   return { download_url: new URL(download_url, baseOrigin).toString(), filename }
 }
 
-export async function downloadExportedFile(downloadUrl: string, suggestedFilename?: string): Promise<void> {
+export async function downloadExportedFile(
+  downloadUrl: string,
+  suggestedFilename?: string
+): Promise<void> {
   const response = await api.get(downloadUrl, { responseType: 'blob' })
-  const blob = new Blob([response.data as Blob])
-  const url = window.URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
 
   let filename = suggestedFilename
   if (!filename) {
     const disposition = response.headers['content-disposition'] as string | undefined
-    if (disposition) {
-      const match = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
-      if (match) {
-        filename = match[1].replace(/['"]/g, '').trim()
-      }
-    }
+    const match = disposition?.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+    if (match) filename = match[1].replace(/['"]/g, '').trim()
   }
   if (!filename) {
     const path = new URL(downloadUrl).searchParams.get('path')
-    filename = path ? path.replace(/^.*[\\/]/, '') : 'patients_export.xlsx'
+    filename = path ? path.replace(/^.*[\\/]/, '') : 'danh_sach_benh_nhan.xlsx'
   }
 
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  window.URL.revokeObjectURL(url)
+  downloadBlob(response.data as Blob, filename)
 }
 
 export interface ImportPreviewRow {
@@ -174,13 +157,5 @@ export async function commitImportPatients(
 
 export async function downloadImportTemplate() {
   const res = await api.get('/patients/import/template', { responseType: 'blob' })
-  const blob = res.data as Blob
-  const url = window.URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'patients_import_template.xlsx'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  window.URL.revokeObjectURL(url)
+  downloadBlob(res.data as Blob, 'mau_nhap_benh_nhan.xlsx')
 }

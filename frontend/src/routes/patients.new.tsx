@@ -1,12 +1,15 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { rootRoute } from '@/routes/__root'
-import { requireAuth } from '@/lib/auth-guard'
+import { AppShell } from '@/components/layout/AppShell'
+import { PageHeader } from '@/components/ui'
 import { createPatient } from '@/features/patients/api'
 import type { PatientCreateRequest } from '@/features/patients/api'
 import { PatientForm } from '@/features/patients/components/PatientForm'
+import { requireAuth } from '@/lib/auth-guard'
+import { errorMessage } from '@/lib/utils'
+import { rootRoute } from '@/routes/__root'
 
 export const newPatientRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -24,33 +27,32 @@ function NewPatientPage() {
     mutationFn: createPatient,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['patients'] })
-      navigate({ to: '/patients' })
+      navigate({ to: '/patients', search: { page: 1, limit: 10, q: '', diagnosis: '' } })
     },
-    onError: (err: any) => {
-      setSaveError(err.message || 'Có lỗi xảy ra khi lưu bệnh nhân.')
+    onError: (err) => {
+      setSaveError(errorMessage(err, 'Có lỗi xảy ra khi lưu bệnh nhân.'))
     },
   })
 
-  const handleSubmit = async (data: PatientCreateRequest) => {
+  const handleSubmit = (data: PatientCreateRequest) => {
     setSaveError(null)
-    try {
-      await mutation.mutateAsync(data)
-    } catch {}
-  }
-
-  const handleCancel = () => {
-    navigate({ to: '/patients' })
+    mutation.mutate(data)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <AppShell width="narrow">
+      <PageHeader
+        title="Thêm bệnh nhân"
+        description="Nhập thông tin để tạo hồ sơ bệnh nhân mới."
+        backTo="/patients"
+      />
       <PatientForm
         mode="new"
         loading={mutation.isPending}
         onSubmit={handleSubmit}
-        onCancel={handleCancel}
+        onCancel={() => navigate({ to: '/patients', search: { page: 1, limit: 10, q: '', diagnosis: '' } })}
         error={saveError}
       />
-    </div>
+    </AppShell>
   )
 }

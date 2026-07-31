@@ -47,3 +47,36 @@ export function genderLabel(value: string | null | undefined) {
   const map: Record<string, string> = { male: 'Nam', female: 'Nữ', other: 'Khác' }
   return map[value] || value
 }
+
+export function formatDateTime(value: string | null | undefined) {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '—'
+  return date.toLocaleString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+/** Up to two initials from a Vietnamese full name (given name last). */
+export function initialsOf(fullName: string | null | undefined) {
+  const parts = (fullName || '').trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+/** Pull a human-readable message out of an axios error, falling back sensibly. */
+export function errorMessage(error: unknown, fallback = 'Đã có lỗi xảy ra, vui lòng thử lại.') {
+  const detail = (error as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail
+  if (typeof detail === 'string' && detail.trim()) return detail
+  // FastAPI validation errors arrive as a list of {loc, msg, type}.
+  if (Array.isArray(detail)) {
+    const first = detail[0] as { msg?: string } | undefined
+    if (first?.msg) return first.msg
+  }
+  return fallback
+}

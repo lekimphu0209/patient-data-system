@@ -73,7 +73,14 @@ class PatientRepository:
             birth_date_to=birth_date_to,
         )
         total = query.count()
-        items = query.offset((page - 1) * limit).limit(limit).all()
+        # Deterministic ordering: without it, OFFSET/LIMIT paging can repeat or
+        # skip rows between requests.
+        items = (
+            query.order_by(Patient.created_at.desc(), Patient.id.desc())
+            .offset((page - 1) * limit)
+            .limit(limit)
+            .all()
+        )
         return items, total
 
     def get_all(
@@ -92,7 +99,7 @@ class PatientRepository:
             birth_date_from=birth_date_from,
             birth_date_to=birth_date_to,
         )
-        return query.all()
+        return query.order_by(Patient.created_at.desc(), Patient.id.desc()).all()
 
     def _to_model_kwargs(self, data: dict[str, Any]) -> dict[str, Any]:
         kwargs = dict(data)

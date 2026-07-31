@@ -29,3 +29,12 @@ class AuthRepository:
         user.password_hash = password_hash
         self.db.commit()
         return user
+
+    def update_profile(self, user_id: int, full_name: str) -> User | None:
+        user = self.get_by_id(user_id)
+        if not user:
+            return None
+        user.full_name = full_name
+        self.db.commit()
+        self.db.refresh(user)
+        return user

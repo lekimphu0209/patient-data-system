@@ -1,12 +1,15 @@
-import { createRoute, useNavigate, useParams } from '@tanstack/react-router'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createRoute, useNavigate, useParams } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import { rootRoute } from '@/routes/__root'
-import { requireAuth } from '@/lib/auth-guard'
+import { AppShell } from '@/components/layout/AppShell'
+import { ErrorState, Loading, PageHeader } from '@/components/ui'
 import { getPatient, updatePatient } from '@/features/patients/api'
 import type { PatientCreateRequest } from '@/features/patients/api'
 import { PatientForm } from '@/features/patients/components/PatientForm'
+import { requireAuth } from '@/lib/auth-guard'
+import { errorMessage } from '@/lib/utils'
+import { rootRoute } from '@/routes/__root'
 
 export const patientEditRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -24,66 +27,49 @@ function PatientEditPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['patient', patientId],
-    queryFn: async () => {
-      const res = await getPatient(patientId)
-      return res.data
-    },
-    enabled: !isNaN(patientId),
+    queryFn: async () => (await getPatient(patientId)).data,
+    enabled: !Number.isNaN(patientId),
   })
 
   const mutation = useMutation({
-    mutationFn: (data: PatientCreateRequest) => updatePatient(patientId, data),
+    mutationFn: (payload: PatientCreateRequest) => updatePatient(patientId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['patients'] })
       queryClient.invalidateQueries({ queryKey: ['patient', patientId] })
-      navigate({ to: '/patients' })
+      navigate({ to: '/patients', search: { page: 1, limit: 10, q: '', diagnosis: '' } })
     },
-    onError: (err: any) => {
-      setSaveError(err.message || 'Có lỗi xảy ra khi cập nhật bệnh nhân.')
+    onError: (err) => {
+      setSaveError(errorMessage(err, 'Có lỗi xảy ra khi cập nhật bệnh nhân.'))
     },
   })
 
-  const handleSubmit = async (payload: PatientCreateRequest) => {
+  const handleSubmit = (payload: PatientCreateRequest) => {
     setSaveError(null)
-    try {
-      await mutation.mutateAsync(payload)
-    } catch {}
-  }
-
-  const handleCancel = () => {
-    navigate({ to: '/patients' })
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto text-center text-gray-500 py-12">
-          Đang tải thông tin bệnh nhân...
-        </div>
-      </div>
-    )
-  }
-
-  if (!data && !isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto text-center text-red-600 py-12">
-          Không tìm thấy bệnh nhân.
-        </div>
-      </div>
-    )
+    mutation.mutate(payload)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <PatientForm
-        mode="edit"
-        patient={data}
-        loading={mutation.isPending}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        error={saveError}
+    <AppShell width="narrow">
+      <PageHeader
+        title="Chỉnh sửa bệnh nhân"
+        description={data ? `Mã hồ sơ ${data.patient_code}` : undefined}
+        backTo="/patients"
       />
-    </div>
+
+      {isLoading ? (
+        <Loading text="Đang tải thông tin bệnh nhân..." />
+      ) : !data ? (
+        <ErrorState message="Không tìm thấy bệnh nhân." />
+      ) : (
+        <PatientForm
+          mode="edit"
+          patient={data}
+          loading={mutation.isPending}
+          onSubmit={handleSubmit}
+          onCancel={() => navigate({ to: '/patients', search: { page: 1, limit: 10, q: '', diagnosis: '' } })}
+          error={saveError}
+        />
+      )}
+    </AppShell>
   )
 }

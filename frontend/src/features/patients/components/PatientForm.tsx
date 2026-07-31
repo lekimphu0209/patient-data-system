@@ -1,8 +1,8 @@
+import { AlertCircle, HeartPulse, Phone, Save, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { User } from 'lucide-react'
 
 import { Button, Card, FormField, FormSection, Input, Select, Textarea } from '@/components/ui'
-import { GENDER_OPTIONS } from '@/constants'
+import { GENDER_OPTIONS, VALIDATION_MESSAGES } from '@/constants'
 import type { Patient, PatientCreateRequest } from '../api'
 import { DIAGNOSIS_OPTIONS } from '../constants'
 
@@ -25,31 +25,17 @@ interface PatientFormProps {
   onSubmit: (data: PatientCreateRequest) => void
   onCancel: () => void
   error?: string | null
-  showTitle?: boolean
 }
 
-const diagnosisOptions = [
-  { value: '', label: 'Chọn chẩn đoán' },
-  ...DIAGNOSIS_OPTIONS.slice(1),
-]
+const diagnosisOptions = [{ value: '', label: 'Chọn chẩn đoán' }, ...DIAGNOSIS_OPTIONS.slice(1)]
 
-const fieldLabels: Record<keyof PatientFormData, string> = {
-  patient_code: 'Mã bệnh nhân',
-  full_name: 'Họ và tên',
-  birth_date: 'Ngày sinh',
-  gender: 'Giới tính',
-  hometown: 'Quê quán',
-  contactPhone: 'Số điện thoại',
-  contactPerson: 'Người liên hệ',
-  diagnosis: 'Chẩn đoán hiện tại',
-  notes: 'Ghi chú',
-}
+const REQUIRED_FIELDS: (keyof PatientFormData)[] = ['patient_code', 'full_name']
 
 function getInitialData(patient?: Patient): PatientFormData {
   return {
     patient_code: patient?.patient_code ?? '',
     full_name: patient?.full_name ?? '',
-    birth_date: patient?.birth_date ?? '',
+    birth_date: patient?.birth_date?.slice(0, 10) ?? '',
     gender: (patient?.patient_metadata?.gender as string) ?? '',
     hometown: patient?.hometown ?? '',
     contactPhone: (patient?.contact_info?.phone as string) ?? '',
@@ -65,14 +51,13 @@ function buildPayload(values: PatientFormData): PatientCreateRequest {
       ? { phone: values.contactPhone, contact_person: values.contactPerson }
       : undefined
   const patient_metadata =
-    values.gender || values.notes
-      ? { gender: values.gender, notes: values.notes }
-      : undefined
+    values.gender || values.notes ? { gender: values.gender, notes: values.notes } : undefined
+
   return {
-    patient_code: values.patient_code,
-    full_name: values.full_name,
+    patient_code: values.patient_code.trim(),
+    full_name: values.full_name.trim(),
     birth_date: values.birth_date || undefined,
-    hometown: values.hometown || undefined,
+    hometown: values.hometown.trim() || undefined,
     diagnosis: values.diagnosis || undefined,
     contact_info,
     patient_metadata,
@@ -86,23 +71,29 @@ export function PatientForm({
   onSubmit,
   onCancel,
   error,
-  showTitle = true,
 }: PatientFormProps) {
   const [values, setValues] = useState<PatientFormData>(getInitialData(patient))
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Partial<Record<keyof PatientFormData, string>>>({})
 
   useEffect(() => {
     setValues(getInitialData(patient))
     setErrors({})
   }, [patient?.id])
 
-  const isRequired = (field: keyof PatientFormData) =>
-    field === 'patient_code' || field === 'full_name'
-
   const validateField = (field: keyof PatientFormData) => {
-    if (isRequired(field) && !values[field].trim()) {
-      setErrors((prev) => ({ ...prev, [field]: 'Trường này là bắt buộc' }))
-    } else {
+    const invalid = REQUIRED_FIELDS.includes(field) && !values[field].trim()
+    setErrors((prev) => {
+      const next = { ...prev }
+      if (invalid) next[field] = VALIDATION_MESSAGES.required
+      else delete next[field]
+      return next
+    })
+    return !invalid
+  }
+
+  const handleChange = (field: keyof PatientFormData, value: string) => {
+    setValues((prev) => ({ ...prev, [field]: value }))
+    if (errors[field] && value.trim()) {
       setErrors((prev) => {
         const next = { ...prev }
         delete next[field]
@@ -111,183 +102,138 @@ export function PatientForm({
     }
   }
 
-  const handleChange = (field: keyof PatientFormData, value: string) => {
-    setValues((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) validateField(field)
-  }
-
-  const handleBlur = (field: keyof PatientFormData) => {
-    validateField(field)
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    validateField('patient_code')
-    validateField('full_name')
-    if (!values.patient_code.trim() || !values.full_name.trim()) return
-    const data = buildPayload(values)
-    onSubmit(data)
+    const allValid = REQUIRED_FIELDS.map(validateField).every(Boolean)
+    if (!allValid) return
+    onSubmit(buildPayload(values))
   }
 
+  const canSubmit = REQUIRED_FIELDS.every((field) => values[field].trim())
+
   return (
-    <Card size="lg">
-      <form onSubmit={(e) => handleSubmit(e)}>
-        {showTitle && (
-          <div className="flex items-center gap-2 mb-6">
-            <User className="w-7 h-7 text-teal-700" />
-            <h2 className="text-2xl font-bold text-gray-900">Thông tin bệnh nhân</h2>
+    <Card size="full">
+      <form onSubmit={handleSubmit} noValidate>
+        <FormSection title="Thông tin cơ bản" icon={<User className="h-4 w-4" />}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Mã bệnh nhân" htmlFor="patient_code" required>
+              <Input
+                id="patient_code"
+                value={values.patient_code}
+                onChange={(e) => handleChange('patient_code', e.target.value)}
+                onBlur={() => validateField('patient_code')}
+                placeholder="VD: BN001"
+                readOnly={mode === 'edit'}
+                error={errors.patient_code}
+              />
+            </FormField>
+
+            <FormField label="Họ và tên" htmlFor="full_name" required>
+              <Input
+                id="full_name"
+                value={values.full_name}
+                onChange={(e) => handleChange('full_name', e.target.value)}
+                onBlur={() => validateField('full_name')}
+                placeholder="VD: Nguyễn Văn An"
+                error={errors.full_name}
+              />
+            </FormField>
+
+            <FormField label="Ngày sinh" htmlFor="birth_date">
+              <Input
+                id="birth_date"
+                type="date"
+                max={new Date().toISOString().slice(0, 10)}
+                value={values.birth_date}
+                onChange={(e) => handleChange('birth_date', e.target.value)}
+              />
+            </FormField>
+
+            <FormField label="Giới tính" htmlFor="gender">
+              <Select
+                id="gender"
+                value={values.gender}
+                onChange={(e) => handleChange('gender', e.target.value)}
+                options={GENDER_OPTIONS}
+              />
+            </FormField>
+
+            <FormField label="Quê quán" htmlFor="hometown" className="md:col-span-2">
+              <Input
+                id="hometown"
+                value={values.hometown}
+                onChange={(e) => handleChange('hometown', e.target.value)}
+                placeholder="VD: Hà Nội"
+              />
+            </FormField>
+          </div>
+        </FormSection>
+
+        <FormSection title="Thông tin liên hệ" icon={<Phone className="h-4 w-4" />}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Số điện thoại" htmlFor="contactPhone">
+              <Input
+                id="contactPhone"
+                type="tel"
+                inputMode="tel"
+                value={values.contactPhone}
+                onChange={(e) => handleChange('contactPhone', e.target.value)}
+                placeholder="VD: 0912345678"
+              />
+            </FormField>
+
+            <FormField label="Người liên hệ" htmlFor="contactPerson">
+              <Input
+                id="contactPerson"
+                value={values.contactPerson}
+                onChange={(e) => handleChange('contactPerson', e.target.value)}
+                placeholder="Tên người thân"
+              />
+            </FormField>
+          </div>
+        </FormSection>
+
+        <FormSection title="Thông tin y tế" icon={<HeartPulse className="h-4 w-4" />}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Chẩn đoán hiện tại" htmlFor="diagnosis">
+              <Select
+                id="diagnosis"
+                value={values.diagnosis}
+                onChange={(e) => handleChange('diagnosis', e.target.value)}
+                options={diagnosisOptions}
+              />
+            </FormField>
+
+            <FormField label="Ghi chú" htmlFor="notes" className="md:col-span-2">
+              <Textarea
+                id="notes"
+                rows={4}
+                value={values.notes}
+                onChange={(e) => handleChange('notes', e.target.value)}
+                placeholder="Ghi chú về tình trạng, phác đồ điều trị hoặc lịch tái khám"
+              />
+            </FormField>
+          </div>
+        </FormSection>
+
+        {error && (
+          <div className="mt-5 flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
-        <div className="space-y-6">
-          <FormSection title="Thông tin cơ bản">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <FormField
-                label={fieldLabels.patient_code}
-                htmlFor="patient_code"
-                required
-              >
-                <Input
-                  id="patient_code"
-                  type="text"
-                  value={values.patient_code}
-                  onChange={(e) => handleChange('patient_code', e.target.value)}
-                  onBlur={() => handleBlur('patient_code')}
-                  placeholder="Nhập mã bệnh nhân"
-                  readOnly={mode === 'edit'}
-                  className={mode === 'edit' ? 'bg-gray-100 text-gray-600' : ''}
-                  error={errors.patient_code}
-                />
-              </FormField>
-
-              <FormField
-                label={fieldLabels.full_name}
-                htmlFor="full_name"
-                required
-              >
-                <Input
-                  id="full_name"
-                  type="text"
-                  value={values.full_name}
-                  onChange={(e) => handleChange('full_name', e.target.value)}
-                  onBlur={() => handleBlur('full_name')}
-                  placeholder="Nhập họ và tên"
-                  error={errors.full_name}
-                />
-              </FormField>
-
-              <FormField label={fieldLabels.birth_date} htmlFor="birth_date">
-                <Input
-                  id="birth_date"
-                  type="date"
-                  value={values.birth_date}
-                  onChange={(e) => handleChange('birth_date', e.target.value)}
-                  onBlur={() => handleBlur('birth_date')}
-                  error={errors.birth_date}
-                />
-              </FormField>
-
-              <FormField label={fieldLabels.gender} htmlFor="gender">
-                <Select
-                  id="gender"
-                  value={values.gender}
-                  onChange={(e) => handleChange('gender', e.target.value)}
-                  onBlur={() => handleBlur('gender')}
-                  options={GENDER_OPTIONS}
-                  error={errors.gender}
-                />
-              </FormField>
-
-              <FormField label={fieldLabels.hometown} htmlFor="hometown">
-                <Input
-                  id="hometown"
-                  type="text"
-                  value={values.hometown}
-                  onChange={(e) => handleChange('hometown', e.target.value)}
-                  onBlur={() => handleBlur('hometown')}
-                  placeholder="Nhập quê quán"
-                  error={errors.hometown}
-                />
-              </FormField>
-            </div>
-          </FormSection>
-
-          <FormSection title="Thông tin liên hệ">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <FormField label={fieldLabels.contactPhone} htmlFor="contactPhone">
-                <Input
-                  id="contactPhone"
-                  type="text"
-                  value={values.contactPhone}
-                  onChange={(e) => handleChange('contactPhone', e.target.value)}
-                  onBlur={() => handleBlur('contactPhone')}
-                  placeholder="Nhập số điện thoại"
-                  error={errors.contactPhone}
-                />
-              </FormField>
-
-              <FormField label={fieldLabels.contactPerson} htmlFor="contactPerson">
-                <Input
-                  id="contactPerson"
-                  type="text"
-                  value={values.contactPerson}
-                  onChange={(e) => handleChange('contactPerson', e.target.value)}
-                  onBlur={() => handleBlur('contactPerson')}
-                  placeholder="Nhập tên người liên hệ"
-                  error={errors.contactPerson}
-                />
-              </FormField>
-            </div>
-          </FormSection>
-
-          <FormSection title="Thông tin y tế">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <FormField label={fieldLabels.diagnosis} htmlFor="diagnosis">
-                <Select
-                  id="diagnosis"
-                  value={values.diagnosis}
-                  onChange={(e) => handleChange('diagnosis', e.target.value)}
-                  onBlur={() => handleBlur('diagnosis')}
-                  options={diagnosisOptions}
-                  error={errors.diagnosis}
-                />
-              </FormField>
-
-              <FormField
-                label={fieldLabels.notes}
-                htmlFor="notes"
-                className="md:col-span-2"
-              >
-                <Textarea
-                  id="notes"
-                  value={values.notes}
-                  onChange={(e) => handleChange('notes', e.target.value)}
-                  onBlur={() => handleBlur('notes')}
-                  placeholder="Nhập ghi chú về tình trạng bệnh nhân"
-                  className="h-32"
-                  error={errors.notes}
-                />
-              </FormField>
-            </div>
-          </FormSection>
-        </div>
-
-        {error && (
-          <p className="mt-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
-            {error}
-          </p>
-        )}
-
-        <div className="mt-6 pt-6 border-t border-gray-100 flex flex-wrap items-center justify-end gap-3">
-          <Button type="button" variant="outline" onClick={onCancel}>
+        <div className="mt-5 flex flex-wrap items-center justify-end gap-2.5 border-t border-slate-100 pt-5">
+          <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
             Hủy
           </Button>
           <Button
             type="submit"
             isLoading={loading}
-            disabled={loading || !values.patient_code.trim() || !values.full_name.trim()}
+            disabled={!canSubmit}
+            leftIcon={<Save className="h-4 w-4" />}
           >
-            {loading ? 'Đang lưu...' : 'Lưu'}
+            {mode === 'edit' ? 'Lưu thay đổi' : 'Lưu bệnh nhân'}
           </Button>
         </div>
       </form>

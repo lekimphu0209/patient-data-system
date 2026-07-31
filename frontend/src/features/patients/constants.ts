@@ -1,7 +1,8 @@
+import type { BadgeProps } from '@/components/ui'
 import type { Patient } from './api'
 
 export const DIAGNOSIS_OPTIONS = [
-  { value: '', label: 'Tất cả' },
+  { value: '', label: 'Tất cả chẩn đoán' },
   { value: 'Bình thường', label: 'Bình thường' },
   { value: 'Trầm cảm', label: 'Trầm cảm' },
   { value: 'Tâm thần phân liệt', label: 'Tâm thần phân liệt' },
@@ -14,28 +15,27 @@ export const DISEASE_TYPE_OPTIONS = [
   { value: 'normal', label: 'Bình thường' },
 ]
 
-export const CONDITION_META: Record<string, { bg: string; dot: string; text: string; textColor: string }> = {
-  depression: { bg: 'bg-[#FEF9C3]', dot: 'bg-yellow-400', text: 'Trầm cảm', textColor: 'text-yellow-700' },
-  schizophrenia: { bg: 'bg-[#EDE9FE]', dot: 'bg-purple-400', text: 'Tâm thần phân liệt', textColor: 'text-purple-700' },
-  normal: { bg: '', dot: '', text: 'Bình thường', textColor: 'text-gray-500' },
+export type Condition = 'depression' | 'schizophrenia' | 'normal'
+
+/**
+ * Clinical colour coding, applied as a chip on the diagnosis cell rather than a
+ * separate column or a full-row tint — same signal, far less visual noise.
+ */
+export const CONDITION_META: Record<Condition, { label: string; variant: BadgeProps['variant'] }> = {
+  depression: { label: 'Trầm cảm', variant: 'warning' },
+  schizophrenia: { label: 'Tâm thần phân liệt', variant: 'violet' },
+  normal: { label: 'Bình thường', variant: 'gray' },
 }
 
-export function detectCondition(patient: Patient): string {
+export function detectCondition(patient: Patient): Condition {
   const text = `${patient.diagnosis || ''} ${patient.disease_type || ''}`.toLowerCase()
-  if (
-    text.includes('trầm cảm') ||
-    text.includes('depression') ||
-    text.includes('tram cảm') ||
-    text.includes('tram cam') ||
-    text.includes('trầm')
-  ) {
+  if (text.includes('trầm') || text.includes('tram cam') || text.includes('depression')) {
     return 'depression'
   }
   if (
-    text.includes('tâm thần phân liệt') ||
-    text.includes('schizophrenia') ||
+    text.includes('phân liệt') ||
     text.includes('phan liet') ||
-    text.includes('phân liệt')
+    text.includes('schizophrenia')
   ) {
     return 'schizophrenia'
   }
@@ -43,17 +43,8 @@ export function detectCondition(patient: Patient): string {
 }
 
 export function formatDate(value: string | null) {
-  if (!value) return '-'
-  return new Date(value).toLocaleDateString('vi-VN')
-}
-
-export interface AddFormState {
-  patient_code: string
-  full_name: string
-  birth_date: string
-  hometown: string
-  age: string
-  disease_type: string
-  diagnosis: string
-  status: string
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '—'
+  return date.toLocaleDateString('vi-VN')
 }

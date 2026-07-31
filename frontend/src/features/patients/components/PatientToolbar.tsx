@@ -1,5 +1,6 @@
+import { Download, Search, Trash2, X } from 'lucide-react'
+
 import { Button, Input, Select } from '@/components/ui'
-import { SearchIcon, ExportIcon, TrashIcon } from './icons'
 import { DIAGNOSIS_OPTIONS } from '../constants'
 
 interface PatientToolbarProps {
@@ -7,12 +8,8 @@ interface PatientToolbarProps {
   onSearchChange: (value: string) => void
   diagnosis: string
   onDiagnosisChange: (value: string) => void
-  birthDateFrom: string
-  onBirthDateFromChange: (value: string) => void
-  birthDateTo: string
-  onBirthDateToChange: (value: string) => void
-  onSearch: () => void
   selectedCount: number
+  exporting: boolean
   onExport: () => void
   onDelete: () => void
 }
@@ -22,83 +19,79 @@ export function PatientToolbar({
   onSearchChange,
   diagnosis,
   onDiagnosisChange,
-  birthDateFrom,
-  onBirthDateFromChange,
-  birthDateTo,
-  onBirthDateToChange,
-  onSearch,
   selectedCount,
+  exporting,
   onExport,
   onDelete,
 }: PatientToolbarProps) {
+  const hasSelection = selectedCount > 0
+
   return (
-    <div className="mt-4 bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col md:flex-row md:items-stretch md:justify-between gap-4">
-      <div className="flex flex-1 flex-wrap items-stretch gap-4">
-        <div className="flex flex-col justify-between flex-1 min-w-[220px]">
-          <label className="text-xs font-medium text-gray-600">Từ khóa</label>
+    <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+      {/* Filters apply as you type / pick — there is no separate search button. */}
+      <div className="flex flex-1 flex-wrap items-center gap-2.5">
+        <div className="min-w-[240px] flex-1 sm:max-w-md">
           <Input
-            type="text"
-            placeholder="Nhập mã, tên hoặc chẩn đoán..."
+            type="search"
+            placeholder="Tìm theo mã, họ tên hoặc chẩn đoán..."
+            aria-label="Tìm kiếm bệnh nhân"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
+            leftIcon={<Search className="h-4 w-4" />}
+            rightSlot={
+              search ? (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange('')}
+                  aria-label="Xóa từ khóa"
+                  className="pointer-events-auto rounded p-1 transition-colors hover:text-slate-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : undefined
+            }
           />
         </div>
 
-        <div className="flex flex-col justify-between w-40">
-          <label className="text-xs font-medium text-gray-600">Chẩn đoán</label>
+        <div className="w-full sm:w-56">
           <Select
+            aria-label="Lọc theo chẩn đoán"
             value={diagnosis}
             onChange={(e) => onDiagnosisChange(e.target.value)}
             options={DIAGNOSIS_OPTIONS}
           />
         </div>
-
-        <div className="flex flex-col justify-between w-80 min-w-[18rem]">
-          <label className="text-xs font-medium text-gray-600">Khoảng ngày sinh</label>
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="flex-1 min-w-[120px]">
-              <Input
-                type="date"
-                value={birthDateFrom}
-                onChange={(e) => onBirthDateFromChange(e.target.value)}
-                title="Từ ngày (dd/MM/yyyy)"
-              />
-            </div>
-            <span className="text-gray-400">-</span>
-            <div className="flex-1 min-w-[120px]">
-              <Input
-                type="date"
-                value={birthDateTo}
-                onChange={(e) => onBirthDateToChange(e.target.value)}
-                title="Đến ngày (dd/MM/yyyy)"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col justify-end min-w-[100px]">
-          <Button onClick={onSearch} leftIcon={<SearchIcon className="w-4 h-4" />}>
-            Tìm kiếm
-          </Button>
-        </div>
       </div>
 
-      <div className="flex items-end justify-end gap-3 shrink-0">
+      <div className="flex items-center gap-2.5">
+        {/* Only meaningful with a selection, so it stays out of the way until then. */}
+        {hasSelection && (
+          <>
+            <span className="hidden text-sm text-slate-500 sm:inline">
+              Đã chọn <span className="font-semibold text-slate-900">{selectedCount}</span>
+            </span>
+            <Button
+              onClick={onDelete}
+              variant="danger"
+              leftIcon={<Trash2 className="h-4 w-4" />}
+            >
+              Xóa dữ liệu
+            </Button>
+          </>
+        )}
+
         <Button
           onClick={onExport}
-          disabled={selectedCount === 0}
-          variant="secondary"
-          leftIcon={<ExportIcon className="w-4 h-4" />}
+          variant="outline"
+          isLoading={exporting}
+          leftIcon={<Download className="h-4 w-4" />}
+          title={
+            hasSelection
+              ? `Xuất ${selectedCount} bệnh nhân đã chọn`
+              : 'Xuất toàn bộ dữ liệu theo bộ lọc hiện tại'
+          }
         >
           Xuất dữ liệu
-        </Button>
-        <Button
-          onClick={onDelete}
-          disabled={selectedCount === 0}
-          variant="danger"
-          leftIcon={<TrashIcon className="w-4 h-4" />}
-        >
-          Xóa dữ liệu
         </Button>
       </div>
     </div>

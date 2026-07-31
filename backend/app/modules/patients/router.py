@@ -2,7 +2,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, File, Query, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
@@ -10,7 +10,7 @@ from app.core.database import get_db
 from app.core.deps import get_current_active_user
 from app.modules.auth.models import User
 from app.modules.import_export.schemas import ExportRequest
-from app.modules.import_export.service import ImportExportService
+from app.modules.import_export.service import EXPORT_DIR, ImportExportService
 from app.modules.patients.schemas import (
     PatientBulkDeleteRequest,
     PatientCreate,
@@ -21,6 +21,8 @@ from app.modules.patients.service import PatientService
 from app.shared.responses import ApiResponse, PaginatedResponse, PaginationMeta
 
 router = APIRouter()
+
+XLSX_MEDIA_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
 @router.get("", response_model=PaginatedResponse)
@@ -140,14 +142,21 @@ def download_export(
     path: str = Query(...),
     current_user: User = Depends(get_current_active_user),
 ):
-    filename = Path(path).name
+    # `path` comes back from the client, so confine it to the export directory
+    # instead of serving any file the API process can read.
+    export_dir = EXPORT_DIR.resolve()
+    requested = Path(path).resolve()
+    if not requested.is_relative_to(export_dir) or not requested.is_file():
+        raise HTTPException(status_code=404, detail="Không tìm thấy file cần tải.")
+
+    filename = requested.name
     if filename.endswith(".xlsx"):
-        media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        media_type = XLSX_MEDIA_TYPE
     elif filename.endswith(".csv"):
         media_type = "text/csv"
     else:
         media_type = "application/octet-stream"
-    return FileResponse(path, filename=filename, media_type=media_type)
+    return FileResponse(requested, filename=filename, media_type=media_type)
 
 
 @router.post("/import")
@@ -178,5 +187,6 @@ def download_import_template(
 ):
     service = ImportExportService(db)
     filepath = service.get_template()
-    filename = Path(filepath).name
-    return FileResponse(filepath, filename=filename)
+    return FileResponse(
+        filepath, filename=Path(filepath).name, media_type=XLSX_MEDIA_TYPE
+    )

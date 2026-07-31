@@ -1,29 +1,32 @@
+import { Upload, UserPlus } from 'lucide-react'
+
+import { Button } from '@/components/ui'
+
 interface CardHeaderProps {
+  total?: number
   onImport: () => void
-  onToggleAdd: () => void
+  onCreate: () => void
 }
 
-export function CardHeader({ onImport, onToggleAdd }: CardHeaderProps) {
+export function CardHeader({ total, onImport, onCreate }: CardHeaderProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-      <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">
-        Danh sách bệnh nhân
-      </h2>
+    <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0">
+        <h1 className="text-lg font-semibold text-slate-900">Danh sách bệnh nhân</h1>
+        <p className="mt-0.5 text-sm text-slate-500">
+          {typeof total === 'number'
+            ? `Đang quản lý ${total} hồ sơ bệnh nhân`
+            : 'Quản lý hồ sơ bệnh nhân của đơn vị'}
+        </p>
+      </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          onClick={onToggleAdd}
-          className="inline-flex items-center px-4 py-2 rounded-lg border border-teal-600 text-teal-600 hover:bg-teal-50 font-medium text-sm transition"
-        >
-          <span className="mr-1">+</span> Thêm bệnh nhân
-        </button>
-
-        <button
-          onClick={onImport}
-          className="inline-flex items-center px-4 py-2 rounded-lg border border-teal-600 text-teal-600 hover:bg-teal-50 font-medium text-sm transition"
-        >
+      <div className="flex flex-wrap items-center gap-2.5">
+        <Button variant="outline" onClick={onImport} leftIcon={<Upload className="h-4 w-4" />}>
           Upload dữ liệu
-        </button>
+        </Button>
+        <Button onClick={onCreate} leftIcon={<UserPlus className="h-4 w-4" />}>
+          Thêm bệnh nhân
+        </Button>
       </div>
     </div>
   )

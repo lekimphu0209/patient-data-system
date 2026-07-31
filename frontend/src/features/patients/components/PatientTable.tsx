@@ -1,78 +1,127 @@
 import { Link } from '@tanstack/react-router'
-import { EyeIcon, PencilIcon, TrashIcon } from './icons'
-import { CONDITION_META, detectCondition, formatDate } from '../constants'
+import { Eye, Pencil, Trash2, UserPlus, Users } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+
+import { Badge, Button, EmptyState } from '@/components/ui'
+import { cn } from '@/lib/utils'
 import type { Patient } from '../api'
+import { CONDITION_META, detectCondition, formatDate } from '../constants'
 
 interface PatientTableProps {
   patients: Patient[]
   isLoading: boolean
+  hasFilters: boolean
   selectedIds: Set<number>
   onToggle: (id: number) => void
   onToggleAll: () => void
-  onDelete: (id: number) => void
+  onDelete: (patient: Patient) => void
+  onCreate: () => void
 }
+
+const CHECKBOX_CLASS =
+  'h-4 w-4 cursor-pointer rounded border-slate-300 text-brand-700 accent-brand-700 focus:ring-2 focus:ring-brand-600 focus:ring-offset-1'
+
+const TH_CLASS =
+  'whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500'
 
 export function PatientTable({
   patients,
   isLoading,
+  hasFilters,
   selectedIds,
   onToggle,
   onToggleAll,
   onDelete,
+  onCreate,
 }: PatientTableProps) {
-  const allSelected = patients.length > 0 && selectedIds.size === patients.length
+  const selectedOnPage = patients.filter((p) => selectedIds.has(p.id)).length
+  const allSelected = patients.length > 0 && selectedOnPage === patients.length
+  const headerCheckbox = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (headerCheckbox.current) {
+      headerCheckbox.current.indeterminate = selectedOnPage > 0 && !allSelected
+    }
+  }, [selectedOnPage, allSelected])
+
+  if (!isLoading && patients.length === 0) {
+    return (
+      <EmptyState
+        icon={<Users className="h-6 w-6" />}
+        message={hasFilters ? 'Không tìm thấy bệnh nhân phù hợp' : 'Chưa có bệnh nhân nào'}
+        description={
+          hasFilters
+            ? 'Thử đổi từ khóa tìm kiếm hoặc bỏ bớt bộ lọc chẩn đoán.'
+            : 'Thêm bệnh nhân đầu tiên hoặc tải lên danh sách từ file Excel.'
+        }
+        action={
+          hasFilters ? undefined : (
+            <Button onClick={onCreate} leftIcon={<UserPlus className="h-4 w-4" />}>
+              Thêm bệnh nhân
+            </Button>
+          )
+        }
+      />
+    )
+  }
 
   return (
-    <table className="w-full text-left border-collapse min-w-[800px]">
-      <thead>
-        <tr className="bg-gray-100 text-sm text-gray-700 font-semibold">
-          <th className="p-3 border-b w-14 text-center">
-            <input
-              type="checkbox"
-              checked={allSelected}
-              onChange={onToggleAll}
-              className="w-5 h-5 accent-teal-600 rounded cursor-pointer"
-            />
-          </th>
-          <th className="p-3 border-b">Mã BN</th>
-          <th className="p-3 border-b">Họ và tên</th>
-          <th className="p-3 border-b">Quê quán</th>
-          <th className="p-3 border-b">Ngày sinh</th>
-          <th className="p-3 border-b">Chẩn đoán</th>
-          <th className="p-3 border-b">Màu trạng thái</th>
-          <th className="p-3 border-b text-center w-40">Thao tác</th>
-        </tr>
-      </thead>
-      <tbody className="text-sm">
-        {isLoading ? (
-          <>
-            {[1, 2, 3].map((n) => (
-              <tr key={n}>
-                <td colSpan={8} className="p-3 border-b">
-                  <div className="h-6 w-full bg-gray-200 rounded animate-pulse" />
-                </td>
-              </tr>
-            ))}
-          </>
-        ) : patients.length === 0 ? (
+    <div className="scrollbar-slim overflow-x-auto">
+      <table className="w-full min-w-[900px] border-collapse text-sm">
+        <thead className="border-b border-slate-200 bg-slate-50">
           <tr>
-            <td colSpan={8} className="p-8 text-center text-gray-500 border-b">
-              Không có dữ liệu
-            </td>
+            <th scope="col" className="w-12 px-4 py-3 text-center">
+              <input
+                ref={headerCheckbox}
+                type="checkbox"
+                checked={allSelected}
+                onChange={onToggleAll}
+                aria-label="Chọn tất cả bệnh nhân trên trang"
+                className={CHECKBOX_CLASS}
+              />
+            </th>
+            <th scope="col" className={cn(TH_CLASS, 'w-32')}>
+              Mã BN
+            </th>
+            <th scope="col" className={TH_CLASS}>
+              Họ và tên
+            </th>
+            <th scope="col" className={TH_CLASS}>
+              Quê quán
+            </th>
+            <th scope="col" className={cn(TH_CLASS, 'w-32')}>
+              Ngày sinh
+            </th>
+            <th scope="col" className={TH_CLASS}>
+              Chẩn đoán
+            </th>
+            <th scope="col" className={cn(TH_CLASS, 'w-32 text-center')}>
+              Thao tác
+            </th>
           </tr>
-        ) : (
-          patients.map((patient) => (
-            <PatientRow
-              key={patient.id}
-              patient={patient}
-              selected={selectedIds.has(patient.id)}
-              onToggle={() => onToggle(patient.id)}
-              onDelete={() => onDelete(patient.id)}
-            />
-          ))
-        )}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody className="divide-y divide-slate-100">
+          {isLoading
+            ? Array.from({ length: 5 }, (_, i) => (
+                <tr key={i}>
+                  <td colSpan={7} className="px-4 py-3.5">
+                    <div className="h-5 w-full animate-pulse rounded bg-slate-100" />
+                  </td>
+                </tr>
+              ))
+            : patients.map((patient) => (
+                <PatientRow
+                  key={patient.id}
+                  patient={patient}
+                  selected={selectedIds.has(patient.id)}
+                  onToggle={() => onToggle(patient.id)}
+                  onDelete={() => onDelete(patient)}
+                />
+              ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
@@ -84,57 +133,61 @@ interface PatientRowProps {
 }
 
 function PatientRow({ patient, selected, onToggle, onDelete }: PatientRowProps) {
-  const condition = detectCondition(patient)
-  const meta = CONDITION_META[condition]
-  const rowBg = meta.bg || 'bg-white'
+  const meta = CONDITION_META[detectCondition(patient)]
 
   return (
-    <tr className={`${rowBg} border-b hover:opacity-90 transition`}>
-      <td className="p-3 text-center border-b">
+    <tr className={cn('transition-colors hover:bg-slate-50', selected && 'bg-brand-50/50')}>
+      <td className="px-4 py-3 text-center">
         <input
           type="checkbox"
           checked={selected}
           onChange={onToggle}
-          className="w-5 h-5 accent-teal-600 rounded cursor-pointer"
+          aria-label={`Chọn bệnh nhân ${patient.full_name}`}
+          className={CHECKBOX_CLASS}
         />
       </td>
-      <td className="p-3 font-medium text-gray-900 border-b">{patient.patient_code}</td>
-      <td className="p-3 border-b">{patient.full_name}</td>
-      <td className="p-3 border-b">{patient.hometown || '-'}</td>
-      <td className="p-3 border-b">{formatDate(patient.birth_date)}</td>
-      <td className="p-3 border-b">{patient.diagnosis || '-'}</td>
-      <td className="p-3 border-b">
-        <div className="flex items-center gap-2">
-          {condition !== 'normal' && (
-            <span className={`inline-block w-3 h-3 rounded-full ${meta.dot}`} />
-          )}
-          <span className={`text-xs font-medium ${meta.textColor}`}>{meta.text}</span>
-        </div>
+      <td className="px-4 py-3">
+        <Link
+          to="/patients/$id"
+          params={{ id: String(patient.id) }}
+          className="font-medium text-slate-900 hover:text-brand-700 hover:underline"
+        >
+          {patient.patient_code}
+        </Link>
       </td>
-      <td className="p-3 border-b">
-        <div className="flex items-center justify-center gap-2">
+      <td className="px-4 py-3 font-medium text-slate-800">{patient.full_name}</td>
+      <td className="px-4 py-3 text-slate-600">{patient.hometown || '—'}</td>
+      <td className="px-4 py-3 tabular-nums text-slate-600">{formatDate(patient.birth_date)}</td>
+      <td className="px-4 py-3">
+        <Badge variant={meta.variant}>{patient.diagnosis || meta.label}</Badge>
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex items-center justify-center gap-1">
           <Link
             to="/patients/$id"
             params={{ id: String(patient.id) }}
-            title="Xem"
-            className="p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition"
+            title="Xem chi tiết"
+            aria-label={`Xem chi tiết ${patient.full_name}`}
+            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
           >
-            <EyeIcon className="w-5 h-5" />
+            <Eye className="h-4 w-4" />
           </Link>
           <Link
             to="/patients/$id/edit"
             params={{ id: String(patient.id) }}
-            title="Sửa"
-            className="p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-teal-600 transition"
+            title="Chỉnh sửa"
+            aria-label={`Chỉnh sửa ${patient.full_name}`}
+            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-brand-50 hover:text-brand-700"
           >
-            <PencilIcon className="w-5 h-5" />
+            <Pencil className="h-4 w-4" />
           </Link>
           <button
             onClick={onDelete}
             title="Xóa"
-            className="p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-red-600 transition"
+            aria-label={`Xóa ${patient.full_name}`}
+            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600"
           >
-            <TrashIcon className="w-5 h-5" />
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
       </td>
