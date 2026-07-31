@@ -16,8 +16,14 @@ from app.modules.patients.schemas import (
     PatientCreate,
     PatientResponse,
     PatientUpdate,
+    ExaminationCreate,
+    ExaminationResponse,
+    ExaminationUpdate,
+    MedicalHistoryCreate,
+    MedicalHistoryResponse,
+    MedicalHistoryUpdate,
 )
-from app.modules.patients.service import PatientService
+from app.modules.patients.service import PatientService, ExaminationService, MedicalHistoryService
 from app.shared.responses import ApiResponse, PaginatedResponse, PaginationMeta
 
 router = APIRouter()
@@ -111,6 +117,135 @@ def bulk_delete_patients(
     service = PatientService(db)
     count = service.bulk_delete_patients(request.patient_codes)
     return {"message": f"Deleted {count} patients"}
+
+
+# ==================== Examination Endpoints ====================
+
+
+@router.get("/{patient_id}/exams", response_model=PaginatedResponse)
+def list_examinations(
+    patient_id: int,
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = ExaminationService(db)
+    items, total = service.list_examinations(patient_id, page, limit)
+    meta = PaginationMeta(
+        page=page, limit=limit, total=total, total_pages=(total + limit - 1) // limit
+    )
+    return PaginatedResponse(
+        data=[ExaminationResponse.model_validate(item) for item in items],
+        pagination=meta,
+    )
+
+
+@router.get("/{patient_id}/exams/latest", response_model=ApiResponse[ExaminationResponse | None])
+def get_latest_examination(
+    patient_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = ExaminationService(db)
+    exam = service.get_latest_examination(patient_id)
+    return ApiResponse(data=ExaminationResponse.model_validate(exam) if exam else None)
+
+
+@router.get("/{patient_id}/exams/{exam_id}", response_model=ApiResponse[ExaminationResponse])
+def get_examination(
+    patient_id: int,
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = ExaminationService(db)
+    exam = service.get_examination(exam_id)
+    if exam.patient_id != patient_id:
+        raise HTTPException(status_code=404, detail="Examination not found")
+    return ApiResponse(data=ExaminationResponse.model_validate(exam))
+
+
+@router.post("/{patient_id}/exams", response_model=ApiResponse[ExaminationResponse], status_code=201)
+def create_examination(
+    patient_id: int,
+    data: ExaminationCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = ExaminationService(db)
+    exam = service.create_examination(patient_id, data)
+    return ApiResponse(data=ExaminationResponse.model_validate(exam))
+
+
+@router.patch("/{patient_id}/exams/{exam_id}", response_model=ApiResponse[ExaminationResponse])
+def update_examination(
+    patient_id: int,
+    exam_id: int,
+    data: ExaminationUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = ExaminationService(db)
+    exam = service.update_examination(exam_id, data)
+    if exam.patient_id != patient_id:
+        raise HTTPException(status_code=404, detail="Examination not found")
+    return ApiResponse(data=ExaminationResponse.model_validate(exam))
+
+
+@router.delete("/{patient_id}/exams/{exam_id}")
+def delete_examination(
+    patient_id: int,
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = ExaminationService(db)
+    exam = service.get_examination(exam_id)
+    if exam.patient_id != patient_id:
+        raise HTTPException(status_code=404, detail="Examination not found")
+    service.delete_examination(exam_id)
+    return {"message": "Examination deleted"}
+
+
+# ==================== Medical History Endpoints ====================
+
+
+@router.get("/{patient_id}/medical-history", response_model=ApiResponse[MedicalHistoryResponse | None])
+def get_medical_history(
+    patient_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = MedicalHistoryService(db)
+    history = service.get_medical_history(patient_id)
+    return ApiResponse(
+        data=MedicalHistoryResponse.model_validate(history) if history else None
+    )
+
+
+@router.post("/{patient_id}/medical-history", response_model=ApiResponse[MedicalHistoryResponse], status_code=201)
+def create_or_update_medical_history(
+    patient_id: int,
+    data: MedicalHistoryCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = MedicalHistoryService(db)
+    history = service.create_medical_history(patient_id, data)
+    return ApiResponse(data=MedicalHistoryResponse.model_validate(history))
+
+
+@router.patch("/{patient_id}/medical-history", response_model=ApiResponse[MedicalHistoryResponse])
+def update_medical_history(
+    patient_id: int,
+    data: MedicalHistoryUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    service = MedicalHistoryService(db)
+    history = service.update_medical_history(patient_id, data)
+    return ApiResponse(data=MedicalHistoryResponse.model_validate(history))
 
 
 @router.post("/export")

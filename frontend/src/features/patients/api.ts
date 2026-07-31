@@ -1,6 +1,47 @@
 import { api } from '@/lib/api'
 import { downloadBlob } from '@/lib/utils'
 
+// ==================== Examination Types ====================
+export interface Examination {
+  id: number
+  patient_id: number
+  exam_date: string
+  general_condition?: string
+  cardiovascular?: string
+  respiratory?: string
+  digestive?: string
+  urinary?: string
+  neurological?: string
+  other_body_parts?: string
+  mental_exam?: Record<string, unknown>
+  general_clinical_tests?: Record<string, unknown>
+  other_clinical_tests?: Record<string, unknown>
+  diagnosis?: string
+  treatment?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface MedicalHistory {
+  id: number
+  patient_id: number
+  presenting_symptoms?: Record<string, unknown>
+  onset_age?: number
+  disease_duration_years?: number
+  disease_duration_months?: number
+  previous_diagnoses?: string[]
+  disease_progression?: string
+  relapse_count?: number
+  previous_inpatient_treatments?: number
+  medications_before_admission?: Record<string, unknown>
+  reinforcement_status?: string
+  circumstances_of_onset?: string
+  personal_history?: Record<string, unknown>
+  family_history?: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
 export interface Patient {
   id: number
   patient_code: string
@@ -158,4 +199,62 @@ export async function commitImportPatients(
 export async function downloadImportTemplate() {
   const res = await api.get('/patients/import/template', { responseType: 'blob' })
   downloadBlob(res.data as Blob, 'mau_nhap_benh_nhan.xlsx')
+}
+
+// ==================== Examination API ====================
+
+export async function listExaminations(
+  patientId: number,
+  page: number = 1,
+  limit: number = 10
+) {
+  const response = await api.get(`/patients/${patientId}/exams`, {
+    params: { page, limit },
+  })
+  return response.data
+}
+
+export async function getExamination(patientId: number, examId: number) {
+  const response = await api.get(`/patients/${patientId}/exams/${examId}`)
+  return response.data
+}
+
+export async function getLatestExamination(patientId: number) {
+  const response = await api.get(`/patients/${patientId}/exams/latest`)
+  return response.data
+}
+
+export async function createExamination(patientId: number, data: Partial<Examination>) {
+  const response = await api.post(`/patients/${patientId}/exams`, data)
+  return response.data
+}
+
+export async function updateExamination(
+  patientId: number,
+  examId: number,
+  data: Partial<Examination>
+) {
+  const response = await api.patch(`/patients/${patientId}/exams/${examId}`, data)
+  return response.data
+}
+
+export async function deleteExamination(patientId: number, examId: number) {
+  return await api.delete(`/patients/${patientId}/exams/${examId}`)
+}
+
+// ==================== Medical History API ====================
+
+export async function getMedicalHistory(patientId: number) {
+  const response = await api.get(`/patients/${patientId}/medical-history`)
+  return response.data
+}
+
+export async function createMedicalHistory(patientId: number, data: Partial<MedicalHistory>) {
+  const response = await api.post(`/patients/${patientId}/medical-history`, data)
+  return response.data
+}
+
+export async function updateMedicalHistory(patientId: number, data: Partial<MedicalHistory>) {
+  const response = await api.patch(`/patients/${patientId}/medical-history`, data)
+  return response.data
 }
