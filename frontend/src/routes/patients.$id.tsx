@@ -224,6 +224,12 @@ function PatientDetailPage() {
               params: { id: String(patientId), examId: String(examId) },
             })
           }
+          onReviewExtraction={(extractionId) =>
+            navigate({
+              to: '/patients/$id/exams/review/$extractionId',
+              params: { id: String(patientId), extractionId: String(extractionId) },
+            })
+          }
         />
       </div>
     </AppShell>

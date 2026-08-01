@@ -120,10 +120,14 @@ class ExaminationBase(BaseModel):
     diagnosis: Optional[str] = None
     treatment: Optional[str] = None
     data: Optional[dict[str, Any]] = None
+    source: str = "manual"
+    document_id: Optional[int] = None
 
 
 class ExaminationCreate(ExaminationBase):
     exam_date: Optional[date] = None
+    # Chỉ dùng để đánh dấu bản nháp đã được soát; không phải cột của bảng.
+    extraction_id: Optional[int] = None
 
 
 class ExaminationUpdate(BaseModel):

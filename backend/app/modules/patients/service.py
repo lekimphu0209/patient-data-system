@@ -129,7 +129,16 @@ class ExaminationService:
         if not patient:
             raise NotFoundException("Patient not found")
         data.exam_date = _resolve_exam_date(data) or date.today()
-        return self.repo.create(patient_id, data)
+        exam = self.repo.create(patient_id, data)
+
+        # Lần khám tạo từ bản nháp OCR/upload: ghi lại bản đã được bác sĩ soát.
+        if data.extraction_id:
+            from app.modules.documents.exam_extraction_service import ExamExtractionService
+
+            ExamExtractionService(self.repo.db).mark_reviewed(
+                data.extraction_id, data.data or {}
+            )
+        return exam
 
     def update_examination(self, exam_id: int, data: ExaminationUpdate) -> Examination:
         exam = self.repo.get_by_id(exam_id)

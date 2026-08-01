@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AlertCircle, Download, Edit2, Eye, Trash2 } from 'lucide-react'
+import { AlertCircle, Download, Edit2, Eye, FileText, ScanLine, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { Button, Card, Loading } from '@/components/ui'
+import { Badge, Button, Card, Loading } from '@/components/ui'
 import { errorMessage } from '@/lib/utils'
 import {
   deleteExamination,
@@ -11,12 +11,14 @@ import {
   listExaminations,
   updateMedicalHistory,
   type Examination,
+  type ExtractionMode,
   type FormNode,
   type FormSchema,
   type FormValues,
 } from '../api'
 import { DynamicForm, summarizeGroup } from './DynamicForm'
 import { Pagination } from './Pagination'
+import { UploadExamDialog } from './UploadExamDialog'
 
 const findBlock = (schema: FormSchema | undefined, id: string) =>
   schema?.blocks.find((block) => block.id === id)
@@ -156,12 +158,14 @@ export function ExaminationsSection({
   onCreateExam,
   onViewExam,
   onEditExam,
+  onReviewExtraction,
 }: {
   patientId: number
   schema: FormSchema | undefined
   onCreateExam: () => void
   onViewExam: (examId: number) => void
   onEditExam: (examId: number) => void
+  onReviewExtraction: (extractionId: number) => void
 }) {
   const queryClient = useQueryClient()
   const block = findBlock(schema, 'examination')
@@ -170,6 +174,7 @@ export function ExaminationsSection({
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   const [exportError, setExportError] = useState('')
+  const [uploadMode, setUploadMode] = useState<ExtractionMode | null>(null)
 
   const { data: response, isLoading } = useQuery({
     queryKey: ['exams', patientId, page, limit],
@@ -206,11 +211,23 @@ export function ExaminationsSection({
           </p>
         </div>
         <div className="flex flex-wrap justify-end gap-2.5">
-          <Button variant="outline" size="sm" disabled>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setUploadMode('ocr')}
+            leftIcon={<ScanLine className="h-4 w-4" />}
+            title="Đọc ảnh chụp hoặc bản scan bằng OCR"
+          >
             OCR
           </Button>
-          <Button variant="outline" size="sm" disabled>
-            Upload phiếu khác
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setUploadMode('upload')}
+            leftIcon={<FileText className="h-4 w-4" />}
+            title="Đọc file Word hoặc PDF văn bản"
+          >
+            Upload phiếu khám
           </Button>
           <Button
             variant="outline"
@@ -263,14 +280,23 @@ export function ExaminationsSection({
                 <tr key={exam.id} className="align-top hover:bg-slate-50">
                   {columns.map((column) => {
                     const text = examCell(exam, column.key, block)
+
+                    if (column.key === 'exam_info.exam_date') {
+                      const source = SOURCE_META[exam.source ?? 'manual'] ?? SOURCE_META.manual
+                      return (
+                        <td key={column.key} className="whitespace-nowrap px-3 py-3">
+                          <span className="font-medium text-slate-900">{text || '—'}</span>
+                          <Badge variant={source.variant} className="mt-1 block w-fit">
+                            {source.label}
+                          </Badge>
+                        </td>
+                      )
+                    }
+
                     return (
                       <td
                         key={column.key}
-                        className={
-                          column.key === 'exam_info.exam_date'
-                            ? 'whitespace-nowrap px-3 py-3 font-medium text-slate-900'
-                            : 'px-3 py-3 text-slate-700'
-                        }
+                        className="px-3 py-3 text-slate-700"
                         title={text || undefined}
                       >
                         <span className="line-clamp-2 block max-w-[220px]">{text || '—'}</span>
@@ -328,6 +354,24 @@ export function ExaminationsSection({
           />
         </div>
       )}
+
+      <UploadExamDialog
+        open={uploadMode !== null}
+        mode={uploadMode ?? 'ocr'}
+        patientId={patientId}
+        onClose={() => setUploadMode(null)}
+        onExtracted={(draft) => {
+          setUploadMode(null)
+          onReviewExtraction(draft.extraction_id)
+        }}
+      />
     </Card>
   )
+}
+
+/** Nhãn nguồn gốc bản ghi — dữ liệu do AI đọc cần phân biệt được với bác sĩ tự nhập. */
+const SOURCE_META: Record<string, { label: string; variant: 'gray' | 'violet' | 'warning' }> = {
+  manual: { label: 'Nhập tay', variant: 'gray' },
+  ocr: { label: 'OCR', variant: 'violet' },
+  upload: { label: 'Phiếu số', variant: 'warning' },
 }

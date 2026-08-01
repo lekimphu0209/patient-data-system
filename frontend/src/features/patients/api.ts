@@ -20,6 +20,11 @@ export interface Examination {
   treatment?: string
   /** Khối KHÁM BỆNH lưu phân cấp theo form schema. */
   data?: Record<string, any>
+  /** Nguồn gốc bản ghi: bác sĩ tự nhập, OCR ảnh/scan, hay đọc từ phiếu digital. */
+  source?: 'manual' | 'ocr' | 'upload'
+  document_id?: number | null
+  /** Chỉ gửi lên khi lưu từ màn hình soát, để đánh dấu bản nháp đã được duyệt. */
+  extraction_id?: number
   created_at: string
   updated_at: string
 }
@@ -271,6 +276,58 @@ export async function createMedicalHistory(patientId: number, data: Partial<Medi
 export async function updateMedicalHistory(patientId: number, data: Partial<MedicalHistory>) {
   const response = await api.patch(`/patients/${patientId}/medical-history`, data)
   return response.data
+}
+
+// ==================== Bóc tách phiếu khám (OCR / phiếu digital) ====================
+
+export type ExtractionMode = 'ocr' | 'upload'
+
+export interface ExtractionDraft {
+  extraction_id: number
+  document_id: number
+  file_name: string
+  mime_type: string
+  mode: ExtractionMode
+  provider: string
+  model: string
+  page_count: number
+  /** Số ô AI đọc được / tổng số ô của biểu mẫu — để người soát biết còn bao nhiêu phải tự điền. */
+  filled_count: number
+  total_fields: number
+  data: FormValues
+  warnings: string[]
+  note: string
+}
+
+export async function extractExamDocument(
+  patientId: number,
+  file: File,
+  mode: ExtractionMode,
+  signal?: AbortSignal,
+) {
+  const form = new FormData()
+  form.append('file', file)
+  const response = await api.post<{ data: ExtractionDraft }>(
+    `/patients/${patientId}/exams/extract`,
+    form,
+    { params: { mode }, signal, timeout: 0 }, // bóc tách có thể mất hàng phút
+  )
+  return response.data.data
+}
+
+export async function getExtractionDraft(patientId: number, extractionId: number) {
+  const response = await api.get<{ data: ExtractionDraft }>(
+    `/patients/${patientId}/exams/extractions/${extractionId}`,
+  )
+  return response.data.data
+}
+
+/** Tải file gốc về dạng blob để hiển thị ở khung xem trước (URL cần kèm token). */
+export async function fetchDocumentBlob(patientId: number, documentId: number) {
+  const response = await api.get(`/patients/${patientId}/documents/${documentId}/file`, {
+    responseType: 'blob',
+  })
+  return response.data as Blob
 }
 
 // ==================== Form Schema API ====================

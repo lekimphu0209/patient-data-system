@@ -184,7 +184,14 @@ class ExaminationRepository:
         )
 
     def create(self, patient_id: int, data: ExaminationCreate) -> Examination:
-        exam = Examination(patient_id=patient_id, **data.model_dump(exclude_unset=True))
+        # Schema có field phụ không phải cột (extraction_id) nên lọc theo cột thật.
+        columns = {column.name for column in Examination.__table__.columns}
+        payload = {
+            key: value
+            for key, value in data.model_dump(exclude_unset=True).items()
+            if key in columns
+        }
+        exam = Examination(patient_id=patient_id, **payload)
         self.db.add(exam)
         self.db.commit()
         self.db.refresh(exam)

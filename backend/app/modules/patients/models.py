@@ -118,6 +118,15 @@ class Examination(Base):
     # trên chỉ còn giữ cho dữ liệu cũ; dữ liệu mới đọc/ghi qua đây.
     data: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
 
+    # Nguồn gốc bản ghi: "manual" (bác sĩ tự nhập), "ocr" (ảnh/PDF scan),
+    # "upload" (phiếu digital). Dữ liệu do AI đọc luôn đã qua màn hình soát,
+    # nhưng vẫn cần biết xuất xứ khi đánh giá độ tin cậy của số liệu nghiên cứu.
+    # server_default để thêm cột vào bảng đã có dữ liệu không vi phạm NOT NULL.
+    source: Mapped[str] = mapped_column(String(20), default="manual", server_default="manual")
+    document_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("documents.id"), nullable=True
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
