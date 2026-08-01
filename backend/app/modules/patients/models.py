@@ -65,6 +65,11 @@ class MedicalHistory(Base):
     personal_history: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
     family_history: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
 
+    # Toàn bộ khối "HỎI BỆNH" lưu phân cấp theo form_schema.json:
+    # {"<group_id>": {"<field_id>": value}}. Các cột rời phía trên chỉ còn giữ
+    # cho dữ liệu cũ; dữ liệu mới đọc/ghi qua đây.
+    data: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
@@ -107,6 +112,11 @@ class Examination(Base):
 
     # 3.6 Điều trị (Treatment)
     treatment: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+
+    # Toàn bộ khối "KHÁM BỆNH" (PHẦN 3 → PHẦN 7) lưu phân cấp theo
+    # form_schema.json: {"<group_id>": {"<field_id>": value}}. Các cột rời phía
+    # trên chỉ còn giữ cho dữ liệu cũ; dữ liệu mới đọc/ghi qua đây.
+    data: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)

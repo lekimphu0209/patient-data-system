@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class PatientBase(BaseModel):
@@ -16,7 +16,11 @@ class PatientBase(BaseModel):
     hometown: Optional[str] = None
     status: str = "active"
     contact_info: Optional[dict[str, Any]] = None
-    metadata: Optional[dict[str, Any]] = Field(default=None, validation_alias="patient_metadata")
+    # Tên field khớp với cột model để request và response dùng chung một khóa;
+    # vẫn chấp nhận "metadata" cho client cũ.
+    patient_metadata: Optional[dict[str, Any]] = Field(
+        default=None, validation_alias=AliasChoices("patient_metadata", "metadata")
+    )
 
 
 class PatientCreate(PatientBase):
@@ -33,7 +37,9 @@ class PatientUpdate(BaseModel):
     hometown: Optional[str] = None
     status: Optional[str] = None
     contact_info: Optional[dict[str, Any]] = None
-    metadata: Optional[dict[str, Any]] = Field(default=None, validation_alias="patient_metadata")
+    patient_metadata: Optional[dict[str, Any]] = Field(
+        default=None, validation_alias=AliasChoices("patient_metadata", "metadata")
+    )
 
 
 class PatientResponse(PatientBase):
@@ -64,6 +70,7 @@ class MedicalHistoryBase(BaseModel):
     circumstances_of_onset: Optional[str] = None
     personal_history: Optional[dict[str, Any]] = None
     family_history: Optional[dict[str, Any]] = None
+    data: Optional[dict[str, Any]] = None
 
 
 class MedicalHistoryCreate(MedicalHistoryBase):
@@ -84,6 +91,7 @@ class MedicalHistoryUpdate(BaseModel):
     circumstances_of_onset: Optional[str] = None
     personal_history: Optional[dict[str, Any]] = None
     family_history: Optional[dict[str, Any]] = None
+    data: Optional[dict[str, Any]] = None
 
 
 class MedicalHistoryResponse(MedicalHistoryBase):
@@ -111,10 +119,11 @@ class ExaminationBase(BaseModel):
     other_clinical_tests: Optional[dict[str, Any]] = None
     diagnosis: Optional[str] = None
     treatment: Optional[str] = None
+    data: Optional[dict[str, Any]] = None
 
 
 class ExaminationCreate(ExaminationBase):
-    pass
+    exam_date: Optional[date] = None
 
 
 class ExaminationUpdate(BaseModel):
@@ -131,6 +140,7 @@ class ExaminationUpdate(BaseModel):
     other_clinical_tests: Optional[dict[str, Any]] = None
     diagnosis: Optional[str] = None
     treatment: Optional[str] = None
+    data: Optional[dict[str, Any]] = None
 
 
 class ExaminationResponse(ExaminationBase):

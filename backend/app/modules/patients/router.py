@@ -24,11 +24,27 @@ from app.modules.patients.schemas import (
     MedicalHistoryUpdate,
 )
 from app.modules.patients.service import PatientService, ExaminationService, MedicalHistoryService
+from app.modules.patients.form_service import FormService
 from app.shared.responses import ApiResponse, PaginatedResponse, PaginationMeta
 
 router = APIRouter()
 
 XLSX_MEDIA_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+
+# ==================== Form Schema Endpoints ====================
+
+
+@router.get("/forms/{disease_code}", response_model=ApiResponse[Any])
+def get_form_schema_by_disease(
+    disease_code: str,
+    current_user: User = Depends(get_current_active_user),
+):
+    """Schema bệnh án (cả 3 khối) đã lọc theo mã bệnh: f20 / f32 / normal."""
+    form_service = FormService()
+    if not form_service.is_valid_disease(disease_code):
+        raise HTTPException(status_code=400, detail="Unknown disease code")
+    return ApiResponse(data=form_service.get_schema(disease_code))
 
 
 @router.get("", response_model=PaginatedResponse)
@@ -71,6 +87,21 @@ def create_patient(
     service = PatientService(db)
     patient = service.create_patient(data)
     return ApiResponse(data=PatientResponse.model_validate(patient))
+
+
+@router.get("/{patient_id}/form-schema", response_model=ApiResponse[Any])
+def get_patient_form_schema(
+    patient_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Schema bệnh án ứng với chẩn đoán của chính bệnh nhân này."""
+    patient = PatientService(db).get_patient(patient_id)
+    form_service = FormService()
+    disease_code = form_service.resolve_disease_code(
+        patient.diagnosis, patient.disease_type
+    )
+    return ApiResponse(data=form_service.get_schema(disease_code))
 
 
 @router.get("/{patient_id}", response_model=ApiResponse[PatientResponse])

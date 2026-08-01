@@ -18,6 +18,8 @@ export interface Examination {
   other_clinical_tests?: Record<string, unknown>
   diagnosis?: string
   treatment?: string
+  /** Khối KHÁM BỆNH lưu phân cấp theo form schema. */
+  data?: Record<string, any>
   created_at: string
   updated_at: string
 }
@@ -38,6 +40,8 @@ export interface MedicalHistory {
   circumstances_of_onset?: string
   personal_history?: Record<string, unknown>
   family_history?: Record<string, unknown>
+  /** Khối HỎI BỆNH lưu phân cấp theo form schema. */
+  data?: Record<string, any>
   created_at: string
   updated_at: string
 }
@@ -257,4 +261,79 @@ export async function createMedicalHistory(patientId: number, data: Partial<Medi
 export async function updateMedicalHistory(patientId: number, data: Partial<MedicalHistory>) {
   const response = await api.patch(`/patients/${patientId}/medical-history`, data)
   return response.data
+}
+
+// ==================== Form Schema API ====================
+// Cấu trúc bệnh án do backend định nghĩa trong form_schema.json (theo template
+// F20 / F32) và trả về đã lọc sẵn theo loại bệnh của bệnh nhân.
+
+export type FormNodeType =
+  | 'block'
+  | 'group'
+  | 'text'
+  | 'textarea'
+  | 'number'
+  | 'date'
+  | 'radio'
+  | 'checkbox_group'
+  | 'matrix'
+
+export interface FormOption {
+  value: string
+  label: string
+}
+
+export interface FormMatrixRow {
+  id: string
+  label: string
+}
+
+export interface FormShowIf {
+  field: string
+  includes?: string
+  equals?: string
+}
+
+export interface FormNode {
+  id: string
+  label: string
+  type: FormNodeType
+  part?: string
+  unit?: string
+  required?: boolean
+  readonly?: boolean
+  source?: string
+  table_column?: string
+  show_if?: FormShowIf
+  options?: FormOption[]
+  rows?: FormMatrixRow[]
+  columns?: FormOption[]
+  children?: FormNode[]
+}
+
+export interface ExamTableColumn {
+  key: string
+  label: string
+  kind?: string
+}
+
+export interface FormSchema {
+  version: string
+  disease_code: 'f20' | 'f32' | 'normal'
+  disease_label: string
+  exam_table_columns: ExamTableColumn[]
+  blocks: FormNode[]
+}
+
+/** Giá trị của một khối, lồng theo đúng cấu trúc group của schema. */
+export type FormValues = Record<string, any>
+
+export async function getPatientFormSchema(patientId: number) {
+  const response = await api.get<{ data: FormSchema }>(`/patients/${patientId}/form-schema`)
+  return response.data.data
+}
+
+export async function getFormSchemaByDisease(diseaseCode: string) {
+  const response = await api.get<{ data: FormSchema }>(`/patients/forms/${diseaseCode}`)
+  return response.data.data
 }

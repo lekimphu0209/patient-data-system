@@ -4,8 +4,15 @@ import { AlertCircle, Save } from 'lucide-react'
 import { useState } from 'react'
 
 import { AppShell } from '@/components/layout/AppShell'
-import { Button, Card, ErrorState, FormField, FormSection, Input, Loading, PageHeader, Textarea } from '@/components/ui'
-import { createExamination, getPatient, type Examination } from '@/features/patients/api'
+import { Button, Card, ErrorState, Loading, PageHeader } from '@/components/ui'
+import {
+  createExamination,
+  getPatient,
+  getPatientFormSchema,
+  type FormNode,
+  type FormValues,
+} from '@/features/patients/api'
+import { DynamicForm } from '@/features/patients/components/DynamicForm'
 import { requireAuth } from '@/lib/auth-guard'
 import { errorMessage } from '@/lib/utils'
 import { rootRoute } from '@/routes/__root'
@@ -17,64 +24,74 @@ export const newExamRoute = createRoute({
   beforeLoad: requireAuth,
 })
 
+const todayISO = () => new Date().toISOString().slice(0, 10)
+
 function NewExamPage() {
   const { id } = useParams({ from: newExamRoute.id })
   const patientId = Number(id)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [error, setError] = useState('')
+  const [values, setValues] = useState<FormValues>({ exam_info: { exam_date: todayISO() } })
 
-  const { data: patient, isLoading } = useQuery({
+  const { data: patient, isLoading: patientLoading } = useQuery({
     queryKey: ['patient', patientId],
     queryFn: async () => (await getPatient(patientId)).data,
   })
 
-  const [formData, setFormData] = useState<Partial<Examination>>({
-    exam_date: new Date().toISOString().split('T')[0],
+  const { data: schema, isLoading: schemaLoading } = useQuery({
+    queryKey: ['form-schema', patientId],
+    queryFn: () => getPatientFormSchema(patientId),
   })
 
+  const block: FormNode | undefined = schema?.blocks.find((b) => b.id === 'examination')
+
   const mutation = useMutation({
-    mutationFn: (data: Partial<Examination>) => createExamination(patientId, data),
+    mutationFn: () => createExamination(patientId, { data: values }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['exams', patientId] })
       navigate({ to: '/patients/$id', params: { id: String(patientId) } })
     },
-    onError: (err) => {
-      setError(errorMessage(err, 'Lưu lần khám thất bại'))
-    },
+    onError: (err) => setError(errorMessage(err, 'Lưu lần khám thất bại')),
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.exam_date) {
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    if (!values.exam_info?.exam_date) {
       setError('Vui lòng nhập ngày khám')
       return
     }
-    mutation.mutate(formData)
+    setError('')
+    mutation.mutate()
   }
 
-  if (isLoading) {
+  if (patientLoading || schemaLoading) {
     return (
-      <AppShell width="narrow">
-        <Loading text="Đang tải thông tin bệnh nhân..." />
+      <AppShell>
+        <Card size="full">
+          <Loading text="Đang tải biểu mẫu khám bệnh..." />
+        </Card>
       </AppShell>
     )
   }
 
-  if (!patient) {
+  if (!patient || !block) {
     return (
-      <AppShell width="narrow">
-        <ErrorState message="Không tìm thấy bệnh nhân" />
+      <AppShell>
+        <Card size="full">
+          <ErrorState message="Không tìm thấy bệnh nhân hoặc biểu mẫu khám bệnh." />
+        </Card>
       </AppShell>
     )
   }
 
   return (
-    <AppShell width="narrow">
+    <AppShell>
       <PageHeader
         title="Nhập lần khám mới"
-        description={`Bệnh nhân: ${patient.full_name}`}
-        backTo="/patients"
+        description={`${patient.full_name}${schema ? ` · ${schema.disease_label}` : ''}`}
+        backTo={`/patients/${patientId}`}
+        backLabel="Quay lại chi tiết bệnh nhân"
       />
 
       <Card size="full">
@@ -86,113 +103,7 @@ function NewExamPage() {
             </div>
           )}
 
-          <FormSection title="Ngày khám">
-            <FormField label="Ngày khám" htmlFor="exam_date" required>
-              <Input
-                id="exam_date"
-                type="date"
-                value={formData.exam_date || ''}
-                onChange={(e) => setFormData({ ...formData, exam_date: e.target.value })}
-                required
-              />
-            </FormField>
-          </FormSection>
-
-          <FormSection title="Khám thực thể">
-            <div className="space-y-4">
-              <FormField label="Toàn thân" htmlFor="general_condition">
-                <Textarea
-                  id="general_condition"
-                  rows={3}
-                  value={formData.general_condition || ''}
-                  onChange={(e) => setFormData({ ...formData, general_condition: e.target.value })}
-                  placeholder="Mô tả tình trạng toàn thân"
-                />
-              </FormField>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField label="Tuần hoàn" htmlFor="cardiovascular">
-                  <Textarea
-                    id="cardiovascular"
-                    rows={2}
-                    value={formData.cardiovascular || ''}
-                    onChange={(e) => setFormData({ ...formData, cardiovascular: e.target.value })}
-                  />
-                </FormField>
-
-                <FormField label="Hô hấp" htmlFor="respiratory">
-                  <Textarea
-                    id="respiratory"
-                    rows={2}
-                    value={formData.respiratory || ''}
-                    onChange={(e) => setFormData({ ...formData, respiratory: e.target.value })}
-                  />
-                </FormField>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField label="Tiêu hóa" htmlFor="digestive">
-                  <Textarea
-                    id="digestive"
-                    rows={2}
-                    value={formData.digestive || ''}
-                    onChange={(e) => setFormData({ ...formData, digestive: e.target.value })}
-                  />
-                </FormField>
-
-                <FormField label="Tiết niệu" htmlFor="urinary">
-                  <Textarea
-                    id="urinary"
-                    rows={2}
-                    value={formData.urinary || ''}
-                    onChange={(e) => setFormData({ ...formData, urinary: e.target.value })}
-                  />
-                </FormField>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField label="Khám thần kinh" htmlFor="neurological">
-                  <Textarea
-                    id="neurological"
-                    rows={2}
-                    value={formData.neurological || ''}
-                    onChange={(e) => setFormData({ ...formData, neurological: e.target.value })}
-                  />
-                </FormField>
-
-                <FormField label="Khám các bộ phận khác" htmlFor="other_body_parts">
-                  <Textarea
-                    id="other_body_parts"
-                    rows={2}
-                    value={formData.other_body_parts || ''}
-                    onChange={(e) => setFormData({ ...formData, other_body_parts: e.target.value })}
-                  />
-                </FormField>
-              </div>
-            </div>
-          </FormSection>
-
-          <FormSection title="Chẩn đoán & Điều trị">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Chẩn đoán" htmlFor="diagnosis">
-                <Textarea
-                  id="diagnosis"
-                  rows={2}
-                  value={formData.diagnosis || ''}
-                  onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
-                />
-              </FormField>
-
-              <FormField label="Điều trị" htmlFor="treatment">
-                <Textarea
-                  id="treatment"
-                  rows={2}
-                  value={formData.treatment || ''}
-                  onChange={(e) => setFormData({ ...formData, treatment: e.target.value })}
-                />
-              </FormField>
-            </div>
-          </FormSection>
+          <DynamicForm block={block} values={values} onChange={setValues} mode="edit" />
 
           <div className="flex gap-2.5 border-t border-slate-100 pt-6">
             <Button

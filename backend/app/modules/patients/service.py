@@ -19,6 +19,22 @@ from app.modules.patients.schemas import (
 from app.shared.exceptions import ConflictException, NotFoundException
 
 
+def _resolve_exam_date(data: ExaminationCreate | ExaminationUpdate) -> date | None:
+    """Ngày khám nằm trong ``data.exam_info.exam_date`` của form động; cột
+    ``exam_date`` vẫn được ghi để còn sắp xếp/lọc bằng SQL."""
+    if data.exam_date:
+        return data.exam_date
+    raw = ((data.data or {}).get("exam_info") or {}).get("exam_date")
+    if not raw:
+        return None
+    if isinstance(raw, date):
+        return raw
+    try:
+        return date.fromisoformat(str(raw)[:10])
+    except ValueError:
+        return None
+
+
 def _compute_age(birth_date: date | None) -> int | None:
     if not birth_date:
         return None
@@ -112,12 +128,16 @@ class ExaminationService:
         patient = self.patient_repo.get_by_id(patient_id)
         if not patient:
             raise NotFoundException("Patient not found")
+        data.exam_date = _resolve_exam_date(data) or date.today()
         return self.repo.create(patient_id, data)
 
     def update_examination(self, exam_id: int, data: ExaminationUpdate) -> Examination:
         exam = self.repo.get_by_id(exam_id)
         if not exam:
             raise NotFoundException("Examination not found")
+        resolved = _resolve_exam_date(data)
+        if resolved:
+            data.exam_date = resolved
         return self.repo.update(exam, data)
 
     def delete_examination(self, exam_id: int) -> None:
