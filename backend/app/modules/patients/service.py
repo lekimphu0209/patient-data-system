@@ -2,10 +2,37 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
-from app.modules.patients.models import Patient
-from app.modules.patients.repository import PatientRepository
-from app.modules.patients.schemas import PatientCreate, PatientUpdate
+from app.modules.patients.models import Patient, Examination, MedicalHistory
+from app.modules.patients.repository import (
+    PatientRepository,
+    ExaminationRepository,
+    MedicalHistoryRepository,
+)
+from app.modules.patients.schemas import (
+    PatientCreate,
+    PatientUpdate,
+    ExaminationCreate,
+    ExaminationUpdate,
+    MedicalHistoryCreate,
+    MedicalHistoryUpdate,
+)
 from app.shared.exceptions import ConflictException, NotFoundException
+
+
+def _resolve_exam_date(data: ExaminationCreate | ExaminationUpdate) -> date | None:
+    """Ngày khám nằm trong ``data.exam_info.exam_date`` của form động; cột
+    ``exam_date`` vẫn được ghi để còn sắp xếp/lọc bằng SQL."""
+    if data.exam_date:
+        return data.exam_date
+    raw = ((data.data or {}).get("exam_info") or {}).get("exam_date")
+    if not raw:
+        return None
+    if isinstance(raw, date):
+        return raw
+    try:
+        return date.fromisoformat(str(raw)[:10])
+    except ValueError:
+        return None
 
 
 def _compute_age(birth_date: date | None) -> int | None:
@@ -72,3 +99,80 @@ class PatientService:
 
     def bulk_delete_patients(self, patient_codes: list[str], hard: bool = False) -> int:
         return self.repo.bulk_delete_by_patient_codes(patient_codes, hard=hard)
+
+
+class ExaminationService:
+    def __init__(self, db: Session):
+        self.repo = ExaminationRepository(db)
+        self.patient_repo = PatientRepository(db)
+
+    def list_examinations(self, patient_id: int, page: int, limit: int):
+        patient = self.patient_repo.get_by_id(patient_id)
+        if not patient:
+            raise NotFoundException("Patient not found")
+        return self.repo.get_list_by_patient(patient_id, page, limit)
+
+    def get_examination(self, exam_id: int) -> Examination:
+        exam = self.repo.get_by_id(exam_id)
+        if not exam:
+            raise NotFoundException("Examination not found")
+        return exam
+
+    def get_latest_examination(self, patient_id: int) -> Examination | None:
+        patient = self.patient_repo.get_by_id(patient_id)
+        if not patient:
+            raise NotFoundException("Patient not found")
+        return self.repo.get_latest_by_patient(patient_id)
+
+    def create_examination(self, patient_id: int, data: ExaminationCreate) -> Examination:
+        patient = self.patient_repo.get_by_id(patient_id)
+        if not patient:
+            raise NotFoundException("Patient not found")
+        data.exam_date = _resolve_exam_date(data) or date.today()
+        return self.repo.create(patient_id, data)
+
+    def update_examination(self, exam_id: int, data: ExaminationUpdate) -> Examination:
+        exam = self.repo.get_by_id(exam_id)
+        if not exam:
+            raise NotFoundException("Examination not found")
+        resolved = _resolve_exam_date(data)
+        if resolved:
+            data.exam_date = resolved
+        return self.repo.update(exam, data)
+
+    def delete_examination(self, exam_id: int) -> None:
+        exam = self.repo.get_by_id(exam_id)
+        if not exam:
+            raise NotFoundException("Examination not found")
+        self.repo.delete(exam)
+
+
+class MedicalHistoryService:
+    def __init__(self, db: Session):
+        self.repo = MedicalHistoryRepository(db)
+        self.patient_repo = PatientRepository(db)
+
+    def get_medical_history(self, patient_id: int) -> MedicalHistory | None:
+        patient = self.patient_repo.get_by_id(patient_id)
+        if not patient:
+            raise NotFoundException("Patient not found")
+        return self.repo.get_by_patient_id(patient_id)
+
+    def create_medical_history(self, patient_id: int, data: MedicalHistoryCreate) -> MedicalHistory:
+        patient = self.patient_repo.get_by_id(patient_id)
+        if not patient:
+            raise NotFoundException("Patient not found")
+        existing = self.repo.get_by_patient_id(patient_id)
+        if existing:
+            return self.repo.update(existing, data)
+        return self.repo.create(patient_id, data)
+
+    def update_medical_history(
+        self, patient_id: int, data: MedicalHistoryUpdate
+    ) -> MedicalHistory:
+        history = self.repo.get_by_patient_id(patient_id)
+        if not history:
+            history = self.repo.create(patient_id, MedicalHistoryCreate(**data.model_dump(exclude_unset=True)))
+        else:
+            history = self.repo.update(history, data)
+        return history

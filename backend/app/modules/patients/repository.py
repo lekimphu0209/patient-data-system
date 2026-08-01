@@ -4,8 +4,15 @@ from typing import Any
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
-from app.modules.patients.models import Patient
-from app.modules.patients.schemas import PatientCreate, PatientUpdate
+from app.modules.patients.models import Patient, Examination, MedicalHistory
+from app.modules.patients.schemas import (
+    PatientCreate,
+    PatientUpdate,
+    ExaminationCreate,
+    ExaminationUpdate,
+    MedicalHistoryCreate,
+    MedicalHistoryUpdate,
+)
 
 
 class PatientRepository:
@@ -146,3 +153,72 @@ class PatientRepository:
                 p.deleted_at = datetime.now(timezone.utc)
         self.db.commit()
         return len(patients)
+
+
+class ExaminationRepository:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def get_by_id(self, exam_id: int) -> Examination | None:
+        return self.db.query(Examination).filter(Examination.id == exam_id).first()
+
+    def get_list_by_patient(
+        self, patient_id: int, page: int, limit: int
+    ) -> tuple[list[Examination], int]:
+        query = self.db.query(Examination).filter(Examination.patient_id == patient_id)
+        total = query.count()
+        items = (
+            query.order_by(Examination.exam_date.desc(), Examination.id.desc())
+            .offset((page - 1) * limit)
+            .limit(limit)
+            .all()
+        )
+        return items, total
+
+    def get_latest_by_patient(self, patient_id: int) -> Examination | None:
+        return (
+            self.db.query(Examination)
+            .filter(Examination.patient_id == patient_id)
+            .order_by(Examination.exam_date.desc(), Examination.id.desc())
+            .first()
+        )
+
+    def create(self, patient_id: int, data: ExaminationCreate) -> Examination:
+        exam = Examination(patient_id=patient_id, **data.model_dump(exclude_unset=True))
+        self.db.add(exam)
+        self.db.commit()
+        self.db.refresh(exam)
+        return exam
+
+    def update(self, exam: Examination, data: ExaminationUpdate) -> Examination:
+        for field, value in data.model_dump(exclude_unset=True).items():
+            setattr(exam, field, value)
+        self.db.commit()
+        self.db.refresh(exam)
+        return exam
+
+    def delete(self, exam: Examination) -> None:
+        self.db.delete(exam)
+        self.db.commit()
+
+
+class MedicalHistoryRepository:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def get_by_patient_id(self, patient_id: int) -> MedicalHistory | None:
+        return self.db.query(MedicalHistory).filter(MedicalHistory.patient_id == patient_id).first()
+
+    def create(self, patient_id: int, data: MedicalHistoryCreate) -> MedicalHistory:
+        history = MedicalHistory(patient_id=patient_id, **data.model_dump(exclude_unset=True))
+        self.db.add(history)
+        self.db.commit()
+        self.db.refresh(history)
+        return history
+
+    def update(self, history: MedicalHistory, data: MedicalHistoryUpdate) -> MedicalHistory:
+        for field, value in data.model_dump(exclude_unset=True).items():
+            setattr(history, field, value)
+        self.db.commit()
+        self.db.refresh(history)
+        return history

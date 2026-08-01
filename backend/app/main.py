@@ -17,11 +17,36 @@ from app.modules.documents.router import router as documents_router
 from app.modules.patients.router import router as patients_router
 
 
+def _add_missing_columns() -> None:
+    """Bổ sung cột mới vào bảng đã tồn tại.
+
+    ``create_all`` chỉ tạo bảng thiếu chứ không thêm cột thiếu, nên các cột mới
+    (ví dụ ``data`` của examinations / medical_histories) sẽ không xuất hiện trên
+    database đã chạy từ trước. Chỉ ADD COLUMN, không bao giờ sửa hay xoá.
+    """
+    from sqlalchemy import inspect, text
+    from sqlalchemy.schema import CreateColumn
+
+    inspector = inspect(engine)
+    existing_tables = set(inspector.get_table_names())
+    with engine.begin() as conn:
+        for table in Base.metadata.sorted_tables:
+            if table.name not in existing_tables:
+                continue
+            present = {c["name"] for c in inspector.get_columns(table.name)}
+            for column in table.columns:
+                if column.name in present:
+                    continue
+                ddl = CreateColumn(column).compile(dialect=engine.dialect)
+                conn.execute(text(f'ALTER TABLE "{table.name}" ADD COLUMN {ddl}'))
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Create tables for development convenience.
     # In production, rely on Alembic migrations.
     Base.metadata.create_all(bind=engine)
+    _add_missing_columns()
     db = SessionLocal()
     try:
         from app.modules.auth.service import AuthService

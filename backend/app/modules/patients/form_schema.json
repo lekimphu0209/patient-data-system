@@ -1,0 +1,1163 @@
+{
+  "version": "2.0",
+  "description": "Định nghĩa form bệnh án nghiên cứu theo template F20 (Tâm thần phân liệt) và F32 (Trầm cảm). Node nào không có 'applies_to' thì áp dụng cho mọi loại bệnh.",
+  "diseases": [
+    {
+      "code": "f20",
+      "label": "Tâm thần phân liệt",
+      "aliases": ["schizophrenia", "tâm thần phân liệt", "phân liệt", "phan liet", "ttpl", "f20"]
+    },
+    {
+      "code": "f32",
+      "label": "Trầm cảm",
+      "aliases": ["depression", "trầm cảm", "tram cam", "f32"]
+    },
+    {
+      "code": "normal",
+      "label": "Bình thường",
+      "aliases": ["normal", "bình thường", "binh thuong"]
+    }
+  ],
+  "exam_table_columns": [
+    { "key": "exam_info.exam_date", "label": "Ngày khám", "kind": "date" },
+    { "key": "general", "label": "Toàn thân" },
+    { "key": "cardiovascular", "label": "Tuần hoàn" },
+    { "key": "respiratory", "label": "Hô hấp" },
+    { "key": "digestive", "label": "Tiêu hóa" },
+    { "key": "urinary", "label": "Tiết niệu" },
+    { "key": "neurological", "label": "Khám thần kinh" },
+    { "key": "other_body_parts", "label": "Bộ phận khác" },
+    { "key": "mental_exam", "label": "Khám tâm thần" },
+    { "key": "general_lab", "label": "Cận lâm sàng chung" },
+    { "key": "other_lab", "label": "Cận lâm sàng khác" },
+    { "key": "diagnosis", "label": "Chẩn đoán" },
+    { "key": "treatment", "label": "Điều trị" }
+  ],
+  "blocks": [
+    {
+      "id": "administrative",
+      "label": "THỦ TỤC HÀNH CHÍNH",
+      "part": "PHẦN 1",
+      "type": "block",
+      "children": [
+        {
+          "id": "patient_code",
+          "label": "Mã hồ sơ",
+          "type": "text",
+          "readonly": true,
+          "source": "patient.patient_code"
+        },
+        {
+          "id": "full_name",
+          "label": "Họ và tên",
+          "type": "text",
+          "required": true,
+          "source": "patient.full_name"
+        },
+        { "id": "age", "label": "Tuổi", "type": "number", "unit": "tuổi", "source": "patient.age" },
+        {
+          "id": "gender",
+          "label": "Giới",
+          "type": "radio",
+          "source": "patient.metadata.gender",
+          "options": [
+            { "value": "male", "label": "Nam" },
+            { "value": "female", "label": "Nữ" }
+          ]
+        },
+        {
+          "id": "hometown",
+          "label": "Quê quán (đơn vị)",
+          "type": "text",
+          "source": "patient.hometown"
+        },
+        {
+          "id": "admission_date",
+          "label": "Ngày vào viện",
+          "type": "date",
+          "source": "patient.metadata.admission_date"
+        },
+        {
+          "id": "ethnicity",
+          "label": "Dân tộc",
+          "type": "text",
+          "source": "patient.metadata.ethnicity"
+        },
+        {
+          "id": "education_level",
+          "label": "Trình độ học vấn",
+          "type": "radio",
+          "source": "patient.metadata.education_level",
+          "options": [
+            { "value": "illiterate", "label": "Mù chữ" },
+            { "value": "primary", "label": "Tiểu học" },
+            { "value": "secondary", "label": "THCS" },
+            { "value": "high_school", "label": "THPT" },
+            { "value": "higher", "label": "THCN, CĐ, ĐH, SĐH" }
+          ]
+        },
+        {
+          "id": "occupation",
+          "label": "Nghề nghiệp",
+          "type": "radio",
+          "source": "patient.metadata.occupation",
+          "options": [
+            { "value": "farmer", "label": "Nông dân" },
+            { "value": "worker", "label": "Công nhân" },
+            { "value": "officer", "label": "Viên chức" },
+            { "value": "student", "label": "HSSV" },
+            { "value": "soldier", "label": "Bộ Đội" },
+            { "value": "freelance", "label": "Tự do" }
+          ]
+        },
+        {
+          "id": "residence",
+          "label": "Nơi thường trú",
+          "type": "radio",
+          "source": "patient.metadata.residence",
+          "options": [
+            { "value": "urban", "label": "Thành thị" },
+            { "value": "rural", "label": "Nông thôn" },
+            { "value": "mountain", "label": "Miền núi" },
+            { "value": "coastal", "label": "Ven biển" }
+          ]
+        },
+        {
+          "id": "marital_status",
+          "label": "Tình trạng hôn nhân",
+          "type": "radio",
+          "source": "patient.metadata.marital_status",
+          "options": [
+            { "value": "married", "label": "Đã kết hôn" },
+            { "value": "single", "label": "Chưa kết hôn" },
+            { "value": "divorced", "label": "Ly hôn / ly thân" },
+            { "value": "widowed", "label": "Góa" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "medical_history",
+      "label": "HỎI BỆNH",
+      "part": "PHẦN 2",
+      "type": "block",
+      "applies_to": ["f20", "f32"],
+      "children": [
+        {
+          "id": "admission_reason",
+          "label": "Lý do vào viện",
+          "type": "group",
+          "children": [
+            {
+              "id": "psychotic_symptoms",
+              "label": "a. Triệu chứng loạn thần",
+              "type": "checkbox_group",
+              "applies_to": ["f20"],
+              "options": [
+                { "value": "hear_voices", "label": "Nghe có tiếng người nói trong đầu" },
+                { "value": "persecuted", "label": "Cho rằng có người làm hại, theo dõi hoặc đầu độc mình" },
+                { "value": "thought_broadcast", "label": "Cho rằng người khác biết hoặc chi phối suy nghĩ của mình" },
+                { "value": "controlled", "label": "Tin rằng có người điều khiển hành vi của mình" },
+                { "value": "other", "label": "Khác" }
+              ]
+            },
+            {
+              "id": "psychotic_symptoms_other",
+              "label": "Triệu chứng loạn thần khác (cụ thể)",
+              "type": "text",
+              "applies_to": ["f20"],
+              "show_if": { "field": "psychotic_symptoms", "includes": "other" }
+            },
+            {
+              "id": "behavior_disorder",
+              "label": "b. Rối loạn hành vi",
+              "type": "checkbox_group",
+              "applies_to": ["f20"],
+              "options": [
+                { "value": "bizarre", "label": "Có hành vi kỳ dị, khó hiểu" },
+                { "value": "agitated", "label": "Kích động, gây gổ hoặc phá phách" },
+                { "value": "wandering", "label": "Lang thang, bỏ nhà đi" },
+                { "value": "self_neglect", "label": "Giảm chăm sóc bản thân" },
+                { "value": "harm_others", "label": "Có hành vi gây hại cho người khác" },
+                { "value": "suicidal", "label": "Có ý tưởng hoặc hành vi tự sát" },
+                { "value": "other", "label": "Khác" }
+              ]
+            },
+            {
+              "id": "behavior_disorder_other",
+              "label": "Rối loạn hành vi khác (cụ thể)",
+              "type": "text",
+              "applies_to": ["f20"],
+              "show_if": { "field": "behavior_disorder", "includes": "other" }
+            },
+            {
+              "id": "depressive_reasons",
+              "label": "Lý do vào viện",
+              "type": "checkbox_group",
+              "applies_to": ["f32"],
+              "options": [
+                { "value": "sadness", "label": "Buồn chán bi quan quá mức" },
+                { "value": "fatigue", "label": "Mệt mỏi, mất năng lượng" },
+                { "value": "anhedonia", "label": "Giảm/mất hứng thú sở thích" },
+                { "value": "suicidal", "label": "Ý tưởng/hành vi tự sát" },
+                { "value": "food_refusal", "label": "Từ chối ăn" },
+                { "value": "severe_insomnia", "label": "Mất ngủ trầm trọng" },
+                { "value": "other", "label": "Khác" }
+              ]
+            },
+            {
+              "id": "depressive_reasons_other",
+              "label": "Lý do khác (cụ thể)",
+              "type": "text",
+              "applies_to": ["f32"],
+              "show_if": { "field": "depressive_reasons", "includes": "other" }
+            },
+            {
+              "id": "description",
+              "label": "Mô tả",
+              "type": "textarea",
+              "applies_to": ["f20"]
+            }
+          ]
+        },
+        {
+          "id": "disease_history",
+          "label": "Bệnh sử",
+          "type": "group",
+          "children": [
+            {
+              "id": "onset_time",
+              "label": "Thời gian khởi phát",
+              "type": "text",
+              "applies_to": ["f20"]
+            },
+            {
+              "id": "onset_age",
+              "label": "Tuổi khởi phát",
+              "type": "number",
+              "unit": "tuổi",
+              "applies_to": ["f32"]
+            },
+            {
+              "id": "duration_years",
+              "label": "Thời gian bị bệnh (năm)",
+              "type": "number",
+              "unit": "năm",
+              "applies_to": ["f32"]
+            },
+            {
+              "id": "duration_months",
+              "label": "Thời gian bị bệnh (tháng)",
+              "type": "number",
+              "unit": "tháng"
+            },
+            {
+              "id": "previous_diagnoses",
+              "label": "Chẩn đoán những lần trước đó",
+              "type": "checkbox_group",
+              "options": [
+                { "value": "depression", "label": "Trầm cảm" },
+                { "value": "mania", "label": "Hưng cảm" },
+                { "value": "schizophrenia", "label": "Tâm thần phân liệt" },
+                { "value": "other", "label": "Khác" }
+              ]
+            },
+            {
+              "id": "previous_diagnoses_other",
+              "label": "Chẩn đoán khác (cụ thể)",
+              "type": "text",
+              "show_if": { "field": "previous_diagnoses", "includes": "other" }
+            },
+            {
+              "id": "progression",
+              "label": "Tiến triển bệnh",
+              "type": "radio",
+              "options": [
+                { "value": "continuous", "label": "Liên tục" },
+                { "value": "episodic", "label": "Từng giai đoạn" }
+              ]
+            },
+            { "id": "relapse_count", "label": "Số lần tái phát bệnh", "type": "number", "unit": "lần" },
+            {
+              "id": "previous_inpatient_count",
+              "label": "Số lần điều trị nội trú trước đây",
+              "type": "number",
+              "unit": "lần"
+            },
+            {
+              "id": "medications_before",
+              "label": "Thuốc đã sử dụng trước vào viện",
+              "type": "radio",
+              "options": [
+                { "value": "none", "label": "Không dùng" },
+                { "value": "one", "label": "1 loại" },
+                { "value": "two", "label": "2 loại" },
+                { "value": "three_plus", "label": "≥ 3 loại" }
+              ]
+            },
+            {
+              "id": "medications_before_detail",
+              "label": "Thuốc đã dùng (cụ thể)",
+              "type": "textarea"
+            },
+            {
+              "id": "maintenance_treatment",
+              "label": "Tình trạng điều trị củng cố",
+              "type": "radio",
+              "options": [
+                { "value": "regular", "label": "Đều" },
+                { "value": "irregular", "label": "Không đều" },
+                { "value": "none", "label": "Không điều trị" }
+              ]
+            },
+            {
+              "id": "onset_circumstances",
+              "label": "Hoàn cảnh xuất hiện",
+              "type": "checkbox_group",
+              "options": [
+                { "value": "after_stress", "label": "Sau một căng thẳng tâm lý" },
+                { "value": "unknown", "label": "Không rõ" },
+                { "value": "after_illness", "label": "Sau một bệnh thực thể" }
+              ]
+            },
+            {
+              "id": "onset_circumstances_detail",
+              "label": "Hoàn cảnh xuất hiện (cụ thể)",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "id": "personal_development",
+          "label": "Tiền sử — Quá trình phát triển của bản thân",
+          "type": "group",
+          "children": [
+            {
+              "id": "pregnancy",
+              "label": "Thời kỳ mẹ mang thai",
+              "type": "radio",
+              "options": [
+                { "value": "normal", "label": "Bình thường" },
+                { "value": "abnormal", "label": "Bất thường" }
+              ]
+            },
+            {
+              "id": "birth_trauma",
+              "label": "Sang chấn sản khoa",
+              "type": "radio",
+              "options": [
+                { "value": "yes", "label": "Có" },
+                { "value": "no", "label": "Không" }
+              ]
+            },
+            {
+              "id": "peer_relationship",
+              "label": "Mối quan hệ với bạn bè",
+              "type": "radio",
+              "options": [
+                { "value": "open", "label": "Cởi mở" },
+                { "value": "withdrawn", "label": "Thu hẹp" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "personal_history",
+          "label": "Tiền sử bản thân",
+          "type": "group",
+          "children": [
+            {
+              "id": "conditions",
+              "label": "Tiền sử bản thân",
+              "type": "checkbox_group",
+              "options": [
+                { "value": "head_trauma", "label": "Chấn thương sọ não" },
+                { "value": "psych_trauma", "label": "Chấn thương tâm lý" },
+                { "value": "alcohol", "label": "Lạm dụng rượu" },
+                { "value": "drugs", "label": "Ma túy" },
+                { "value": "other_mental", "label": "Bệnh tâm thần khác" }
+              ]
+            },
+            {
+              "id": "other_mental_detail",
+              "label": "Bệnh tâm thần khác (cụ thể)",
+              "type": "text",
+              "show_if": { "field": "conditions", "includes": "other_mental" }
+            },
+            {
+              "id": "somatic_disease_detail",
+              "label": "Bệnh lý thực thể (cụ thể)",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "id": "family_history",
+          "label": "Tiền sử gia đình",
+          "type": "group",
+          "children": [
+            {
+              "id": "status",
+              "label": "Tiền sử gia đình",
+              "type": "radio",
+              "options": [
+                { "value": "none", "label": "Không mắc" },
+                { "value": "depression", "label": "Mắc Trầm cảm" },
+                { "value": "other_mental", "label": "Mắc RLTT khác" }
+              ]
+            },
+            {
+              "id": "other_detail",
+              "label": "RLTT khác (cụ thể)",
+              "type": "text",
+              "show_if": { "field": "status", "equals": "other_mental" }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "examination",
+      "label": "KHÁM BỆNH",
+      "part": "PHẦN 3 → PHẦN 7",
+      "type": "block",
+      "children": [
+        {
+          "id": "exam_info",
+          "label": "Thông tin lần khám",
+          "type": "group",
+          "children": [
+            { "id": "exam_date", "label": "Ngày khám", "type": "date", "required": true }
+          ]
+        },
+        {
+          "id": "general",
+          "label": "3.1. Toàn thân",
+          "type": "group",
+          "table_column": "Toàn thân",
+          "children": [
+            { "id": "body_condition", "label": "Thể trạng", "type": "text" },
+            { "id": "skin_mucosa", "label": "Da, niêm mạc", "type": "text" },
+            { "id": "weight", "label": "Cân nặng", "type": "number", "unit": "kg" },
+            { "id": "height", "label": "Chiều cao", "type": "number", "unit": "cm" },
+            { "id": "pulse", "label": "Mạch", "type": "number", "unit": "l/p" },
+            { "id": "temperature", "label": "Nhiệt độ", "type": "number", "unit": "°C" },
+            { "id": "blood_pressure", "label": "Huyết áp", "type": "text", "unit": "mmHg" }
+          ]
+        },
+        {
+          "id": "cardiovascular",
+          "label": "3.2. Tuần hoàn",
+          "type": "group",
+          "table_column": "Tuần hoàn",
+          "children": [{ "id": "finding", "label": "Tuần hoàn", "type": "textarea" }]
+        },
+        {
+          "id": "respiratory",
+          "label": "3.3. Hô hấp",
+          "type": "group",
+          "table_column": "Hô hấp",
+          "children": [{ "id": "finding", "label": "Hô hấp", "type": "textarea" }]
+        },
+        {
+          "id": "digestive",
+          "label": "3.4. Tiêu hóa",
+          "type": "group",
+          "table_column": "Tiêu hóa",
+          "children": [{ "id": "finding", "label": "Tiêu hóa", "type": "textarea" }]
+        },
+        {
+          "id": "urinary",
+          "label": "3.5. Tiết niệu",
+          "type": "group",
+          "table_column": "Tiết niệu",
+          "children": [{ "id": "finding", "label": "Tiết niệu", "type": "textarea" }]
+        },
+        {
+          "id": "neurological",
+          "label": "3.6. Khám thần kinh",
+          "type": "group",
+          "table_column": "Khám thần kinh",
+          "children": [{ "id": "finding", "label": "Khám thần kinh", "type": "textarea" }]
+        },
+        {
+          "id": "other_body_parts",
+          "label": "3.7. Các bộ phận khác",
+          "type": "group",
+          "table_column": "Bộ phận khác",
+          "children": [{ "id": "finding", "label": "Các bộ phận khác", "type": "textarea" }]
+        },
+
+        {
+          "id": "mental_exam",
+          "label": "3.8. KHÁM TÂM THẦN",
+          "type": "group",
+          "table_column": "Khám tâm thần",
+          "applies_to": ["f20", "f32"],
+          "children": [
+            {
+              "id": "general_observation",
+              "label": "3.8.1. Quan sát chung",
+              "type": "group",
+              "children": [
+                {
+                  "id": "contact",
+                  "label": "Tiếp xúc",
+                  "type": "radio",
+                  "options": [
+                    { "value": "cooperative", "label": "Hợp tác" },
+                    { "value": "uncooperative", "label": "Không hợp tác" },
+                    { "value": "limited", "label": "Hợp tác hạn chế" }
+                  ]
+                },
+                {
+                  "id": "attitude",
+                  "label": "Thái độ",
+                  "type": "checkbox_group",
+                  "options": [
+                    { "value": "natural", "label": "Tự nhiên" },
+                    { "value": "indifferent", "label": "Thờ ơ" },
+                    { "value": "avoidant", "label": "Né tránh" },
+                    { "value": "tense", "label": "Căng thẳng" },
+                    { "value": "oppositional", "label": "Chống đối" }
+                  ]
+                },
+                {
+                  "id": "hygiene",
+                  "label": "Vệ sinh, trang phục",
+                  "type": "checkbox_group",
+                  "options": [
+                    { "value": "tidy", "label": "Gọn gàng, sạch sẽ" },
+                    { "value": "untidy", "label": "Lôi thôi, bẩn thỉu" },
+                    { "value": "weather_inappropriate", "label": "Không phù hợp thời tiết", "applies_to": ["f20"] },
+                    { "value": "bizarre", "label": "Kỳ dị", "applies_to": ["f20"] }
+                  ]
+                },
+                {
+                  "id": "facial_expression",
+                  "label": "Nét mặt",
+                  "type": "checkbox_group",
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "sad", "label": "Buồn rầu" },
+                    { "value": "anxious", "label": "Lo âu" },
+                    { "value": "tense", "label": "Căng thẳng" },
+                    { "value": "apathetic", "label": "Vô cảm" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "consciousness",
+              "label": "3.8.2. Ý thức",
+              "type": "group",
+              "children": [
+                {
+                  "id": "orientation",
+                  "label": "Định hướng",
+                  "type": "matrix",
+                  "columns": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "disordered", "label": "Rối loạn" }
+                  ],
+                  "rows": [
+                    { "id": "space", "label": "Định hướng không gian" },
+                    { "id": "time", "label": "Định hướng thời gian" },
+                    { "id": "self", "label": "Định hướng bản thân" },
+                    { "id": "surroundings", "label": "Định hướng xung quanh" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "emotion",
+              "label": "3.8.3. Cảm xúc – tình cảm",
+              "type": "group",
+              "children": [
+                {
+                  "id": "mood",
+                  "label": "Khí sắc",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "decreased", "label": "Giảm" },
+                    { "value": "increased", "label": "Tăng" },
+                    { "value": "irritable", "label": "Kích thích" }
+                  ]
+                },
+                {
+                  "id": "affect",
+                  "label": "Cảm xúc",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "appropriate", "label": "Phù hợp" },
+                    { "value": "inappropriate", "label": "Không phù hợp" },
+                    { "value": "blunted", "label": "Cùn mòn" },
+                    { "value": "apathetic", "label": "Vô cảm" },
+                    { "value": "labile", "label": "Dễ xúc động" },
+                    { "value": "unstable", "label": "Không ổn định" }
+                  ]
+                },
+                {
+                  "id": "negative_symptoms",
+                  "label": "Triệu chứng âm tính",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "reduced_expression", "label": "Giảm biểu lộ cảm xúc" },
+                    { "value": "reduced_response", "label": "Giảm đáp ứng cảm xúc" },
+                    { "value": "reduced_communication", "label": "Giảm giao tiếp" },
+                    { "value": "social_withdrawal", "label": "Thu mình xã hội" }
+                  ]
+                },
+                {
+                  "id": "symptoms",
+                  "label": "Triệu chứng cảm xúc",
+                  "type": "matrix",
+                  "applies_to": ["f32"],
+                  "columns": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ],
+                  "rows": [
+                    { "id": "depressed_mood", "label": "Khí sắc giảm" },
+                    { "id": "tension_fear", "label": "Căng thẳng, sợ sệt" },
+                    { "id": "anhedonia", "label": "Giảm hoặc mất các hứng thú, sở thích" },
+                    { "id": "sadness", "label": "Cảm giác buồn chán" },
+                    { "id": "loss_of_energy", "label": "Giảm và mất nghị lực" },
+                    { "id": "irritable", "label": "Dễ bị kích thích" },
+                    { "id": "pessimism", "label": "Tâm trạng bi quan, mất tự tin" },
+                    { "id": "emotional_lability", "label": "Tâm trạng dễ xúc động" },
+                    { "id": "unstable_emotion", "label": "Cảm xúc không ổn định" },
+                    { "id": "worthlessness", "label": "Cảm giác vô dụng" },
+                    { "id": "suicidal_ideation", "label": "Ý tưởng tự sát" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "perception",
+              "label": "3.8.4. Cảm giác - tri giác",
+              "type": "group",
+              "children": [
+                {
+                  "id": "hallucinations",
+                  "label": "Ảo giác",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "none", "label": "Không có" },
+                    { "value": "true_auditory", "label": "Ảo thanh thật" },
+                    { "value": "pseudo_auditory", "label": "Ảo thanh giả" },
+                    { "value": "commenting", "label": "Bình phẩm" },
+                    { "value": "conversing", "label": "Đàm thoại" },
+                    { "value": "commanding", "label": "Ra lệnh" },
+                    { "value": "visual", "label": "Ảo thị" },
+                    { "value": "tactile", "label": "Ảo xúc giác" },
+                    { "value": "olfactory", "label": "Ảo khứu" },
+                    { "value": "gustatory", "label": "Ảo vị" },
+                    { "value": "other", "label": "Khác" }
+                  ]
+                },
+                {
+                  "id": "hallucinations_other",
+                  "label": "Ảo giác khác (cụ thể)",
+                  "type": "text",
+                  "applies_to": ["f20"],
+                  "show_if": { "field": "hallucinations", "includes": "other" }
+                },
+                {
+                  "id": "other_perception",
+                  "label": "Rối loạn tri giác khác",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "depersonalization", "label": "Giải thể nhân cách" },
+                    { "value": "derealization", "label": "Tri giác sai thực tại" },
+                    { "value": "other", "label": "Khác" }
+                  ]
+                },
+                {
+                  "id": "other_perception_detail",
+                  "label": "Rối loạn tri giác khác (cụ thể)",
+                  "type": "text",
+                  "applies_to": ["f20"],
+                  "show_if": { "field": "other_perception", "includes": "other" }
+                },
+                {
+                  "id": "symptoms",
+                  "label": "Triệu chứng cảm giác - tri giác",
+                  "type": "matrix",
+                  "applies_to": ["f32"],
+                  "columns": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ],
+                  "rows": [
+                    { "id": "crude_hallucination", "label": "Ảo giác thô sơ" },
+                    { "id": "tactile", "label": "Ảo xúc giác" },
+                    { "id": "true_auditory", "label": "Ảo thanh thật" },
+                    { "id": "depersonalization", "label": "Giải thể nhân cách" },
+                    { "id": "pseudo_auditory", "label": "Ảo thanh giả" },
+                    { "id": "derealization", "label": "Tri giác sai thực tại" },
+                    { "id": "visual", "label": "Ảo thị giác" },
+                    { "id": "other", "label": "Ảo giác khác" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "thought",
+              "label": "3.8.5. Các biểu hiện rối loạn tư duy",
+              "type": "group",
+              "children": [
+                {
+                  "id": "form",
+                  "label": "a. Hình thức tư duy",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "loose", "label": "Tư duy rời rạc" },
+                    { "value": "irrelevant", "label": "Tư duy không liên quan" },
+                    { "value": "illogical", "label": "Tư duy phi logic" },
+                    { "value": "tangential", "label": "Tư duy tiếp tuyến" },
+                    { "value": "blocking", "label": "Tư duy ngắt quãng" },
+                    { "value": "circumstantial", "label": "Tư duy lai nhai" },
+                    { "value": "flight", "label": "Tư duy dồn dập" },
+                    { "value": "neologism", "label": "Ngôn ngữ bịa mới" }
+                  ]
+                },
+                {
+                  "id": "content",
+                  "label": "b. Nội dung tư duy",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "persecution", "label": "Hoang tưởng bị hại" },
+                    { "value": "reference", "label": "Hoang tưởng liên hệ" },
+                    { "value": "surveillance", "label": "Hoang tưởng bị theo dõi" },
+                    { "value": "control", "label": "Hoang tưởng bị chi phối" },
+                    { "value": "bizarre", "label": "Hoang tưởng kỳ quái" },
+                    { "value": "other", "label": "Khác" }
+                  ]
+                },
+                {
+                  "id": "content_other",
+                  "label": "Nội dung tư duy khác (cụ thể)",
+                  "type": "text",
+                  "applies_to": ["f20"],
+                  "show_if": { "field": "content", "includes": "other" }
+                },
+                {
+                  "id": "obsession",
+                  "label": "Ám ảnh",
+                  "type": "radio",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ]
+                },
+                {
+                  "id": "form_normal",
+                  "label": "a. Hình thức tư duy",
+                  "type": "checkbox_group",
+                  "applies_to": ["f32"],
+                  "options": [{ "value": "normal", "label": "Bình thường" }]
+                },
+                {
+                  "id": "form_symptoms",
+                  "label": "Rối loạn hình thức tư duy",
+                  "type": "matrix",
+                  "applies_to": ["f32"],
+                  "columns": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ],
+                  "rows": [
+                    { "id": "slow_thinking", "label": "Suy nghĩ chậm chạp, ít nói" },
+                    { "id": "poor_communication", "label": "Quan hệ giao tiếp nghèo nàn" },
+                    { "id": "talkative", "label": "Nói nhiều" },
+                    { "id": "thought_blocking", "label": "Tư duy gián đoạn" },
+                    { "id": "mutism", "label": "Không nói" }
+                  ]
+                },
+                {
+                  "id": "content_symptoms",
+                  "label": "b. Nội dung tư duy",
+                  "type": "matrix",
+                  "applies_to": ["f32"],
+                  "columns": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ],
+                  "rows": [
+                    { "id": "illness_phobia", "label": "Ám ảnh sợ bị bệnh nặng" },
+                    { "id": "surveillance_delusion", "label": "Hoang tưởng bị theo dõi" },
+                    { "id": "agoraphobia", "label": "Ám ảnh sợ khoảng trống" },
+                    { "id": "inferiority", "label": "Ý nghĩ yếu đuối, tự ti, hèn kém" },
+                    { "id": "ochlophobia", "label": "Ám ảnh sợ đám đông" },
+                    { "id": "guilt_delusion", "label": "Hoang tưởng tự buộc tội" },
+                    { "id": "hypochondriacal_delusion", "label": "Hoang tưởng nghi bệnh" },
+                    { "id": "reference_delusion", "label": "Hoang tưởng liên hệ" },
+                    { "id": "persecution_delusion", "label": "Hoang tưởng bị hại" },
+                    { "id": "other_delusion", "label": "Hoang tưởng khác" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "anxiety",
+              "label": "3.8.6. Các biểu hiện rối loạn lo âu",
+              "type": "group",
+              "applies_to": ["f32"],
+              "children": [
+                {
+                  "id": "symptoms",
+                  "label": "Triệu chứng lo âu",
+                  "type": "matrix",
+                  "columns": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ],
+                  "rows": [
+                    { "id": "incurable_worry", "label": "Lo lắng bệnh không chữa khỏi" },
+                    { "id": "future_worry", "label": "Lo lắng về tương lai của bệnh nhân" },
+                    { "id": "panic", "label": "Cơn hoảng sợ" },
+                    { "id": "mood_swing", "label": "Tâm trạng thất thường" },
+                    { "id": "other", "label": "Khác" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "attention",
+              "label": "3.8.7. Chú ý",
+              "type": "group",
+              "children": [
+                {
+                  "id": "state",
+                  "label": "Chú ý",
+                  "type": "checkbox_group",
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "poor_concentration", "label": "Giảm khả năng tập trung" },
+                    { "value": "distractible", "label": "Dễ bị phân tán" },
+                    { "value": "hard_sustain", "label": "Khó duy trì chú ý" },
+                    { "value": "hyperattention", "label": "Tăng chú ý" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "memory",
+              "label": "3.8.8. Trí nhớ",
+              "type": "group",
+              "children": [
+                {
+                  "id": "immediate",
+                  "label": "a. Trí nhớ tức thì",
+                  "type": "radio",
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "decreased", "label": "Giảm" }
+                  ]
+                },
+                {
+                  "id": "recent",
+                  "label": "b. Trí nhớ gần",
+                  "type": "radio",
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "decreased", "label": "Giảm" }
+                  ]
+                },
+                {
+                  "id": "remote",
+                  "label": "c. Trí nhớ xa",
+                  "type": "radio",
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "decreased", "label": "Giảm" }
+                  ]
+                },
+                {
+                  "id": "disorder",
+                  "label": "d. Rối loạn trí nhớ",
+                  "type": "checkbox_group",
+                  "options": [
+                    { "value": "none", "label": "Không" },
+                    { "value": "anterograde", "label": "Quên thuận chiều" },
+                    { "value": "retrograde", "label": "Quên ngược chiều" },
+                    { "value": "global", "label": "Mất nhớ toàn bộ" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "intelligence",
+              "label": "3.8.9. Trí tuệ",
+              "type": "group",
+              "children": [
+                {
+                  "id": "level",
+                  "label": "Trí tuệ",
+                  "type": "radio",
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "retardation", "label": "Chậm phát triển trí tuệ" },
+                    { "value": "dementia", "label": "Sa sút trí tuệ" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea" }
+              ]
+            },
+            {
+              "id": "somatic",
+              "label": "3.8.10. Các biểu hiện về cơ thể",
+              "type": "group",
+              "applies_to": ["f32"],
+              "children": [
+                {
+                  "id": "symptoms",
+                  "label": "Triệu chứng cơ thể",
+                  "type": "matrix",
+                  "columns": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ],
+                  "rows": [
+                    { "id": "insomnia", "label": "Mất ngủ" },
+                    { "id": "sweating", "label": "Ra nhiều mồ hôi" },
+                    { "id": "hypersomnia", "label": "Ngủ nhiều" },
+                    { "id": "headache", "label": "Đau đầu" },
+                    { "id": "diffuse_pain", "label": "Đau không rõ vị trí" },
+                    { "id": "fatigue", "label": "Mệt mỏi, đuối sức" },
+                    { "id": "anorexia", "label": "Chán ăn" },
+                    { "id": "hyperphagia", "label": "Ăn nhiều" },
+                    { "id": "weight_loss", "label": "Gầy sút cân" },
+                    { "id": "digestive_disorder", "label": "Rối loạn tiêu hóa" },
+                    { "id": "palpitations", "label": "Hồi hộp, đánh trống ngực" }
+                  ]
+                },
+                {
+                  "id": "sexual_disorder",
+                  "label": "Rối loạn tình dục",
+                  "type": "radio",
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "increased", "label": "Tăng" },
+                    { "value": "decreased", "label": "Giảm" }
+                  ]
+                },
+                {
+                  "id": "menstrual_disorder",
+                  "label": "Rối loạn kinh nguyệt",
+                  "type": "radio",
+                  "options": [
+                    { "value": "amenorrhea", "label": "Mất kinh" },
+                    { "value": "irregular", "label": "Không đều" },
+                    { "value": "regular", "label": "Đều" }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "behavior",
+              "label": "3.8.11. Hành vi – tác phong",
+              "type": "group",
+              "children": [
+                {
+                  "id": "psychomotor",
+                  "label": "a. Hoạt động tâm thần vận động",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "agitation", "label": "Kích động" },
+                    { "value": "hypokinesia", "label": "Giảm vận động" },
+                    { "value": "stupor", "label": "Bất động" },
+                    { "value": "catatonia", "label": "Căng trương lực" },
+                    { "value": "stereotypy", "label": "Định hình" },
+                    { "value": "negativism", "label": "Phủ định" },
+                    { "value": "posturing", "label": "Giữ nguyên tư thế" }
+                  ]
+                },
+                {
+                  "id": "acts",
+                  "label": "b. Hành vi",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "laughing_alone", "label": "Cười nói một mình" },
+                    { "value": "talking_alone", "label": "Nói một mình" },
+                    { "value": "withdrawn", "label": "Thu mình" },
+                    { "value": "wandering", "label": "Lang thang" },
+                    { "value": "aggression", "label": "Gây hấn" },
+                    { "value": "destructive", "label": "Phá phách" },
+                    { "value": "bizarre", "label": "Hành vi kỳ dị" },
+                    { "value": "poor_selfcare", "label": "Tự chăm sóc kém" },
+                    { "value": "self_harm", "label": "Hành vi tự huỷ hoại" },
+                    { "value": "suicide", "label": "Hành vi tự sát" }
+                  ]
+                },
+                {
+                  "id": "sleep",
+                  "label": "c. Giấc ngủ",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "initial_insomnia", "label": "Mất ngủ đầu giấc" },
+                    { "value": "middle_insomnia", "label": "Mất ngủ giữa giấc" },
+                    { "value": "late_insomnia", "label": "Mất ngủ cuối giấc" },
+                    { "value": "total_insomnia", "label": "Mất ngủ toàn bộ" },
+                    { "value": "hypersomnia", "label": "Ngủ nhiều" }
+                  ]
+                },
+                {
+                  "id": "eating",
+                  "label": "d. Ăn uống",
+                  "type": "checkbox_group",
+                  "applies_to": ["f20"],
+                  "options": [
+                    { "value": "normal", "label": "Bình thường" },
+                    { "value": "anorexia", "label": "Chán ăn" },
+                    { "value": "hyperphagia", "label": "Ăn nhiều" },
+                    { "value": "refusal", "label": "Từ chối ăn" }
+                  ]
+                },
+                {
+                  "id": "symptoms",
+                  "label": "Hành vi – tác phong",
+                  "type": "matrix",
+                  "applies_to": ["f32"],
+                  "columns": [
+                    { "value": "yes", "label": "Có" },
+                    { "value": "no", "label": "Không" }
+                  ],
+                  "rows": [
+                    { "id": "hypokinesia", "label": "Giảm vận động, nằm nhiều" },
+                    { "id": "restlessness", "label": "Bồn chồn đứng, đi lại nhiều" },
+                    { "id": "stupor", "label": "Bất động" },
+                    { "id": "agitation", "label": "Kích động" },
+                    { "id": "food_refusal", "label": "Từ chối ăn" },
+                    { "id": "social_avoidance", "label": "Né tránh các hoạt động xã hội" },
+                    { "id": "suicidal_impulse", "label": "Xung động tự sát" },
+                    { "id": "other", "label": "Hành vi khác" }
+                  ]
+                },
+                {
+                  "id": "suicide_methods",
+                  "label": "Hành vi tự sát",
+                  "type": "checkbox_group",
+                  "applies_to": ["f32"],
+                  "options": [
+                    { "value": "wrist_cutting", "label": "Cắt mạch máu" },
+                    { "value": "hanging", "label": "Thắt cổ" },
+                    { "value": "jumping", "label": "Nhảy lầu" },
+                    { "value": "overdose", "label": "Uống thuốc" },
+                    { "value": "biting_head_banging", "label": "Cắn lưỡi, đập đầu" },
+                    { "value": "well_jumping", "label": "Nhảy xuống giếng" },
+                    { "value": "pesticide", "label": "Uống thuốc diệt cỏ, trừ sâu" }
+                  ]
+                },
+                { "id": "description", "label": "Mô tả", "type": "textarea", "applies_to": ["f20"] }
+              ]
+            }
+          ]
+        },
+
+        {
+          "id": "general_lab",
+          "label": "PHẦN 4. CẬN LÂM SÀNG CHUNG",
+          "type": "group",
+          "table_column": "Cận lâm sàng chung",
+          "children": [
+            {
+              "id": "blood_count",
+              "label": "4.1. Xét nghiệm công thức máu",
+              "type": "group",
+              "children": [
+                { "id": "rbc", "label": "Hồng cầu", "type": "number", "unit": "T/L" },
+                { "id": "hgb", "label": "Huyết sắc tố", "type": "number", "unit": "g/l" },
+                { "id": "wbc", "label": "Bạch cầu", "type": "number", "unit": "G/L" },
+                { "id": "neutrophil", "label": "Bạch cầu N", "type": "number", "unit": "%" },
+                { "id": "lymphocyte", "label": "Bạch cầu L", "type": "number", "unit": "%" },
+                { "id": "monocyte", "label": "Bạch cầu M", "type": "number", "unit": "%" }
+              ]
+            },
+            {
+              "id": "biochemistry",
+              "label": "4.2. Xét nghiệm sinh hóa máu",
+              "type": "group",
+              "children": [
+                { "id": "glucose", "label": "Glucose", "type": "number", "unit": "mmol/l" },
+                { "id": "ure", "label": "Ure", "type": "number", "unit": "mmol/l" },
+                { "id": "creatinin", "label": "Creatinin", "type": "number", "unit": "µmol/l" },
+                { "id": "sgot", "label": "SGOT", "type": "number", "unit": "u/l" },
+                { "id": "sgpt", "label": "SGPT", "type": "number", "unit": "u/l" },
+                { "id": "sggt", "label": "SGGT", "type": "number", "unit": "u/l" }
+              ]
+            },
+            { "id": "ecg", "label": "4.3. Điện tim", "type": "textarea" },
+            { "id": "eeg", "label": "4.4. Điện não", "type": "textarea" },
+            { "id": "ct_mri", "label": "4.5. CLVT sọ não (hoặc MRI)", "type": "textarea" }
+          ]
+        },
+        {
+          "id": "other_lab",
+          "label": "PHẦN 5. CÁC KẾT QUẢ CẬN LÂM SÀNG KHÁC",
+          "type": "group",
+          "table_column": "Cận lâm sàng khác",
+          "children": [
+            { "id": "eeg_result", "label": "Điện não đồ", "type": "textarea" },
+            { "id": "dermatoglyphics", "label": "Da vân tay", "type": "textarea" },
+            { "id": "eye_tracking", "label": "Eye – tracking", "type": "textarea" },
+            { "id": "gene", "label": "Gen", "type": "textarea" },
+            { "id": "neurotransmitter", "label": "Chất dẫn truyền thần kinh", "type": "textarea" },
+            { "id": "other", "label": "Khác", "type": "textarea" }
+          ]
+        },
+        {
+          "id": "diagnosis",
+          "label": "PHẦN 6. CHẨN ĐOÁN",
+          "type": "group",
+          "table_column": "Chẩn đoán",
+          "children": [
+            { "id": "definitive", "label": "6.1. Chẩn đoán xác định", "type": "textarea" },
+            { "id": "differential", "label": "6.2. Chẩn đoán phân biệt", "type": "textarea" }
+          ]
+        },
+        {
+          "id": "treatment",
+          "label": "PHẦN 7. ĐIỀU TRỊ",
+          "type": "group",
+          "table_column": "Điều trị",
+          "children": [
+            { "id": "medications", "label": "7.1. Loại thuốc/liều lượng thuốc", "type": "textarea" },
+            {
+              "id": "inpatient_days",
+              "label": "7.2. Thời gian điều trị nội trú",
+              "type": "number",
+              "unit": "ngày"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

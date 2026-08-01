@@ -11,6 +11,8 @@ interface PaginationProps {
   totalPages: number
   onPageChange: (page: number) => void
   onLimitChange: (limit: number) => void
+  /** Danh từ đếm trong dòng tóm tắt — bảng lần khám dùng "lần khám". */
+  unit?: string
 }
 
 const ELLIPSIS = 'ellipsis'
@@ -52,6 +54,7 @@ export function Pagination({
   totalPages,
   onPageChange,
   onLimitChange,
+  unit = 'bệnh nhân',
 }: PaginationProps) {
   const from = total === 0 ? 0 : (page - 1) * limit + 1
   const to = Math.min(page * limit, total)
@@ -62,7 +65,7 @@ export function Pagination({
       <p className="text-sm text-slate-500">
         Hiển thị <span className="font-medium text-slate-900">{from}</span>–
         <span className="font-medium text-slate-900">{to}</span> trong{' '}
-        <span className="font-medium text-slate-900">{total}</span> bệnh nhân
+        <span className="font-medium text-slate-900">{total}</span> {unit}
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
