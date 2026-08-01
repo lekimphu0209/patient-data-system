@@ -223,6 +223,41 @@ export async function listExaminations(
   return response.data
 }
 
+// ==================== Biểu đồ diễn biến chỉ số ====================
+// Backend dựng sẵn chuỗi số liệu từ form schema và trả về dạng gọn, thay vì để
+// client tải toàn bộ bản ghi lần khám (nặng gấp nhiều lần) rồi tự bới ra số.
+
+export interface ApiMetricPoint {
+  exam_id: number
+  /** Ngày khám dạng YYYY-MM-DD. */
+  date: string
+  value: number
+}
+
+export interface ApiMetricSeries {
+  key: string
+  label: string
+  unit: string | null
+  group_key: string
+  group_label: string
+  points: ApiMetricPoint[]
+}
+
+export interface ExaminationMetrics {
+  /** Tổng số lần khám của bệnh nhân, kể cả lần khám không có chỉ số nào. */
+  exam_count: number
+  /** True khi hồ sơ quá dài và các lần khám cũ nhất đã bị cắt. */
+  truncated: boolean
+  series: ApiMetricSeries[]
+}
+
+export async function getExaminationMetrics(patientId: number): Promise<ExaminationMetrics> {
+  const response = await api.get<{ data: ExaminationMetrics }>(
+    `/patients/${patientId}/exams/metrics`
+  )
+  return response.data.data
+}
+
 export async function getExamination(patientId: number, examId: number) {
   const response = await api.get(`/patients/${patientId}/exams/${examId}`)
   return response.data

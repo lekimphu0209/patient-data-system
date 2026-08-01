@@ -17,6 +17,7 @@ import {
   ExaminationsSection,
   MedicalHistorySection,
 } from '@/features/patients/components/PatientDetailSections'
+import { ExamMetricsSection } from '@/features/patients/components/ExamMetricsSection'
 import { DynamicForm } from '@/features/patients/components/DynamicForm'
 import { requireAuth } from '@/lib/auth-guard'
 import { errorMessage } from '@/lib/utils'
@@ -231,6 +232,9 @@ function PatientDetailPage() {
             })
           }
         />
+
+        {/* Diễn biến các chỉ số dạng số theo trục thời gian khám */}
+        <ExamMetricsSection patientId={patientId} />
       </div>
     </AppShell>
   )

@@ -22,6 +22,7 @@ from app.modules.patients.schemas import (
     PatientResponse,
     PatientUpdate,
     ExaminationCreate,
+    ExaminationMetricsResponse,
     ExaminationResponse,
     ExaminationUpdate,
     MedicalHistoryCreate,
@@ -31,6 +32,7 @@ from app.modules.patients.schemas import (
 from app.modules.patients.service import PatientService, ExaminationService, MedicalHistoryService
 from app.modules.patients.form_service import FormService
 from app.modules.patients.export_service import ExaminationExportService
+from app.modules.patients.metrics_service import ExaminationMetricsService
 from app.shared.responses import ApiResponse, PaginatedResponse, PaginationMeta
 
 router = APIRouter()
@@ -256,6 +258,23 @@ def export_examinations(
         media_type=XLSX_MEDIA_TYPE,
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@router.get(
+    "/{patient_id}/exams/metrics", response_model=ApiResponse[ExaminationMetricsResponse]
+)
+def get_examination_metrics(
+    patient_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Chuỗi số liệu của các chỉ số dạng số theo trục thời gian khám.
+
+    Chỉ trả về những chỉ số bệnh nhân thật sự có dữ liệu, dạng gọn (nhãn + đơn vị
+    + các cặp ngày/giá trị) để client vẽ biểu đồ mà không phải tải toàn bộ bản
+    ghi lần khám.
+    """
+    return ApiResponse(data=ExaminationMetricsService(db).build_series(patient_id))
 
 
 @router.get("/{patient_id}/exams/latest", response_model=ApiResponse[ExaminationResponse | None])

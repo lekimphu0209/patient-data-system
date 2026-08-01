@@ -3,6 +3,7 @@ import { AlertCircle, Download, Edit2, Eye, FileText, ScanLine, Trash2 } from 'l
 import { useEffect, useState } from 'react'
 
 import { Badge, Button, Card, Loading } from '@/components/ui'
+import { EXAM_PAGE_SIZE_OPTIONS } from '@/constants'
 import { errorMessage } from '@/lib/utils'
 import {
   deleteExamination,
@@ -346,6 +347,7 @@ export function ExaminationsSection({
             total={total}
             totalPages={totalPages}
             unit="lần khám"
+            sizeOptions={EXAM_PAGE_SIZE_OPTIONS}
             onPageChange={setPage}
             onLimitChange={(next) => {
               setLimit(next)

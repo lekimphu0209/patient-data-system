@@ -11,6 +11,17 @@ export const PAGE_SIZE_OPTIONS: { value: string; label: string }[] = [
   { value: '100', label: '100 / trang' },
 ]
 
+/**
+ * Bảng khám bệnh dùng bậc nhỏ hơn: mỗi dòng là một lần khám với nhiều ô chữ dài,
+ * nên 100 dòng một trang vừa khó đọc vừa nặng.
+ */
+export const EXAM_PAGE_SIZE_OPTIONS: { value: string; label: string }[] = [
+  { value: '5', label: '5 / trang' },
+  { value: '10', label: '10 / trang' },
+  { value: '20', label: '20 / trang' },
+  { value: '50', label: '50 / trang' },
+]
+
 export const ALLOWED_PAGE_SIZES = [10, 20, 50, 100]
 
 export const GENDER_OPTIONS: { value: string; label: string }[] = [

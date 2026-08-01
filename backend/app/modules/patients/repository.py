@@ -175,6 +175,26 @@ class ExaminationRepository:
         )
         return items, total
 
+    def count_by_patient(self, patient_id: int) -> int:
+        return (
+            self.db.query(Examination).filter(Examination.patient_id == patient_id).count()
+        )
+
+    def get_metric_rows_by_patient(self, patient_id: int, limit: int):
+        """Chỉ 3 cột cần cho biểu đồ diễn biến, sắp xếp tăng dần theo thời gian.
+
+        Khi hồ sơ vượt trần thì lấy các lần khám *mới nhất* rồi mới đảo lại thứ
+        tự — phần đáng cắt của một hồ sơ quá dài là các lần khám cũ.
+        """
+        rows = (
+            self.db.query(Examination.id, Examination.exam_date, Examination.data)
+            .filter(Examination.patient_id == patient_id)
+            .order_by(Examination.exam_date.desc(), Examination.id.desc())
+            .limit(limit)
+            .all()
+        )
+        return [(row.id, row.exam_date, row.data) for row in reversed(rows)]
+
     def get_latest_by_patient(self, patient_id: int) -> Examination | None:
         return (
             self.db.query(Examination)
