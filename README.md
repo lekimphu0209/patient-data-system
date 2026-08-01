@@ -16,8 +16,12 @@ patient-data-system/
 │   ├── app/
 │   │   ├── core/          # config, database, security, dependencies
 │   │   ├── modules/       # auth, patients, documents, import_export
+│   │   │   └── patients/
+│   │   │       └── form_schema.json   # Định nghĩa biểu mẫu bệnh án (xem bên dưới)
 │   │   └── main.py        # entry point
 │   ├── migrations/        # Alembic migrations
+│   ├── scripts/           # Sinh & nạp dữ liệu mẫu
+│   │   └── mock_data/     # CSV dữ liệu mẫu
 │   └── tests/             # unit test cơ bản
 ├── frontend/              # Giao diện React
 │   └── src/
@@ -80,6 +84,88 @@ DEFAULT_USER_EMAIL=doctor@example.com
 DEFAULT_USER_PASSWORD=password123
 ```
 
+## Biểu mẫu bệnh án (form động)
+
+Toàn bộ cấu trúc bệnh án nằm ở một chỗ duy nhất:
+`backend/app/modules/patients/form_schema.json`, dựng theo hai template
+`docs/F20. BỆNH ÁN NC BỆNH TTPL.docx` và `docs/F32, BỆNH ÁN NC TRẦM CẢM.docx`.
+
+- **Phân cấp**: `blocks → groups → subgroups → fields`, tương ứng 3 khối trên giao
+  diện: `administrative` (PHẦN 1), `medical_history` (PHẦN 2), `examination`
+  (PHẦN 3 → PHẦN 7).
+- **Kiểu nhập**: `text`, `textarea`, `number` (kèm `unit`), `date`, `radio`,
+  `checkbox_group`, `matrix` (bảng Có/Không, bảng Ý thức).
+- **Chung / riêng theo bệnh**: node không khai `applies_to` thì áp dụng cho mọi
+  loại bệnh; khai `applies_to: ["f20"]` thì chỉ hiện với Tâm thần phân liệt.
+  Áp dụng được xuống tận từng option.
+- **Điều kiện hiển thị**: `show_if` — ví dụ ô "Cụ thể…" chỉ hiện khi đã tick "Khác".
+
+Frontend không hard-code field nào, chỉ gọi `GET /api/v1/patients/{id}/form-schema`
+rồi render. **Muốn thêm/bớt mục trong bệnh án thì sửa file JSON này, không cần
+đụng vào code frontend.**
+
+Mã bệnh: `f20` (Tâm thần phân liệt), `f32` (Trầm cảm), `normal` (Bình thường —
+không có khối hỏi bệnh và khám tâm thần). Hệ thống tự suy ra từ chẩn đoán của
+bệnh nhân qua danh sách `aliases` trong JSON.
+
+## Dữ liệu mẫu (mock data)
+
+Có sẵn 20 bệnh nhân (10 Tâm thần phân liệt + 8 Trầm cảm + 2 Bình thường), mỗi
+người 10 lần khám với dữ liệu đầy đủ mọi trường trong template.
+
+### Nạp vào database
+
+```bash
+docker compose exec backend python scripts/load_mock_data.py
+```
+
+Lệnh này chạy lại được nhiều lần: bệnh nhân trùng mã hồ sơ sẽ được cập nhật chứ
+không nhân bản. Muốn xoá hẳn rồi nạp lại từ đầu:
+
+```bash
+docker compose exec backend python scripts/load_mock_data.py --replace
+```
+
+Chạy ngoài Docker (cần `DATABASE_URL` trỏ đúng database):
+
+```bash
+cd backend && python scripts/load_mock_data.py
+```
+
+### Sinh lại bộ dữ liệu khác
+
+```bash
+docker compose exec backend python scripts/generate_mock_csv.py
+```
+
+Script đọc `form_schema.json` nên dữ liệu sinh ra luôn khớp template hiện tại —
+thêm trường mới vào JSON thì chạy lại là có ngay dữ liệu cho trường đó. Đổi hằng
+`SEED` trong `scripts/generate_mock_csv.py` để ra bộ khác, `EXAMS_PER_PATIENT` để
+đổi số lần khám mỗi bệnh nhân.
+
+### Định dạng CSV
+
+| File | Nội dung |
+| --- | --- |
+| `backend/scripts/mock_data/patients.csv` | Mỗi dòng 1 bệnh nhân — khối hành chính + khối hỏi bệnh |
+| `backend/scripts/mock_data/examinations.csv` | Mỗi dòng 1 lần khám — khối khám bệnh, nối với bệnh nhân qua `patient_code` |
+
+Tên cột chính là **đường dẫn trong schema**, ví dụ:
+
+```text
+examination.general.weight
+examination.mental_exam.emotion.symptoms.depressed_mood
+medical_history.disease_history.onset_age
+```
+
+Trường nhiều lựa chọn ghi nhiều giá trị ngăn bằng dấu `|`
+(`bizarre|agitated|other`). Nhờ quy ước này, loader chỉ cần tách theo dấu chấm là
+dựng lại được cấu trúc lồng nhau, và bạn có thể mở file bằng Excel để sửa tay rồi
+nạp lại.
+
+Ngoài các cột theo schema, `patients.csv` còn có `patient_code`, `birth_date`,
+`diagnosis`, `disease_type`, `disease_code` để xác định danh tính và loại biểu mẫu.
+
 ## Phát triển
 
 ### Backend
@@ -117,6 +203,19 @@ Build kiểm tra TypeScript:
 ```bash
 npm run build
 ```
+
+## Xuất dữ liệu khám bệnh
+
+Trong trang chi tiết bệnh nhân, khối **KHÁM BỆNH** có nút **Xuất Excel**. File tải
+về gồm 2 sheet:
+
+- **Bảng khám bệnh** — đúng các cột đang hiển thị trên giao diện, mỗi ô là bản
+  tóm tắt của một khối.
+- **Chi tiết** — mỗi trường trong template là một cột riêng (mỗi dòng của bảng
+  Có/Không cũng thành một cột), dạng bảng phẳng để đưa thẳng vào phân tích thống kê.
+
+Nhãn cột lấy từ `form_schema.json` nên thêm mục vào template là file xuất tự có
+thêm cột. API tương ứng: `GET /api/v1/patients/{id}/exams/export`.
 
 ## Lưu ý
 

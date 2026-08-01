@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AlertCircle, Edit2, Eye, Trash2 } from 'lucide-react'
+import { AlertCircle, Download, Edit2, Eye, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { Button, Card, Loading } from '@/components/ui'
 import { errorMessage } from '@/lib/utils'
 import {
   deleteExamination,
+  exportExaminations,
   getMedicalHistory,
   listExaminations,
   updateMedicalHistory,
@@ -15,6 +16,7 @@ import {
   type FormValues,
 } from '../api'
 import { DynamicForm, summarizeGroup } from './DynamicForm'
+import { Pagination } from './Pagination'
 
 const findBlock = (schema: FormSchema | undefined, id: string) =>
   schema?.blocks.find((block) => block.id === id)
@@ -165,9 +167,13 @@ export function ExaminationsSection({
   const block = findBlock(schema, 'examination')
   const columns = schema?.exam_table_columns ?? []
 
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(10)
+  const [exportError, setExportError] = useState('')
+
   const { data: response, isLoading } = useQuery({
-    queryKey: ['exams', patientId],
-    queryFn: () => listExaminations(patientId, 1, 50),
+    queryKey: ['exams', patientId, page, limit],
+    queryFn: () => listExaminations(patientId, page, limit),
   })
 
   const deleteMutation = useMutation({
@@ -175,8 +181,20 @@ export function ExaminationsSection({
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['exams', patientId] }),
   })
 
+  const exportMutation = useMutation({
+    mutationFn: () => exportExaminations(patientId),
+    onSuccess: () => setExportError(''),
+    onError: (err) => setExportError(errorMessage(err, 'Xuất Excel thất bại')),
+  })
+
   const exams: Examination[] = response?.data ?? []
   const total: number = response?.pagination?.total ?? 0
+  const totalPages: number = response?.pagination?.total_pages ?? 1
+
+  // Xoá dòng cuối của trang cuối thì trang hiện tại không còn gì để hiển thị.
+  useEffect(() => {
+    if (page > 1 && page > totalPages) setPage(totalPages)
+  }, [page, totalPages])
 
   return (
     <Card size="full">
@@ -187,18 +205,36 @@ export function ExaminationsSection({
             {total > 0 ? `${total} lần khám` : 'Chưa có lần khám nào'}
           </p>
         </div>
-        <div className="flex gap-2.5">
+        <div className="flex flex-wrap justify-end gap-2.5">
           <Button variant="outline" size="sm" disabled>
             OCR
           </Button>
           <Button variant="outline" size="sm" disabled>
             Upload phiếu khác
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportMutation.mutate()}
+            isLoading={exportMutation.isPending}
+            disabled={total === 0}
+            leftIcon={!exportMutation.isPending ? <Download className="h-4 w-4" /> : undefined}
+            title={total === 0 ? 'Chưa có lần khám để xuất' : 'Xuất bảng khám bệnh ra Excel'}
+          >
+            Xuất Excel
+          </Button>
           <Button size="sm" onClick={onCreateExam}>
             Nhập bằng tay
           </Button>
         </div>
       </div>
+
+      {exportError && (
+        <div className="mb-4 flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{exportError}</span>
+        </div>
+      )}
 
       {isLoading ? (
         <Loading text="Đang tải danh sách lần khám..." />
@@ -277,6 +313,19 @@ export function ExaminationsSection({
               ))}
             </tbody>
           </table>
+
+          <Pagination
+            page={page}
+            limit={limit}
+            total={total}
+            totalPages={totalPages}
+            unit="lần khám"
+            onPageChange={setPage}
+            onLimitChange={(next) => {
+              setLimit(next)
+              setPage(1)
+            }}
+          />
         </div>
       )}
     </Card>

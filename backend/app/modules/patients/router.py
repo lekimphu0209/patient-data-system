@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -25,6 +25,7 @@ from app.modules.patients.schemas import (
 )
 from app.modules.patients.service import PatientService, ExaminationService, MedicalHistoryService
 from app.modules.patients.form_service import FormService
+from app.modules.patients.export_service import ExaminationExportService
 from app.shared.responses import ApiResponse, PaginatedResponse, PaginationMeta
 
 router = APIRouter()
@@ -169,6 +170,28 @@ def list_examinations(
     return PaginatedResponse(
         data=[ExaminationResponse.model_validate(item) for item in items],
         pagination=meta,
+    )
+
+
+@router.get("/{patient_id}/exams/export")
+def export_examinations(
+    patient_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Xuất toàn bộ lần khám của bệnh nhân ra Excel (2 sheet: bảng + chi tiết)."""
+    patient = PatientService(db).get_patient(patient_id)
+    exams, _ = ExaminationService(db).list_examinations(patient_id, page=1, limit=10_000)
+
+    exported_by = getattr(current_user, "full_name", None) or current_user.email
+    stream = ExaminationExportService().build_workbook(patient, exams, exported_by)
+
+    stamp = datetime.now().strftime("%Y%m%d_%H%M")
+    filename = f"kham_benh_{patient.patient_code}_{stamp}.xlsx"
+    return StreamingResponse(
+        stream,
+        media_type=XLSX_MEDIA_TYPE,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
 
 

@@ -246,6 +246,16 @@ export async function deleteExamination(patientId: number, examId: number) {
   return await api.delete(`/patients/${patientId}/exams/${examId}`)
 }
 
+/** Tải file Excel bảng khám bệnh; tên file lấy từ Content-Disposition của server. */
+export async function exportExaminations(patientId: number) {
+  const response = await api.get(`/patients/${patientId}/exams/export`, {
+    responseType: 'blob',
+  })
+  const disposition = String(response.headers['content-disposition'] ?? '')
+  const match = disposition.match(/filename="?([^";]+)"?/)
+  downloadBlob(response.data as Blob, match?.[1] ?? `kham_benh_${patientId}.xlsx`)
+}
+
 // ==================== Medical History API ====================
 
 export async function getMedicalHistory(patientId: number) {
