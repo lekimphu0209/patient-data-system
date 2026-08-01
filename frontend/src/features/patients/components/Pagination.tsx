@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-import { Select } from '@/components/ui'
+import { Select, type SelectOption } from '@/components/ui'
 import { PAGE_SIZE_OPTIONS } from '@/constants'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +13,8 @@ interface PaginationProps {
   onLimitChange: (limit: number) => void
   /** Danh từ đếm trong dòng tóm tắt — bảng lần khám dùng "lần khám". */
   unit?: string
+  /** Bậc số dòng mỗi trang; mặc định là bậc của danh sách bệnh nhân. */
+  sizeOptions?: SelectOption[]
 }
 
 const ELLIPSIS = 'ellipsis'
@@ -55,6 +57,7 @@ export function Pagination({
   onPageChange,
   onLimitChange,
   unit = 'bệnh nhân',
+  sizeOptions = PAGE_SIZE_OPTIONS,
 }: PaginationProps) {
   const from = total === 0 ? 0 : (page - 1) * limit + 1
   const to = Math.min(page * limit, total)
@@ -120,7 +123,7 @@ export function Pagination({
             aria-label="Số dòng mỗi trang"
             value={String(limit)}
             onChange={(e) => onLimitChange(Number(e.target.value))}
-            options={PAGE_SIZE_OPTIONS}
+            options={sizeOptions}
           />
         </div>
       </div>

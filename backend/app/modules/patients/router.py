@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -9,6 +10,10 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.deps import get_current_active_user
 from app.modules.auth.models import User
+from app.modules.documents.exam_extraction_service import (
+    ExamExtractionService,
+    ExtractionError,
+)
 from app.modules.import_export.schemas import ExportRequest
 from app.modules.import_export.service import EXPORT_DIR, ImportExportService
 from app.modules.patients.schemas import (
@@ -17,6 +22,7 @@ from app.modules.patients.schemas import (
     PatientResponse,
     PatientUpdate,
     ExaminationCreate,
+    ExaminationMetricsResponse,
     ExaminationResponse,
     ExaminationUpdate,
     MedicalHistoryCreate,
@@ -26,6 +32,7 @@ from app.modules.patients.schemas import (
 from app.modules.patients.service import PatientService, ExaminationService, MedicalHistoryService
 from app.modules.patients.form_service import FormService
 from app.modules.patients.export_service import ExaminationExportService
+from app.modules.patients.metrics_service import ExaminationMetricsService
 from app.shared.responses import ApiResponse, PaginatedResponse, PaginationMeta
 
 router = APIRouter()
@@ -173,6 +180,64 @@ def list_examinations(
     )
 
 
+# --- Bóc tách phiếu khám (OCR ảnh/scan & đọc file digital) ---
+# Ba route dưới phải đứng trước "/{patient_id}/exams/{exam_id}", nếu không
+# "extract"/"extractions" sẽ bị khớp nhầm vào exam_id và trả 422.
+
+
+@router.post("/{patient_id}/exams/extract", response_model=ApiResponse[Any])
+def extract_exam_document(
+    patient_id: int,
+    mode: str = Query(..., pattern="^(ocr|upload)$"),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Upload phiếu khám và bóc tách thành bản nháp chờ bác sĩ soát.
+
+    Chưa tạo lần khám nào ở bước này — chỉ tạo sau khi người dùng bấm Lưu.
+    """
+    service = ExamExtractionService(db)
+    try:
+        draft = service.extract(patient_id, file, mode)
+    except ExtractionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return ApiResponse(data=asdict(draft))
+
+
+@router.get("/{patient_id}/exams/extractions/{extraction_id}", response_model=ApiResponse[Any])
+def get_exam_extraction(
+    patient_id: int,
+    extraction_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Đọc lại bản nháp — để màn hình soát tải lại được sau khi refresh."""
+    service = ExamExtractionService(db)
+    try:
+        draft = service.get_draft(patient_id, extraction_id)
+    except ExtractionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return ApiResponse(data=asdict(draft))
+
+
+@router.get("/{patient_id}/documents/{document_id}/file")
+def get_patient_document_file(
+    patient_id: int,
+    document_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Trả file gốc để hiển thị ở khung xem trước của màn hình soát."""
+    path, document = ExamExtractionService(db).document_path(patient_id, document_id)
+    return FileResponse(
+        path,
+        media_type=document.mime_type or "application/octet-stream",
+        filename=document.file_name,
+        content_disposition_type="inline",
+    )
+
+
 @router.get("/{patient_id}/exams/export")
 def export_examinations(
     patient_id: int,
@@ -193,6 +258,23 @@ def export_examinations(
         media_type=XLSX_MEDIA_TYPE,
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@router.get(
+    "/{patient_id}/exams/metrics", response_model=ApiResponse[ExaminationMetricsResponse]
+)
+def get_examination_metrics(
+    patient_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Chuỗi số liệu của các chỉ số dạng số theo trục thời gian khám.
+
+    Chỉ trả về những chỉ số bệnh nhân thật sự có dữ liệu, dạng gọn (nhãn + đơn vị
+    + các cặp ngày/giá trị) để client vẽ biểu đồ mà không phải tải toàn bộ bản
+    ghi lần khám.
+    """
+    return ApiResponse(data=ExaminationMetricsService(db).build_series(patient_id))
 
 
 @router.get("/{patient_id}/exams/latest", response_model=ApiResponse[ExaminationResponse | None])

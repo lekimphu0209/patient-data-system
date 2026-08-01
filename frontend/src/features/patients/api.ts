@@ -20,6 +20,11 @@ export interface Examination {
   treatment?: string
   /** Khối KHÁM BỆNH lưu phân cấp theo form schema. */
   data?: Record<string, any>
+  /** Nguồn gốc bản ghi: bác sĩ tự nhập, OCR ảnh/scan, hay đọc từ phiếu digital. */
+  source?: 'manual' | 'ocr' | 'upload'
+  document_id?: number | null
+  /** Chỉ gửi lên khi lưu từ màn hình soát, để đánh dấu bản nháp đã được duyệt. */
+  extraction_id?: number
   created_at: string
   updated_at: string
 }
@@ -218,6 +223,41 @@ export async function listExaminations(
   return response.data
 }
 
+// ==================== Biểu đồ diễn biến chỉ số ====================
+// Backend dựng sẵn chuỗi số liệu từ form schema và trả về dạng gọn, thay vì để
+// client tải toàn bộ bản ghi lần khám (nặng gấp nhiều lần) rồi tự bới ra số.
+
+export interface ApiMetricPoint {
+  exam_id: number
+  /** Ngày khám dạng YYYY-MM-DD. */
+  date: string
+  value: number
+}
+
+export interface ApiMetricSeries {
+  key: string
+  label: string
+  unit: string | null
+  group_key: string
+  group_label: string
+  points: ApiMetricPoint[]
+}
+
+export interface ExaminationMetrics {
+  /** Tổng số lần khám của bệnh nhân, kể cả lần khám không có chỉ số nào. */
+  exam_count: number
+  /** True khi hồ sơ quá dài và các lần khám cũ nhất đã bị cắt. */
+  truncated: boolean
+  series: ApiMetricSeries[]
+}
+
+export async function getExaminationMetrics(patientId: number): Promise<ExaminationMetrics> {
+  const response = await api.get<{ data: ExaminationMetrics }>(
+    `/patients/${patientId}/exams/metrics`
+  )
+  return response.data.data
+}
+
 export async function getExamination(patientId: number, examId: number) {
   const response = await api.get(`/patients/${patientId}/exams/${examId}`)
   return response.data
@@ -271,6 +311,58 @@ export async function createMedicalHistory(patientId: number, data: Partial<Medi
 export async function updateMedicalHistory(patientId: number, data: Partial<MedicalHistory>) {
   const response = await api.patch(`/patients/${patientId}/medical-history`, data)
   return response.data
+}
+
+// ==================== Bóc tách phiếu khám (OCR / phiếu digital) ====================
+
+export type ExtractionMode = 'ocr' | 'upload'
+
+export interface ExtractionDraft {
+  extraction_id: number
+  document_id: number
+  file_name: string
+  mime_type: string
+  mode: ExtractionMode
+  provider: string
+  model: string
+  page_count: number
+  /** Số ô AI đọc được / tổng số ô của biểu mẫu — để người soát biết còn bao nhiêu phải tự điền. */
+  filled_count: number
+  total_fields: number
+  data: FormValues
+  warnings: string[]
+  note: string
+}
+
+export async function extractExamDocument(
+  patientId: number,
+  file: File,
+  mode: ExtractionMode,
+  signal?: AbortSignal,
+) {
+  const form = new FormData()
+  form.append('file', file)
+  const response = await api.post<{ data: ExtractionDraft }>(
+    `/patients/${patientId}/exams/extract`,
+    form,
+    { params: { mode }, signal, timeout: 0 }, // bóc tách có thể mất hàng phút
+  )
+  return response.data.data
+}
+
+export async function getExtractionDraft(patientId: number, extractionId: number) {
+  const response = await api.get<{ data: ExtractionDraft }>(
+    `/patients/${patientId}/exams/extractions/${extractionId}`,
+  )
+  return response.data.data
+}
+
+/** Tải file gốc về dạng blob để hiển thị ở khung xem trước (URL cần kèm token). */
+export async function fetchDocumentBlob(patientId: number, documentId: number) {
+  const response = await api.get(`/patients/${patientId}/documents/${documentId}/file`, {
+    responseType: 'blob',
+  })
+  return response.data as Blob
 }
 
 // ==================== Form Schema API ====================

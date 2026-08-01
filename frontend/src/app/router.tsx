@@ -9,6 +9,7 @@ import { patientDetailRoute } from '@/routes/patients.$id'
 import { patientEditRoute } from '@/routes/patients.$id.edit'
 import { newExamRoute } from '@/routes/patients.$id.exams.new'
 import { examDetailRoute, examEditRoute } from '@/routes/patients.$id.exams.$examId'
+import { examReviewRoute } from '@/routes/patients.$id.exams.review.$extractionId'
 import { profileRoute } from '@/routes/profile'
 
 const routeTree = rootRoute.addChildren([
@@ -20,6 +21,7 @@ const routeTree = rootRoute.addChildren([
   patientDetailRoute,
   patientEditRoute,
   newExamRoute,
+  examReviewRoute,
   examDetailRoute,
   examEditRoute,
   profileRoute,

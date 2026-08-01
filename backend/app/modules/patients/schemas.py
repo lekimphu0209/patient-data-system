@@ -120,10 +120,14 @@ class ExaminationBase(BaseModel):
     diagnosis: Optional[str] = None
     treatment: Optional[str] = None
     data: Optional[dict[str, Any]] = None
+    source: str = "manual"
+    document_id: Optional[int] = None
 
 
 class ExaminationCreate(ExaminationBase):
     exam_date: Optional[date] = None
+    # Chỉ dùng để đánh dấu bản nháp đã được soát; không phải cột của bảng.
+    extraction_id: Optional[int] = None
 
 
 class ExaminationUpdate(BaseModel):
@@ -150,3 +154,32 @@ class ExaminationResponse(ExaminationBase):
     patient_id: int
     created_at: datetime
     updated_at: datetime
+
+
+# ==================== Biểu đồ diễn biến chỉ số ====================
+
+
+class MetricPoint(BaseModel):
+    exam_id: int
+    date: date
+    # int | float chứ không phải float: giữ nguyên 56 thay vì trả về 56.0.
+    value: int | float
+
+
+class MetricSeries(BaseModel):
+    """Một chỉ số dạng số, kèm toàn bộ giá trị đã ghi theo thời gian."""
+
+    key: str
+    label: str
+    unit: Optional[str] = None
+    group_key: str
+    group_label: str
+    points: list[MetricPoint]
+
+
+class ExaminationMetricsResponse(BaseModel):
+    #: Tổng số lần khám của bệnh nhân — client dùng để biết có gì để vẽ hay không.
+    exam_count: int
+    #: True khi hồ sơ vượt trần và phần lần khám cũ nhất đã bị cắt.
+    truncated: bool = False
+    series: list[MetricSeries]

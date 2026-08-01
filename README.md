@@ -213,6 +213,62 @@ Build kiểm tra TypeScript:
 npm run build
 ```
 
+## Số hoá phiếu khám (OCR & đọc file digital)
+
+Ở khối **KHÁM BỆNH** có hai nút, cùng đi chung một quy trình:
+
+| Nút | Dùng cho | Cách đọc |
+| --- | --- | --- |
+| **OCR** | Ảnh chụp, bản scan (JPG/PNG/TIFF, PDF scan) | Đưa thẳng ảnh cho vision model |
+| **Upload phiếu khám** | File Word `.docx`, PDF xuất từ văn bản | Trích text rồi cho model đọc — nhanh và rẻ hơn |
+
+Quy trình: **chọn file → AI bóc tách → màn hình soát (trái: bản gốc, phải: biểu
+mẫu đã điền sẵn) → sửa chỗ sai → Lưu**. Chỉ khi bấm Lưu mới tạo lần khám thật,
+nên upload nhầm file không làm bẩn hồ sơ.
+
+Hệ thống chỉ bóc **PHẦN 3 → PHẦN 7**; phần hành chính và hỏi bệnh giữ nguyên
+theo dữ liệu đã có trong hệ thống.
+
+**Tự nhận dạng file**: PDF không tự nói nó là bản scan hay văn bản. Hệ thống dò
+lớp text thật trong file rồi tự chọn cách đọc — bấm nhầm nút vẫn ra kết quả
+đúng, và có dòng ghi chú giải thích đã chuyển chế độ.
+
+**Không bao giờ đoán**: model được yêu cầu bỏ trống thay vì suy diễn, và mọi giá
+trị trả về đều phải khớp danh sách lựa chọn trong `form_schema.json` mới được
+ghi nhận. Giá trị lạ bị loại và liệt kê ở mục cảnh báo để bác sĩ tự điền. Riêng
+phủ định được chặn cứng: "không bình thường" không bao giờ bị hiểu thành
+"Bình thường".
+
+Mỗi lần khám lưu kèm nguồn gốc (`manual` / `ocr` / `upload`) và id file gốc;
+bảng khám bệnh hiển thị nhãn tương ứng. Bản model đọc (`raw_result`) và bản bác
+sĩ đã sửa (`reviewed_result`) đều được giữ trong `ocr_extractions` để về sau còn
+đánh giá độ chính xác của model.
+
+### Cấu hình
+
+```env
+OPENAI_API_KEY=            # để trống -> chạy chế độ giả lập, không gọi ra ngoài
+OPENAI_BASE_URL=https://api.openai.com/v1
+OCR_PROVIDER=openai        # openai | stub
+OCR_MODEL=gpt-4o
+DOC_PARSER_PROVIDER=openai
+DOC_PARSER_MODEL=gpt-4o-mini
+EXTRACTION_MAX_PAGES=10
+EXTRACTION_TIMEOUT_SECONDS=180
+EXTRACTION_MAX_FILE_MB=20
+EXTRACTION_PDF_DPI=200     # tăng nếu chữ viết tay khó đọc
+```
+
+Chưa có key thì toàn bộ luồng vẫn chạy được với dữ liệu giả — tiện để thử giao
+diện và chạy test tự động.
+
+### Thay nhà cung cấp
+
+Khi team có model OCR riêng: viết một lớp con của `ExamExtractor`
+(`backend/app/modules/documents/extractor/base.py`), khai báo thêm một nhánh
+trong `extractor/factory.py`, rồi đổi `OCR_PROVIDER`. Phần đặc tả trường, kiểm
+tra dữ liệu, màn hình soát và lưu trữ dùng lại nguyên vẹn.
+
 ## Xuất dữ liệu khám bệnh
 
 Trong trang chi tiết bệnh nhân, khối **KHÁM BỆNH** có nút **Xuất Excel**. File tải

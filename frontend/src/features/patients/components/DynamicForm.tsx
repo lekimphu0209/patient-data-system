@@ -65,6 +65,34 @@ export function formatFieldValue(node: FormNode, value: unknown): string {
   }
 }
 
+/** Số ô của một node — bảng ma trận tính theo số dòng. */
+export function countLeaves(node: FormNode): number {
+  if (node.type === 'matrix') return node.rows?.length ?? 0
+  if (isLeaf(node)) return 1
+  return (node.children ?? []).reduce((total, child) => total + countLeaves(child), 0)
+}
+
+/** Số ô đã có dữ liệu — dùng để báo tiến độ soát từng mục. */
+export function countFilled(node: FormNode, value: unknown): number {
+  if (!isLeaf(node)) {
+    const values = (value ?? {}) as FormValues
+    return (node.children ?? []).reduce(
+      (total, child) => total + countFilled(child, values[child.id]),
+      0,
+    )
+  }
+
+  if (node.type === 'matrix') {
+    if (!value || typeof value !== 'object') return 0
+    const cells = value as FormValues
+    return (node.rows ?? []).filter((row) => cells[row.id]).length
+  }
+
+  if (value === undefined || value === null || value === '') return 0
+  if (Array.isArray(value)) return value.length > 0 ? 1 : 0
+  return 1
+}
+
 /** Tóm tắt một group thành một dòng ngắn — dùng cho ô trong bảng lần khám. */
 export function summarizeGroup(node: FormNode, values: FormValues | undefined): string {
   if (!values) return ''
