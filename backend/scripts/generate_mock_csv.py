@@ -106,6 +106,15 @@ TEXTAREA_POOL: dict[str, list[str]] = {
     ],
 }
 
+# Cột "Chẩn đoán" ở bảng danh sách bệnh nhân chỉ nhận đúng 3 nhãn này để khớp
+# với bộ lọc chẩn đoán trên giao diện. Mã ICD chi tiết nằm ở "Chẩn đoán xác định"
+# của từng lần khám.
+PATIENT_DIAGNOSIS = {
+    "f20": "Tâm thần phân liệt",
+    "f32": "Trầm cảm",
+    "normal": "Bình thường",
+}
+
 DIAGNOSIS_BY_DISEASE = {
     "f20": [
         "F20.0 - Tâm thần phân liệt thể paranoid",
@@ -330,7 +339,7 @@ def build_patient(index: int, disease: str, rng: random.Random, service: FormSer
         "patient_code": patient_code,
         "disease_code": disease,
         "birth_date": birth_date.isoformat(),
-        "diagnosis": rng.choice(DIAGNOSIS_BY_DISEASE[disease]),
+        "diagnosis": PATIENT_DIAGNOSIS[disease],
         "disease_type": {"f20": "schizophrenia", "f32": "depression", "normal": "normal"}[disease],
     }
     flatten("administrative", admin, row)

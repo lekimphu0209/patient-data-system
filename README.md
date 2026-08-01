@@ -135,8 +135,12 @@ cd backend && python scripts/load_mock_data.py
 ### Sinh lại bộ dữ liệu khác
 
 ```bash
-docker compose exec backend python scripts/generate_mock_csv.py
+docker compose exec --user "$(id -u):$(id -g)" backend python scripts/generate_mock_csv.py
 ```
+
+> Nhớ cờ `--user`: container chạy bằng `root`, thiếu cờ này thì 2 file CSV sinh ra
+> sẽ thuộc quyền `root` trên máy bạn, sau đó không sửa/xoá được và `git pull` sẽ
+> báo *permission denied*.
 
 Script đọc `form_schema.json` nên dữ liệu sinh ra luôn khớp template hiện tại —
 thêm trường mới vào JSON thì chạy lại là có ngay dữ liệu cho trường đó. Đổi hằng
@@ -165,6 +169,11 @@ nạp lại.
 
 Ngoài các cột theo schema, `patients.csv` còn có `patient_code`, `birth_date`,
 `diagnosis`, `disease_type`, `disease_code` để xác định danh tính và loại biểu mẫu.
+
+Cột `diagnosis` chỉ nhận đúng 3 nhãn — `Bình thường`, `Trầm cảm`,
+`Tâm thần phân liệt` — để khớp bộ lọc chẩn đoán ở danh sách bệnh nhân. Mã ICD chi
+tiết (`F20.1 - ... thể thanh xuân`) nằm ở *Chẩn đoán xác định* của từng lần khám
+trong `examinations.csv`.
 
 ## Phát triển
 
