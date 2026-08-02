@@ -39,9 +39,9 @@ export const STATUS_OPTIONS: { value: string; label: string }[] = [
 /** Backend stores roles as English codes; the UI always shows the label. */
 export const ROLE_LABELS: Record<string, string> = {
   doctor: 'Bác sĩ',
-  nurse: 'Điều dưỡng',
-  admin: 'Quản trị viên',
-  staff: 'Nhân viên',
+  // nurse: 'Điều dưỡng',
+  // admin: 'Quản trị viên',
+  // staff: 'Nhân viên',
 }
 
 export function roleLabel(role?: string | null) {
