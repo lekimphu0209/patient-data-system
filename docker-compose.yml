@@ -1,56 +1,54 @@
 services:
   db:
-    image: postgres:15-alpine
-    container_name: patient-data-db
+    image: pgvector/pgvector:pg16
+    container_name: guideline-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-patient_data}
+      POSTGRES_DB: ${DB_NAME:-guideline_management}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5436}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/initdb:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-patient_data}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-guideline_management}"]
       interval: 5s
       timeout: 5s
       retries: 20
+    networks:
+      - default
+      - chatbot-db
 
   backend:
     build:
       context: .
-      dockerfile: docker/Dockerfile.api
-    container_name: patient-data-backend
+      dockerfile: Dockerfile
+    container_name: guideline-backend
     restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-patient_data}
-      BACKEND_HOST: "0.0.0.0"
-      BACKEND_PORT: "8000"
-    volumes:
-      - ./backend:/app
-      - ./storage:/app/storage
-    ports:
-      - "${BACKEND_PORT:-8000}:8000"
     depends_on:
       db:
         condition: service_healthy
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-  frontend:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.web
-      args:
-        VITE_API_BASE_URL: /api/v1
-    container_name: patient-data-frontend
-    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      DEBUG: "false"
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      LOCAL_STORAGE_ROOT: /app/uploads
+      DB_HOST: db
+      DB_PORT: "5432"
     ports:
-      - "${FRONTEND_PORT:-80}:80"
-    depends_on:
-      - backend
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
 
 volumes:
   postgres_data:
+
+networks:
+  chatbot-db:
+    name: chatbot-db
+    external: true
