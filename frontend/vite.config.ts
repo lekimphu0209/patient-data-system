@@ -18,5 +18,7 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    // Allows all hostnames to connect to the dev server
+    allowedHosts: true
   },
 })
