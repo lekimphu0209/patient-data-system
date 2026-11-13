@@ -1,32 +1,15 @@
-import { createRouter } from '@tanstack/react-router'
+import { createRoute, createRouter, redirect } from '@tanstack/react-router'
 import { rootRoute } from '@/routes/__root'
 import { indexRoute } from '@/routes/index'
 import { loginRoute } from '@/routes/login'
-import { registerRoute } from '@/routes/register'
-import { patientsRoute } from '@/routes/patients'
-import { newPatientRoute } from '@/routes/patients.new'
-import { patientDetailRoute } from '@/routes/patients.$id'
-import { patientEditRoute } from '@/routes/patients.$id.edit'
-import { newExamRoute } from '@/routes/patients.$id.exams.new'
-import { examDetailRoute, examEditRoute } from '@/routes/patients.$id.exams.$examId'
-import { examReviewRoute } from '@/routes/patients.$id.exams.review.$extractionId'
-import { profileRoute } from '@/routes/profile'
 
-const routeTree = rootRoute.addChildren([
-  indexRoute,
-  loginRoute,
-  registerRoute,
-  patientsRoute,
-  newPatientRoute,
-  patientDetailRoute,
-  patientEditRoute,
-  newExamRoute,
-  examReviewRoute,
-  examDetailRoute,
-  examEditRoute,
-  profileRoute,
-])
+const legacyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '$',
+  beforeLoad: () => { throw redirect({ to: '/', replace: true }) },
+})
 
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, legacyRoute])
 export const router = createRouter({ routeTree })
 
 declare module '@tanstack/react-router' {

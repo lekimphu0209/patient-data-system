@@ -2,6 +2,7 @@ import os
 
 os.environ["DATABASE_URL"] = "sqlite:///./test.db"
 os.environ["SECRET_KEY"] = "test-secret"
+os.environ["ALLOW_PUBLIC_REGISTRATION"] = "true"
 
 import pytest
 

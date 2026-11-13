@@ -1,15 +1,7 @@
 import { redirect } from '@tanstack/react-router'
 
-import { getMe } from '@/features/auth/api'
-
-export async function requireAuth() {
-  const token = sessionStorage.getItem('token')
-  if (!token) throw redirect({ to: '/login' })
-  try {
-    await getMe()
-  } catch {
-    sessionStorage.removeItem('token')
-    sessionStorage.removeItem('user')
-    throw redirect({ to: '/login' })
+export function requireAuth() {
+  if (!sessionStorage.getItem('token')) {
+    throw redirect({ to: '/login', hash: window.location.hash.slice(1), replace: true })
   }
 }

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.deps import get_current_active_user
 from app.modules.auth.models import User
@@ -25,6 +26,8 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
 
 @router.post("/register", response_model=LoginResponse, status_code=201)
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
+    if not settings.ALLOW_PUBLIC_REGISTRATION:
+        raise HTTPException(403, "Đăng ký tài khoản công khai đã tắt.")
     service = AuthService(db)
     return service.register(data)
 

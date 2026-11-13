@@ -11,6 +11,7 @@ from app.modules.auth.models import User  # noqa: F401
 from app.modules.documents.models import Document, OcrExtraction  # noqa: F401
 from app.modules.encounters.models import Encounter  # noqa: F401
 from app.modules.patients.models import Patient  # noqa: F401
+from app.modules.surveys.models import SurveyRecord, SurveySubject  # noqa: F401
 
 config = context.config
 

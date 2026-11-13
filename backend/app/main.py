@@ -16,6 +16,7 @@ from app.modules.documents import models as document_models  # noqa: F401
 from app.modules.auth.router import router as auth_router
 from app.modules.documents.router import router as documents_router
 from app.modules.patients.router import router as patients_router
+from app.modules.surveys.router import router as surveys_router
 
 
 logger = logging.getLogger(__name__)
@@ -103,6 +104,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(patients_router, prefix="/api/v1/patients", tags=["patients"])
 app.include_router(documents_router, prefix="/api/v1/documents", tags=["documents"])
+app.include_router(surveys_router, prefix="/api/v1/surveys", tags=["surveys"])
 
 
 @app.get("/api/health", tags=["health"])

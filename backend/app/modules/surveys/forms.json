@@ -1,0 +1,4120 @@
+[
+  {
+    "id": "F01",
+    "title": "Sàng lọc nguy cơ tự sát ở quân nhân",
+    "group": "military",
+    "code": "KCB.TT.05",
+    "questions": [
+      {
+        "label": "Câu A1. Tuổi (tính theo năm sinh): ........ tuổi",
+        "options": [],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Câu A2. Giới tính:",
+        "options": [
+          "Nam",
+          "Nữ"
+        ],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Câu A3. Cấp bậc hiện tại: (học viên chọn theo quân hàm đang mang)",
+        "options": [
+          "Học viên",
+          "Hạ sĩ quan/chiến sĩ",
+          "Quân nhân chuyên nghiệp",
+          "Sĩ quan"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Câu A4. Thời gian phục vụ trong quân đội:",
+        "options": [
+          "Dưới 1 năm",
+          "Từ 1 đến dưới 3 năm",
+          "Từ 3 đến dưới 10 năm",
+          "Từ 10 năm trở lên"
+        ],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Câu A5. Chức vụ hiện tại:",
+        "options": [
+          "Chiến sĩ",
+          "Học viên tại học viện, nhà trường",
+          "Nhân viên chuyên môn, kỹ thuật",
+          "Cán bộ tiểu đội",
+          "Cán bộ trung đội, đại đội",
+          "Cán bộ từ tiểu đoàn trở lên hoặc cơ quan"
+        ],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Câu A6. Tình trạng hôn nhân:",
+        "options": [
+          "Độc thân",
+          "Đã kết hôn",
+          "Ly thân, ly hôn hoặc góa"
+        ],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Câu A7. Trình độ học vấn cao nhất đã tốt nghiệp:",
+        "options": [
+          "Trung học cơ sở trở xuống",
+          "Trung học phổ thông",
+          "Trung cấp, cao đẳng",
+          "Đại học trở lên"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Câu A8. Nhiệm vụ chủ yếu trong 6 tháng qua: (chọn nhiệm vụ chiếm nhiều thời gian nhất)",
+        "options": [
+          "Huấn luyện chiến đấu",
+          "Trực sẵn sàng chiến đấu, canh gác",
+          "Cơ quan, hậu cần, kỹ thuật, quân y",
+          "Học tập tại học viện, nhà trường",
+          "Giảng dạy, quản lý, phục vụ đào tạo",
+          "Lao động sản xuất, làm kinh tế",
+          "Khác: ...................................."
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "1. Cảm thấy mất hứng thú hoặc buồn chán đến mức không có điều gì có thể làm mình vui lên",
+        "options": [
+          "Không ngày nào (1)",
+          "Vài ngày (2)",
+          "Hơn nửa số ngày (3)",
+          "Gần như mọi ngày (4)"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "2. Cảm thấy tương lai bế tắc hoặc không còn hy vọng",
+        "options": [
+          "Không ngày nào (1)",
+          "Vài ngày (2)",
+          "Hơn nửa số ngày (3)",
+          "Gần như mọi ngày (4)"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "3. Cảm thấy xấu hổ, tội lỗi hoặc tự trách mình nặng nề",
+        "options": [
+          "Không ngày nào (1)",
+          "Vài ngày (2)",
+          "Hơn nửa số ngày (3)",
+          "Gần như mọi ngày (4)"
+        ],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "4. Cảm thấy bản thân vô giá trị hoặc là gánh nặng cho người khác",
+        "options": [
+          "Không ngày nào (1)",
+          "Vài ngày (2)",
+          "Hơn nửa số ngày (3)",
+          "Gần như mọi ngày (4)"
+        ],
+        "id": "Q012",
+        "multi": false
+      },
+      {
+        "label": "Câu 5. Trong cuộc đời, đồng chí đã từng toan tự sát bao nhiêu lần?",
+        "options": [
+          "Chưa bao giờ (1)",
+          "1 lần (2)",
+          "2 lần (3)",
+          "Từ 3 lần trở lên (4)"
+        ],
+        "id": "Q013",
+        "multi": false
+      },
+      {
+        "label": "Câu 6. Lần toan tự sát gần đây nhất cách đây bao lâu?",
+        "options": [
+          "Trên 6 tháng (2)",
+          "Từ 2 đến 6 tháng (3)",
+          "Dưới 2 tháng (4)"
+        ],
+        "id": "Q014",
+        "multi": false
+      },
+      {
+        "label": "Câu 6.1. Ở lần toan tự sát gần đây nhất, đồng chí đã dùng cách nào? (có thể chọn nhiều đáp án)",
+        "options": [
+          "Uống thuốc quá liều",
+          "Uống hóa chất, thuốc trừ sâu",
+          "Treo cổ, thắt cổ",
+          "Dùng dao hoặc vật sắc nhọn",
+          "Dùng vũ khí, vật liệu nổ",
+          "Nhảy từ trên cao hoặc lao vào phương tiện giao thông",
+          "Cách khác: ................................",
+          "Không muốn trả lời"
+        ],
+        "id": "Q015",
+        "multi": true
+      },
+      {
+        "label": "Câu 6.2. Lần toan tự sát gần đây nhất xảy ra khi nào?",
+        "options": [
+          "Trước khi nhập ngũ hoặc vào học tại học viện, nhà trường",
+          "Trong thời gian phục vụ, học tập trong quân đội"
+        ],
+        "id": "Q016",
+        "multi": false
+      },
+      {
+        "label": "Câu 6.3. Lý do chính dẫn đến lần toan tự sát gần đây nhất là gì? (chọn tối đa 2 đáp án)",
+        "options": [
+          "Bệnh tật, chấn thương hoặc đau kéo dài",
+          "Mất người thân hoặc người rất quan trọng",
+          "Mâu thuẫn, đổ vỡ trong gia đình, vợ chồng hoặc người yêu",
+          "Khó khăn kinh tế, nợ nần",
+          "Thất bại trong học tập, công tác hoặc huấn luyện",
+          "Bị kỷ luật, vi phạm pháp luật hoặc lo sợ bị xử lý",
+          "Mâu thuẫn với đồng đội, cấp trên hoặc khó thích nghi với đơn vị, nhà trường",
+          "Áp lực học tập, nhiệm vụ hoặc huấn luyện",
+          "Lý do khác: ................................",
+          "Không rõ lý do hoặc không muốn trả lời"
+        ],
+        "id": "Q017",
+        "multi": true
+      },
+      {
+        "label": "Câu 7a. Trong 6 tháng qua, đồng chí có gặp sự kiện nào dưới đây không? (có thể chọn nhiều đáp án)",
+        "options": [
+          "Bệnh mạn tính, chấn thương, tai nạn hoặc đau kéo dài",
+          "Mất người thân hoặc người rất quan trọng",
+          "Mâu thuẫn, chia tay trong gia đình, vợ chồng hoặc người yêu",
+          "Khó khăn kinh tế, nợ nần hoặc trách nhiệm gia đình nặng",
+          "Thất bại trong học tập, thi cử, công tác, huấn luyện hoặc thi đua",
+          "Bị kỷ luật, vi phạm pháp luật hoặc lo sợ bị xử lý",
+          "Mâu thuẫn với đồng đội, cấp trên hoặc khó thích nghi với đơn vị, nhà trường",
+          "Áp lực học tập, nhiệm vụ, trực gác, huấn luyện hoặc thiếu ngủ kéo dài",
+          "Sự kiện khác: ....................................",
+          "Không gặp sự kiện đáng kể"
+        ],
+        "id": "Q018",
+        "multi": true
+      },
+      {
+        "label": "Câu 7b. Nhìn chung, những sự kiện trên ảnh hưởng đến đồng chí ở mức nào?",
+        "options": [
+          "Ảnh hưởng ít; vẫn sinh hoạt và thực hiện nhiệm vụ gần như bình thường (2)",
+          "Ảnh hưởng nhiều; làm giảm rõ giấc ngủ, cảm xúc hoặc hiệu quả nhiệm vụ (3)",
+          "Ảnh hưởng rất nặng; cảm thấy khó chịu đựng hoặc khó tiếp tục nhiệm vụ (4)"
+        ],
+        "id": "Q019",
+        "multi": false
+      },
+      {
+        "label": "Câu 8. Trong 4 tuần qua, những ý nghĩ muốn chết, không muốn tiếp tục sống hoặc nghĩ đến việc tự sát xuất hiện với đồng chí thường xuyên như thế nào?",
+        "options": [
+          "Không có (1)",
+          "Ít hơn 1 lần mỗi tuần, tổng cộng khoảng 1-3 lần trong 4 tuần (2)",
+          "Từ 1 đến 5 lần mỗi tuần (3)",
+          "Hằng ngày, gần như hằng ngày hoặc nhiều lần trong một ngày (4)"
+        ],
+        "id": "Q020",
+        "multi": false
+      },
+      {
+        "label": "Câu 9. Trong 4 tuần qua, ở lần kéo dài lâu nhất, những ý nghĩ trên kéo dài trong bao lâu?",
+        "options": [
+          "Dưới 1 giờ, kể cả chỉ thoáng qua trong vài giây hoặc vài phút (2)",
+          "Từ 1 giờ đến dưới 4 giờ (3)",
+          "Từ 4 giờ trở lên, kéo dài phần lớn thời gian trong ngày hoặc gần như liên tục (4)"
+        ],
+        "id": "Q021",
+        "multi": false
+      },
+      {
+        "label": "Câu 10. Trong 4 tuần qua, vào lúc những ý nghĩ trên mạnh nhất, đồng chí có thể tự dừng những ý nghĩ đó hoặc chuyển sự chú ý sang việc khác không?",
+        "options": [
+          "Có thể dừng hoặc chuyển sự chú ý một cách dễ dàng (2)",
+          "Có thể dừng nhưng khó khăn, phải cố gắng nhiều hoặc cần người khác hỗ trợ (3)",
+          "Không thể hoặc gần như không thể dừng; những ý nghĩ đó chi phối phần lớn suy nghĩ (4)"
+        ],
+        "id": "Q022",
+        "multi": false
+      },
+      {
+        "label": "Câu 11. Trong 7 ngày qua, lần gần nhất đồng chí có những ý nghĩ trên là khi nào?",
+        "options": [
+          "Không xuất hiện trong 7 ngày qua (2)",
+          "Có xuất hiện trong 7 ngày qua, nhưng hiện tại không có (3)",
+          "Đang có ngay lúc trả lời phiếu (4)"
+        ],
+        "id": "Q023",
+        "multi": false
+      },
+      {
+        "label": "Câu 12. Trong 4 tuần qua, đồng chí đã nghĩ đến cách thức tự sát cụ thể và khả năng tiếp cận phương tiện liên quan ở mức nào?",
+        "options": [
+          "Chưa nghĩ đến cách thức cụ thể (2)",
+          "Đã nghĩ đến cách thức cụ thể nhưng hiện chưa có hoặc chưa thể tiếp cận phương tiện liên quan (3)",
+          "Đã nghĩ đến cách thức cụ thể và hiện có thể tiếp cận phương tiện liên quan như vũ khí, thuốc hoặc phương tiện khác (4)"
+        ],
+        "id": "Q024",
+        "multi": false
+      },
+      {
+        "label": "Câu 13. Trong 4 tuần qua, đồng chí đã lập kế hoạch hoặc thực hiện hành động chuẩn bị cho việc tự sát ở mức nào? (ví dụ: chọn thời điểm, địa điểm, cất giữ phương tiện hoặc viết lời nhắn để lại)",
+        "options": [
+          "Chưa lập kế hoạch và chưa có hành động chuẩn bị (2)",
+          "Đã nghĩ đến hoặc lựa chọn thời điểm, địa điểm hay các bước thực hiện, nhưng chưa có hành động chuẩn bị (3)",
+          "Đã thực hiện ít nhất một hành động chuẩn bị (4)"
+        ],
+        "id": "Q025",
+        "multi": false
+      },
+      {
+        "label": "Câu 14. Ngay lúc này, đồng chí có ý định thực hiện tự sát ở mức nào?",
+        "options": [
+          "Không có ý định thực hiện (2)",
+          "Có ý định nhưng còn do dự, chưa quyết định thực hiện (3)",
+          "Có ý định rõ ràng, đã quyết định thực hiện hoặc cảm thấy khó tự ngăn mình thực hiện (4)"
+        ],
+        "id": "Q026",
+        "multi": false
+      },
+      {
+        "label": "Câu 15. Khi những ý nghĩ tự sát mạnh nhất, những điều giữ đồng chí lại như gia đình, trách nhiệm, niềm tin, sợ đau đớn hoặc sợ cái chết có ngăn được đồng chí thực hiện tự sát không? (chỉ dành cho người có ý nghĩ tự sát ở Câu 8)",
+        "options": [
+          "Có; những điều đó đủ sức ngăn tôi thực hiện (2)",
+          "Không chắc những điều đó có ngăn được tôi hay không (3)",
+          "Không ngăn được, hoặc tôi không thấy còn điều gì giữ mình lại (4)"
+        ],
+        "id": "Q027",
+        "multi": false
+      },
+      {
+        "label": "Câu 16. Khi gặp khó khăn nghiêm trọng, đồng chí có bao nhiêu người thực sự tin tưởng và có thể liên hệ để được hỗ trợ?",
+        "options": [
+          "Từ 3 người trở lên (1)",
+          "2 người (2)",
+          "1 người (3)",
+          "Không có ai (4)"
+        ],
+        "id": "Q028",
+        "multi": false
+      },
+      {
+        "label": "Câu 17. Đồng chí tin rằng người mình tin tưởng nhất sẽ hỗ trợ khi đồng chí gặp khó khăn nghiêm trọng ở mức nào?",
+        "options": [
+          "Chắc chắn sẽ hỗ trợ (1)",
+          "Có lẽ sẽ hỗ trợ (2)",
+          "Không chắc người đó có thể hỗ trợ (3)",
+          "Không thể trông cậy vào người đó (4)"
+        ],
+        "id": "Q029",
+        "multi": false
+      },
+      {
+        "label": "Câu 18. Nếu cần được hỗ trợ khẩn cấp, đồng chí có thể liên hệ với người này trong vòng 24 giờ tới không?",
+        "options": [
+          "Chắc chắn có thể liên hệ (1)",
+          "Có lẽ có thể liên hệ, nhưng có thể phải chờ (2)",
+          "Khó liên hệ hoặc không chắc có thể liên hệ (3)",
+          "Không thể liên hệ hoặc người đó không thể hỗ trợ (4)"
+        ],
+        "id": "Q030",
+        "multi": false
+      },
+      {
+        "label": "Câu 19. Trước đây, khi gặp khó khăn lớn, đồng chí thường tìm kiếm sự giúp đỡ như thế nào?",
+        "options": [
+          "Chủ động tìm người hỗ trợ ngay khi nhận thấy mình gặp khó khăn (1)",
+          "Chỉ tìm hoặc tiếp nhận sự giúp đỡ sau khi được người khác khuyên hay động viên (2)",
+          "Ít khi tìm sự giúp đỡ, thường cố tự giải quyết một mình (3)",
+          "Không tìm sự giúp đỡ hoặc không biết có thể tìm đến ai (4)"
+        ],
+        "id": "Q031",
+        "multi": false
+      },
+      {
+        "label": "20a. Trong 24 giờ tới, đồng chí có lo rằng mình không thể giữ an toàn cho bản thân trước nguy cơ tự làm hại hoặc tự sát không?",
+        "options": [
+          "Có",
+          "Không"
+        ],
+        "id": "Q032",
+        "multi": false
+      },
+      {
+        "label": "20b. Trong 72 giờ qua, đồng chí có lúc kích động hoặc bồn chồn đến mức khó kiểm soát hành động của mình không?",
+        "options": [
+          "Có",
+          "Không"
+        ],
+        "id": "Q033",
+        "multi": false
+      },
+      {
+        "label": "20c. Trong 4 tuần qua, đồng chí có lần nào uống rượu, bia đến mức say hoặc không làm chủ được hành vi không?",
+        "options": [
+          "Có",
+          "Không"
+        ],
+        "id": "Q034",
+        "multi": false
+      },
+      {
+        "label": "20d. Trong 4 tuần qua, đồng chí có sử dụng ma túy, chất gây nghiện hoặc thuốc không theo chỉ định của nhân viên y tế không?",
+        "options": [
+          "Có",
+          "Không"
+        ],
+        "id": "Q035",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "rows": [
+          [
+            "",
+            "Mã phiếu: KCB.TT.….."
+          ]
+        ]
+      },
+      {
+        "text": "BỘ TRẮC NGHIỆM SÀNG LỌC NGUY CƠ TỰ SÁT Ở QUÂN NHÂN"
+      },
+      {
+        "text": "Đồng chí thân mến!"
+      },
+      {
+        "text": "Phiếu này nhằm tìm hiểu tình trạng sức khỏe tinh thần của quân nhân, giúp đơn vị và quân y phát hiện sớm và hỗ trợ kịp thời những đồng chí đang gặp khó khăn. Không có câu trả lời đúng hay sai. Phiếu không ghi họ tên; thông tin chỉ cán bộ chuyên môn của đề tài được tiếp cận và không được dùng để đánh giá, xếp loại (kể cả xếp loại học tập) hay kỷ luật. Khi câu trả lời cho thấy đồng chí có thể đang gặp nguy hiểm, cán bộ quân y sẽ gặp riêng để hỗ trợ đồng chí."
+      },
+      {
+        "text": "Hướng dẫn: Đánh dấu X vào ô □ phù hợp nhất. Mỗi câu chỉ chọn một đáp án, trừ Câu 6.1, Câu 6.3 và Câu 7a. Khi gặp chỉ dẫn chuyển câu (→), xin làm theo chỉ dẫn. Tất cả người tham gia đều phải trả lời Câu 20."
+      },
+      {
+        "text": "A. THÔNG TIN CHUNG"
+      },
+      {
+        "text": "Câu A1. Tuổi (tính theo năm sinh): ........ tuổi"
+      },
+      {
+        "text": "Câu A2. Giới tính:"
+      },
+      {
+        "rows": [
+          [
+            "□ Nam",
+            "□ Nữ"
+          ]
+        ]
+      },
+      {
+        "text": "Câu A3. Cấp bậc hiện tại: (học viên chọn theo quân hàm đang mang)"
+      },
+      {
+        "rows": [
+          [
+            "□ Học viên",
+            "□ Hạ sĩ quan/chiến sĩ"
+          ],
+          [
+            "□ Quân nhân chuyên nghiệp",
+            "□ Sĩ quan"
+          ]
+        ]
+      },
+      {
+        "text": "Câu A4. Thời gian phục vụ trong quân đội:"
+      },
+      {
+        "rows": [
+          [
+            "□ Dưới 1 năm",
+            "□ Từ 1 đến dưới 3 năm"
+          ],
+          [
+            "□ Từ 3 đến dưới 10 năm",
+            "□ Từ 10 năm trở lên"
+          ]
+        ]
+      },
+      {
+        "text": "Câu A5. Chức vụ hiện tại:"
+      },
+      {
+        "rows": [
+          [
+            "□ Chiến sĩ",
+            "□ Học viên tại học viện, nhà trường"
+          ],
+          [
+            "□ Nhân viên chuyên môn, kỹ thuật",
+            "□ Cán bộ tiểu đội"
+          ],
+          [
+            "□ Cán bộ trung đội, đại đội",
+            "□ Cán bộ từ tiểu đoàn trở lên hoặc cơ quan"
+          ]
+        ]
+      },
+      {
+        "text": "Câu A6. Tình trạng hôn nhân:"
+      },
+      {
+        "rows": [
+          [
+            "□ Độc thân",
+            "□ Đã kết hôn",
+            "□ Ly thân, ly hôn hoặc góa"
+          ]
+        ]
+      },
+      {
+        "text": "Câu A7. Trình độ học vấn cao nhất đã tốt nghiệp:"
+      },
+      {
+        "rows": [
+          [
+            "□ Trung học cơ sở trở xuống",
+            "□ Trung học phổ thông"
+          ],
+          [
+            "□ Trung cấp, cao đẳng",
+            "□ Đại học trở lên"
+          ]
+        ]
+      },
+      {
+        "text": "Câu A8. Nhiệm vụ chủ yếu trong 6 tháng qua: (chọn nhiệm vụ chiếm nhiều thời gian nhất)"
+      },
+      {
+        "rows": [
+          [
+            "□ Huấn luyện chiến đấu",
+            "□ Trực sẵn sàng chiến đấu, canh gác"
+          ],
+          [
+            "□ Cơ quan, hậu cần, kỹ thuật, quân y",
+            "□ Học tập tại học viện, nhà trường"
+          ],
+          [
+            "□ Giảng dạy, quản lý, phục vụ đào tạo",
+            "□ Lao động sản xuất, làm kinh tế"
+          ],
+          [
+            "□ Khác: ....................................",
+            ""
+          ]
+        ]
+      },
+      {
+        "text": "B. NỘI DUNG"
+      },
+      {
+        "text": "Phần I. Cảm xúc của đồng chí trong 4 tuần qua"
+      },
+      {
+        "text": "Trong 4 tuần qua, đồng chí có những cảm xúc dưới đây thường xuyên như thế nào?"
+      },
+      {
+        "rows": [
+          [
+            "Nội dung",
+            "Không ngày nào (1)",
+            "Vài ngày (2)",
+            "Hơn nửa số ngày (3)",
+            "Gần như mọi ngày (4)"
+          ],
+          [
+            "1. Cảm thấy mất hứng thú hoặc buồn chán đến mức không có điều gì có thể làm mình vui lên",
+            "□"
+          ],
+          [
+            "2. Cảm thấy tương lai bế tắc hoặc không còn hy vọng",
+            "□"
+          ],
+          [
+            "3. Cảm thấy xấu hổ, tội lỗi hoặc tự trách mình nặng nề",
+            "□"
+          ],
+          [
+            "4. Cảm thấy bản thân vô giá trị hoặc là gánh nặng cho người khác",
+            "□"
+          ]
+        ]
+      },
+      {
+        "text": "Phần II. Tiền sử toan tự sát"
+      },
+      {
+        "text": "Toan tự sát là đã thực hiện một hành động nhằm tự kết thúc cuộc sống của mình, dù hành động đó không gây tử vong."
+      },
+      {
+        "text": "Câu 5. Trong cuộc đời, đồng chí đã từng toan tự sát bao nhiêu lần?"
+      },
+      {
+        "rows": [
+          [
+            "□ Chưa bao giờ (1)",
+            "□ 1 lần (2)",
+            "□ 2 lần (3)",
+            "□ Từ 3 lần trở lên (4)"
+          ]
+        ]
+      },
+      {
+        "text": "→ Nếu chọn “Chưa bao giờ”, chuyển sang Câu 7a."
+      },
+      {
+        "text": "Câu 6. Lần toan tự sát gần đây nhất cách đây bao lâu?"
+      },
+      {
+        "rows": [
+          [
+            "□ Trên 6 tháng (2)",
+            "□ Từ 2 đến 6 tháng (3)",
+            "□ Dưới 2 tháng (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 6.1. Ở lần toan tự sát gần đây nhất, đồng chí đã dùng cách nào? (có thể chọn nhiều đáp án)"
+      },
+      {
+        "rows": [
+          [
+            "□ Uống thuốc quá liều",
+            "□ Uống hóa chất, thuốc trừ sâu"
+          ],
+          [
+            "□ Treo cổ, thắt cổ",
+            "□ Dùng dao hoặc vật sắc nhọn"
+          ],
+          [
+            "□ Dùng vũ khí, vật liệu nổ",
+            "□ Nhảy từ trên cao hoặc lao vào phương tiện giao thông"
+          ],
+          [
+            "□ Cách khác: ................................",
+            "□ Không muốn trả lời"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 6.2. Lần toan tự sát gần đây nhất xảy ra khi nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Trước khi nhập ngũ hoặc vào học tại học viện, nhà trường",
+            "□ Trong thời gian phục vụ, học tập trong quân đội"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 6.3. Lý do chính dẫn đến lần toan tự sát gần đây nhất là gì? (chọn tối đa 2 đáp án)"
+      },
+      {
+        "rows": [
+          [
+            "□ Bệnh tật, chấn thương hoặc đau kéo dài",
+            "□ Mất người thân hoặc người rất quan trọng"
+          ],
+          [
+            "□ Mâu thuẫn, đổ vỡ trong gia đình, vợ chồng hoặc người yêu",
+            "□ Khó khăn kinh tế, nợ nần"
+          ],
+          [
+            "□ Thất bại trong học tập, công tác hoặc huấn luyện",
+            "□ Bị kỷ luật, vi phạm pháp luật hoặc lo sợ bị xử lý"
+          ],
+          [
+            "□ Mâu thuẫn với đồng đội, cấp trên hoặc khó thích nghi với đơn vị, nhà trường",
+            "□ Áp lực học tập, nhiệm vụ hoặc huấn luyện"
+          ],
+          [
+            "□ Lý do khác: ................................",
+            "□ Không rõ lý do hoặc không muốn trả lời"
+          ]
+        ]
+      },
+      {
+        "text": "Phần III. Sự kiện căng thẳng trong 6 tháng qua"
+      },
+      {
+        "text": "Câu 7a. Trong 6 tháng qua, đồng chí có gặp sự kiện nào dưới đây không? (có thể chọn nhiều đáp án)"
+      },
+      {
+        "rows": [
+          [
+            "□ Bệnh mạn tính, chấn thương, tai nạn hoặc đau kéo dài",
+            "□ Mất người thân hoặc người rất quan trọng"
+          ],
+          [
+            "□ Mâu thuẫn, chia tay trong gia đình, vợ chồng hoặc người yêu",
+            "□ Khó khăn kinh tế, nợ nần hoặc trách nhiệm gia đình nặng"
+          ],
+          [
+            "□ Thất bại trong học tập, thi cử, công tác, huấn luyện hoặc thi đua",
+            "□ Bị kỷ luật, vi phạm pháp luật hoặc lo sợ bị xử lý"
+          ],
+          [
+            "□ Mâu thuẫn với đồng đội, cấp trên hoặc khó thích nghi với đơn vị, nhà trường",
+            "□ Áp lực học tập, nhiệm vụ, trực gác, huấn luyện hoặc thiếu ngủ kéo dài"
+          ],
+          [
+            "□ Sự kiện khác: ....................................",
+            "□ Không gặp sự kiện đáng kể"
+          ]
+        ]
+      },
+      {
+        "text": "→ Nếu chọn “Không gặp sự kiện đáng kể”, chuyển sang Câu 8."
+      },
+      {
+        "text": "Câu 7b. Nhìn chung, những sự kiện trên ảnh hưởng đến đồng chí ở mức nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Ảnh hưởng ít; vẫn sinh hoạt và thực hiện nhiệm vụ gần như bình thường (2)"
+          ],
+          [
+            "□ Ảnh hưởng nhiều; làm giảm rõ giấc ngủ, cảm xúc hoặc hiệu quả nhiệm vụ (3)"
+          ],
+          [
+            "□ Ảnh hưởng rất nặng; cảm thấy khó chịu đựng hoặc khó tiếp tục nhiệm vụ (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Phần IV. Ý nghĩ tự sát"
+      },
+      {
+        "text": "Các câu sau hỏi trực tiếp về tự sát để bảo đảm an toàn cho đồng chí. Việc hỏi trực tiếp không nhằm phán xét. Xin đồng chí trả lời trung thực; câu trả lời được giữ bí mật và giúp đồng chí nhận được hỗ trợ khi cần."
+      },
+      {
+        "text": "Câu 8. Trong 4 tuần qua, những ý nghĩ muốn chết, không muốn tiếp tục sống hoặc nghĩ đến việc tự sát xuất hiện với đồng chí thường xuyên như thế nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Không có (1)"
+          ],
+          [
+            "□ Ít hơn 1 lần mỗi tuần, tổng cộng khoảng 1-3 lần trong 4 tuần (2)"
+          ],
+          [
+            "□ Từ 1 đến 5 lần mỗi tuần (3)"
+          ],
+          [
+            "□ Hằng ngày, gần như hằng ngày hoặc nhiều lần trong một ngày (4)"
+          ]
+        ]
+      },
+      {
+        "text": "→ Nếu chọn “Không có”, chuyển sang Câu 16. Sau Câu 19, vẫn trả lời Câu 20."
+      },
+      {
+        "text": "Câu 9. Trong 4 tuần qua, ở lần kéo dài lâu nhất, những ý nghĩ trên kéo dài trong bao lâu?"
+      },
+      {
+        "rows": [
+          [
+            "□ Dưới 1 giờ, kể cả chỉ thoáng qua trong vài giây hoặc vài phút (2)"
+          ],
+          [
+            "□ Từ 1 giờ đến dưới 4 giờ (3)"
+          ],
+          [
+            "□ Từ 4 giờ trở lên, kéo dài phần lớn thời gian trong ngày hoặc gần như liên tục (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 10. Trong 4 tuần qua, vào lúc những ý nghĩ trên mạnh nhất, đồng chí có thể tự dừng những ý nghĩ đó hoặc chuyển sự chú ý sang việc khác không?"
+      },
+      {
+        "rows": [
+          [
+            "□ Có thể dừng hoặc chuyển sự chú ý một cách dễ dàng (2)"
+          ],
+          [
+            "□ Có thể dừng nhưng khó khăn, phải cố gắng nhiều hoặc cần người khác hỗ trợ (3)"
+          ],
+          [
+            "□ Không thể hoặc gần như không thể dừng; những ý nghĩ đó chi phối phần lớn suy nghĩ (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 11. Trong 7 ngày qua, lần gần nhất đồng chí có những ý nghĩ trên là khi nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Không xuất hiện trong 7 ngày qua (2)"
+          ],
+          [
+            "□ Có xuất hiện trong 7 ngày qua, nhưng hiện tại không có (3)"
+          ],
+          [
+            "□ Đang có ngay lúc trả lời phiếu (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 12. Trong 4 tuần qua, đồng chí đã nghĩ đến cách thức tự sát cụ thể và khả năng tiếp cận phương tiện liên quan ở mức nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Chưa nghĩ đến cách thức cụ thể (2)"
+          ],
+          [
+            "□ Đã nghĩ đến cách thức cụ thể nhưng hiện chưa có hoặc chưa thể tiếp cận phương tiện liên quan (3)"
+          ],
+          [
+            "□ Đã nghĩ đến cách thức cụ thể và hiện có thể tiếp cận phương tiện liên quan như vũ khí, thuốc hoặc phương tiện khác (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 13. Trong 4 tuần qua, đồng chí đã lập kế hoạch hoặc thực hiện hành động chuẩn bị cho việc tự sát ở mức nào? (ví dụ: chọn thời điểm, địa điểm, cất giữ phương tiện hoặc viết lời nhắn để lại)"
+      },
+      {
+        "rows": [
+          [
+            "□ Chưa lập kế hoạch và chưa có hành động chuẩn bị (2)"
+          ],
+          [
+            "□ Đã nghĩ đến hoặc lựa chọn thời điểm, địa điểm hay các bước thực hiện, nhưng chưa có hành động chuẩn bị (3)"
+          ],
+          [
+            "□ Đã thực hiện ít nhất một hành động chuẩn bị (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 14. Ngay lúc này, đồng chí có ý định thực hiện tự sát ở mức nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Không có ý định thực hiện (2)"
+          ],
+          [
+            "□ Có ý định nhưng còn do dự, chưa quyết định thực hiện (3)"
+          ],
+          [
+            "□ Có ý định rõ ràng, đã quyết định thực hiện hoặc cảm thấy khó tự ngăn mình thực hiện (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Phần V. Những điều giữ đồng chí lại và nguồn hỗ trợ"
+      },
+      {
+        "text": "Câu 15. Khi những ý nghĩ tự sát mạnh nhất, những điều giữ đồng chí lại như gia đình, trách nhiệm, niềm tin, sợ đau đớn hoặc sợ cái chết có ngăn được đồng chí thực hiện tự sát không? (chỉ dành cho người có ý nghĩ tự sát ở Câu 8)"
+      },
+      {
+        "rows": [
+          [
+            "□ Có; những điều đó đủ sức ngăn tôi thực hiện (2)"
+          ],
+          [
+            "□ Không chắc những điều đó có ngăn được tôi hay không (3)"
+          ],
+          [
+            "□ Không ngăn được, hoặc tôi không thấy còn điều gì giữ mình lại (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 16. Khi gặp khó khăn nghiêm trọng, đồng chí có bao nhiêu người thực sự tin tưởng và có thể liên hệ để được hỗ trợ?"
+      },
+      {
+        "rows": [
+          [
+            "□ Từ 3 người trở lên (1)",
+            "□ 2 người (2)",
+            "□ 1 người (3)",
+            "□ Không có ai (4)"
+          ]
+        ]
+      },
+      {
+        "text": "→ Nếu chọn “Không có ai”, chuyển sang Câu 19."
+      },
+      {
+        "text": "Câu 17. Đồng chí tin rằng người mình tin tưởng nhất sẽ hỗ trợ khi đồng chí gặp khó khăn nghiêm trọng ở mức nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Chắc chắn sẽ hỗ trợ (1)",
+            "□ Có lẽ sẽ hỗ trợ (2)"
+          ],
+          [
+            "□ Không chắc người đó có thể hỗ trợ (3)",
+            "□ Không thể trông cậy vào người đó (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 18. Nếu cần được hỗ trợ khẩn cấp, đồng chí có thể liên hệ với người này trong vòng 24 giờ tới không?"
+      },
+      {
+        "rows": [
+          [
+            "□ Chắc chắn có thể liên hệ (1)",
+            "□ Có lẽ có thể liên hệ, nhưng có thể phải chờ (2)"
+          ],
+          [
+            "□ Khó liên hệ hoặc không chắc có thể liên hệ (3)",
+            "□ Không thể liên hệ hoặc người đó không thể hỗ trợ (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Câu 19. Trước đây, khi gặp khó khăn lớn, đồng chí thường tìm kiếm sự giúp đỡ như thế nào?"
+      },
+      {
+        "rows": [
+          [
+            "□ Chủ động tìm người hỗ trợ ngay khi nhận thấy mình gặp khó khăn (1)"
+          ],
+          [
+            "□ Chỉ tìm hoặc tiếp nhận sự giúp đỡ sau khi được người khác khuyên hay động viên (2)"
+          ],
+          [
+            "□ Ít khi tìm sự giúp đỡ, thường cố tự giải quyết một mình (3)"
+          ],
+          [
+            "□ Không tìm sự giúp đỡ hoặc không biết có thể tìm đến ai (4)"
+          ]
+        ]
+      },
+      {
+        "text": "Phần VI. Khả năng giữ an toàn cho bản thân và các yếu tố nguy cơ cấp tính"
+      },
+      {
+        "text": "Câu 20. Đồng chí hãy đánh dấu “Có” hoặc “Không” cho từng nội dung dưới đây:"
+      },
+      {
+        "rows": [
+          [
+            "Nội dung",
+            "Có",
+            "Không"
+          ],
+          [
+            "20a. Trong 24 giờ tới, đồng chí có lo rằng mình không thể giữ an toàn cho bản thân trước nguy cơ tự làm hại hoặc tự sát không?",
+            "□"
+          ],
+          [
+            "20b. Trong 72 giờ qua, đồng chí có lúc kích động hoặc bồn chồn đến mức khó kiểm soát hành động của mình không?",
+            "□"
+          ],
+          [
+            "20c. Trong 4 tuần qua, đồng chí có lần nào uống rượu, bia đến mức say hoặc không làm chủ được hành vi không?",
+            "□"
+          ],
+          [
+            "20d. Trong 4 tuần qua, đồng chí có sử dụng ma túy, chất gây nghiện hoặc thuốc không theo chỉ định của nhân viên y tế không?",
+            "□"
+          ]
+        ]
+      },
+      {
+        "text": "Không tính thuốc được sử dụng đúng đơn và đúng hướng dẫn của nhân viên y tế."
+      },
+      {
+        "text": "Xin cảm ơn đồng chí đã hoàn thành phiếu!"
+      }
+    ],
+    "review": true,
+    "source": "/surveys/forms/form-1.docx"
+  },
+  {
+    "id": "F02",
+    "title": "Thông tin đối tượng tham gia",
+    "group": "military",
+    "code": "KCB-TT.01",
+    "questions": [
+      {
+        "label": "Họ và tên (nếu được phép thu thập)",
+        "options": [],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Năm sinh",
+        "options": [],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Giới tính",
+        "options": [
+          "Nam",
+          "Nữ"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Dân tộc",
+        "options": [],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Tôn giáo",
+        "options": [],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Địa chỉ",
+        "options": [],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Trình độ học vấn",
+        "options": [
+          "Không biết chữ",
+          "Cấp 1",
+          "Cấp 2",
+          "Cấp 3",
+          "Dưới sơ cấp",
+          "Sơ cấp",
+          "Trung cấp",
+          "Cao đẳng",
+          "Đại học",
+          "Trên đại học"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Tình trạng hôn nhân",
+        "options": [],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "Đối tượng quân nhân",
+        "options": [],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "Thu nhập (triệu VNĐ/tháng)",
+        "options": [],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "Thời gian phục vụ (năm)",
+        "options": [],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "Nhóm lực lượng/đơn vị",
+        "options": [
+          "Lục quân",
+          "PKKQ",
+          "Hải quân",
+          "Hóa học",
+          "Pháo binh - Tên lửa",
+          "Học viện/nhà trường",
+          "Khác"
+        ],
+        "id": "Q012",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU THÔNG TIN ĐỐI TƯỢNG"
+      },
+      {
+        "text": "THAM GIA TRẢ LỜI PHIẾU ĐIỀU TRA"
+      },
+      {
+        "text": "(Đề tài: KCB-TT.01)"
+      },
+      {
+        "rows": [
+          [
+            "Mã số : KCB-TT.01…………"
+          ],
+          [
+            "1. Họ và tên:……………………………………………………………………"
+          ],
+          [
+            "2.Năm sinh:……………",
+            "3.Giới tính:       Nam:                        Nữ:"
+          ],
+          [
+            "4. Dân tộc:………………………..",
+            "5. Tôn giáo: …………………………………"
+          ],
+          [
+            "6. Địa chỉ:………………………………………………………………………………"
+          ],
+          [
+            "7. Trình độ học vấn:"
+          ],
+          [
+            "Không biết chữ",
+            "Cấp 1",
+            "Cấp 2",
+            "Cấp 3"
+          ],
+          [
+            "Dưới sơ cấp",
+            "Sơ cấp",
+            "Trung cấp"
+          ],
+          [
+            "Cao đẳng",
+            "Đại học",
+            "Trên đại học"
+          ],
+          [
+            "8. Tình trạng hôn nhân:"
+          ],
+          [
+            "9. Đối tượng quân nhân"
+          ],
+          [
+            "10. Thu nhập: ……………………. triệu VNĐ/tháng"
+          ],
+          [
+            "11. Thời gian phục vụ/công tác trong quân đội:…………….năm"
+          ],
+          [
+            "12.  Nhóm lực lượng/đơn vị công tác chính:"
+          ],
+          [
+            "Lục quân",
+            "PKKQ",
+            "Hải quân",
+            "Hóa học"
+          ],
+          [
+            "Pháo binh- Tên lửa",
+            "Học viện/nhà trường",
+            "Khác"
+          ]
+        ]
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ]
+        ]
+      }
+    ],
+    "review": false,
+    "source": "/surveys/forms/form-2.docx"
+  },
+  {
+    "id": "F03",
+    "title": "Sàng lọc trầm cảm",
+    "group": "military",
+    "code": "KCB-TT.01",
+    "questions": [
+      {
+        "label": "Đồng chí có từng trải qua những giai đoạn cảm thấy chán nản, buồn bã hoặc thất vọng kéo dài hầu như cả ngày?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy mất hết hứng thú với những hoạt động phong trào, sinh hoạt ở đơn vị mà trước đây mình vốn rất thích?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí hiện đang tự mình hoàn thành phiếu khảo sát này để phản ánh tình trạng bản thân.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy hoàn toàn kiệt sức, kiệt quệ hoặc thiếu năng lượng để duy trì các chế độ, nền nếp thường ngày?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy bản thân mình vô dụng, tự trách bản thân hoặc có cảm giác tội lỗi không đáng có?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí trải qua những ngày cảm thấy cơ thể hoàn toàn cạn kiệt năng lượng để thực hiện các chế độ thường ngày",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng gặp khó khăn lớn trong việc tập trung, ghi nhớ mệnh lệnh hoặc đưa ra quyết định xử lý công việc?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí hoàn toàn không thể hiểu hoặc thực hiện được bất kỳ một mệnh lệnh hay hướng dẫn đơn giản nào từ chỉ huy, dù là việc nhỏ nhất.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy chán ăn, ăn không ngon miệng tại bếp ăn đơn vị hoặc ngược lại là ăn quá nhiều bất thường?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng bị rối loạn giấc ngủ nghiêm trọng (khó ngủ, trằn trọc, thức dậy quá sớm) làm ảnh hưởng đến giờ báo thức của đơn vị?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "Trong suốt thời gian phục vụ quân ngũ, đồng chí chưa từng có một giây phút nào băn khoăn hay tiếc nuối về bất kỳ quyết định nào của bản thân.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy bồn chồn, đứng ngồi không yên hoặc ngược lại là tác phong, đi lại, nói năng trở nên chậm chạp rõ rệt?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q012",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng có những suy nghĩ bế tắc về cái chết hoặc cảm thấy cuộc sống không còn ý nghĩa?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q013",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy tương lai của mình hoàn toàn u tối và bế tắc?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q014",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU PHỎNG VẤN SÀNG LỌC TRẦM CẢM"
+      },
+      {
+        "text": "Ở CÁC LỰC LƯỢNG TRONG QUÂN ĐỘI"
+      },
+      {
+        "text": "Mã phiếu: KCB-TT.01………………………"
+      },
+      {
+        "text": "Dưới đây là nội dung khảo sát về các biểu hiện thường gặp trong thực tế. Đề nghị đồng chí tự đánh giá mức độ xuất hiện của các biểu hiện này ở bản thân trong 1 năm vừa qua bằng cách đánh dấu “X” vào phương án phù hợp nhất:"
+      },
+      {
+        "rows": [
+          [
+            "STT",
+            "Câu hỏi",
+            "Không bao giờ",
+            "Thỉnh thoảng",
+            "Thường xuyên",
+            "Liên tục"
+          ],
+          [
+            "",
+            "Đồng chí có từng trải qua những giai đoạn cảm thấy chán nản, buồn bã hoặc thất vọng kéo dài hầu như cả ngày?"
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy mất hết hứng thú với những hoạt động phong trào, sinh hoạt ở đơn vị mà trước đây mình vốn rất thích?"
+          ],
+          [
+            "",
+            "Đồng chí hiện đang tự mình hoàn thành phiếu khảo sát này để phản ánh tình trạng bản thân."
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy hoàn toàn kiệt sức, kiệt quệ hoặc thiếu năng lượng để duy trì các chế độ, nền nếp thường ngày?"
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy bản thân mình vô dụng, tự trách bản thân hoặc có cảm giác tội lỗi không đáng có?"
+          ],
+          [
+            "",
+            "Đồng chí trải qua những ngày cảm thấy cơ thể hoàn toàn cạn kiệt năng lượng để thực hiện các chế độ thường ngày"
+          ],
+          [
+            "",
+            "Đồng chí có từng gặp khó khăn lớn trong việc tập trung, ghi nhớ mệnh lệnh hoặc đưa ra quyết định xử lý công việc?"
+          ],
+          [
+            "",
+            "Đồng chí hoàn toàn không thể hiểu hoặc thực hiện được bất kỳ một mệnh lệnh hay hướng dẫn đơn giản nào từ chỉ huy, dù là việc nhỏ nhất."
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy chán ăn, ăn không ngon miệng tại bếp ăn đơn vị hoặc ngược lại là ăn quá nhiều bất thường?"
+          ],
+          [
+            "",
+            "Đồng chí có từng bị rối loạn giấc ngủ nghiêm trọng (khó ngủ, trằn trọc, thức dậy quá sớm) làm ảnh hưởng đến giờ báo thức của đơn vị?"
+          ],
+          [
+            "",
+            "Trong suốt thời gian phục vụ quân ngũ, đồng chí chưa từng có một giây phút nào băn khoăn hay tiếc nuối về bất kỳ quyết định nào của bản thân."
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy bồn chồn, đứng ngồi không yên hoặc ngược lại là tác phong, đi lại, nói năng trở nên chậm chạp rõ rệt?"
+          ],
+          [
+            "",
+            "Đồng chí có từng có những suy nghĩ bế tắc về cái chết hoặc cảm thấy cuộc sống không còn ý nghĩa?"
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy tương lai của mình hoàn toàn u tối và bế tắc?"
+          ]
+        ]
+      },
+      {
+        "text": "Trân trọng cảm ơn!"
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ],
+          [
+            ""
+          ]
+        ]
+      }
+    ],
+    "review": false,
+    "source": "/surveys/forms/form-3.docx"
+  },
+  {
+    "id": "F04",
+    "title": "Sàng lọc cảm xúc lưỡng cực",
+    "group": "military",
+    "code": "KCB-TT.01",
+    "questions": [
+      {
+        "label": "Đồng chí có từng có những giai đoạn kéo dài vài ngày trở lên cảm thấy tràn đầy năng lượng, thực hiện nhiệm vụ liên tục mà không thấy mệt mỏi?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng có những lúc suy nghĩ trong đầu chạy dồn dập, chuyển quá nhanh từ chủ đề này sang chủ đề khác khiến bản thân khó kiểm soát?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Tôi chưa bao giờ nói dối hay nói sai sự thật dù chỉ là một điều rất nhỏ nhặt trong suốt cuộc đời mình.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy bản thân mình đặc biệt quan trọng, tài giỏi hoặc có năng lực vượt trội hơn hẳn các đồng đội khác?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng nói rất nhiều, nói nhanh và đồng đội/cấp trên khó ngắt lời hơn bình thường trong quá trình hội thao, sinh hoạt?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Để đảm bảo dữ liệu phiếu khảo sát hợp lệ theo quy định, đồng chí vui lòng chọn phương án “Không bao giờ” ở câu này",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng thấy nhu cầu ngủ giảm đi rõ rệt (chỉ chợp mắt vài tiếng) nhưng vẫn thấy hoàn toàn tỉnh táo và khỏe khoắn để làm nhiệm vụ?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng trở nên rất dễ cáu kỉnh, gắt gỏng hoặc nổi giận với đồng đội vì những lý do rất nhỏ nhặt?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "Các ý tưởng và suy nghĩ trong đầu tôi xuất hiện liên tục, dồn dập khiến tôi rất khó kiểm soát.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng nhận hoặc ôm đồm quá nhiều công việc, nhiệm vụ cùng lúc đến mức khó hoàn thành hết toàn bộ?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng có những hành vi liều lĩnh, vi phạm quy định hoặc đưa ra quyết định vội vã mà sau đó bản thân phải hối hận?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí bị suy giảm trí nhớ nghiêm trọng đến mức hoàn toàn không thể nhớ nổi tên của chính mình hoặc họ tên của chỉ huy?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q012",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy tâm trạng mình hưng phấn, phấn khích một cách bất thường mà không có lý do rõ ràng?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q013",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có từng cảm thấy rất dễ bị phân tâm, khó tập trung vào nhiệm vụ vì bị thu hút bởi những việc không liên quan xung quanh?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q014",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU PHỎNG VẤN SÀNG LỌC CẢM XÚC LƯỠNG CỰC"
+      },
+      {
+        "text": "Ở CÁC LỰC LƯỢNG TRONG QUÂN ĐỘI"
+      },
+      {
+        "text": "Mã phiếu: KCB-TT.01………………………"
+      },
+      {
+        "text": "Dưới đây là nội dung khảo sát về các biểu hiện thường gặp trong thực tế. Đề nghị đồng chí tự đánh giá mức độ xuất hiện của các biểu hiện này ở bản thân trong 1 năm vừa qua bằng cách đánh dấu “X” vào phương án phù hợp nhất:"
+      },
+      {
+        "rows": [
+          [
+            "STT",
+            "Câu hỏi",
+            "Không bao giờ",
+            "Thỉnh thoảng",
+            "Thường xuyên",
+            "Liên tục"
+          ],
+          [
+            "",
+            "Đồng chí có từng có những giai đoạn kéo dài vài ngày trở lên cảm thấy tràn đầy năng lượng, thực hiện nhiệm vụ liên tục mà không thấy mệt mỏi?"
+          ],
+          [
+            "",
+            "Đồng chí có từng có những lúc suy nghĩ trong đầu chạy dồn dập, chuyển quá nhanh từ chủ đề này sang chủ đề khác khiến bản thân khó kiểm soát?"
+          ],
+          [
+            "",
+            "Tôi chưa bao giờ nói dối hay nói sai sự thật dù chỉ là một điều rất nhỏ nhặt trong suốt cuộc đời mình."
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy bản thân mình đặc biệt quan trọng, tài giỏi hoặc có năng lực vượt trội hơn hẳn các đồng đội khác?"
+          ],
+          [
+            "",
+            "Đồng chí có từng nói rất nhiều, nói nhanh và đồng đội/cấp trên khó ngắt lời hơn bình thường trong quá trình hội thao, sinh hoạt?"
+          ],
+          [
+            "",
+            "Để đảm bảo dữ liệu phiếu khảo sát hợp lệ theo quy định, đồng chí vui lòng chọn phương án “Không bao giờ” ở câu này"
+          ],
+          [
+            "",
+            "Đồng chí có từng thấy nhu cầu ngủ giảm đi rõ rệt (chỉ chợp mắt vài tiếng) nhưng vẫn thấy hoàn toàn tỉnh táo và khỏe khoắn để làm nhiệm vụ?"
+          ],
+          [
+            "",
+            "Đồng chí có từng trở nên rất dễ cáu kỉnh, gắt gỏng hoặc nổi giận với đồng đội vì những lý do rất nhỏ nhặt?"
+          ],
+          [
+            "",
+            "Các ý tưởng và suy nghĩ trong đầu tôi xuất hiện liên tục, dồn dập khiến tôi rất khó kiểm soát."
+          ],
+          [
+            "",
+            "Đồng chí có từng nhận hoặc ôm đồm quá nhiều công việc, nhiệm vụ cùng lúc đến mức khó hoàn thành hết toàn bộ?"
+          ],
+          [
+            "",
+            "Đồng chí có từng có những hành vi liều lĩnh, vi phạm quy định hoặc đưa ra quyết định vội vã mà sau đó bản thân phải hối hận?"
+          ],
+          [
+            "",
+            "Đồng chí bị suy giảm trí nhớ nghiêm trọng đến mức hoàn toàn không thể nhớ nổi tên của chính mình hoặc họ tên của chỉ huy?"
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy tâm trạng mình hưng phấn, phấn khích một cách bất thường mà không có lý do rõ ràng?"
+          ],
+          [
+            "",
+            "Đồng chí có từng cảm thấy rất dễ bị phân tâm, khó tập trung vào nhiệm vụ vì bị thu hút bởi những việc không liên quan xung quanh?"
+          ]
+        ]
+      },
+      {
+        "text": "Trân trọng cảm ơn!"
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ],
+          [
+            ""
+          ]
+        ]
+      }
+    ],
+    "review": false,
+    "source": "/surveys/forms/form-4.docx"
+  },
+  {
+    "id": "F05",
+    "title": "Sàng lọc tâm thần phân liệt",
+    "group": "military",
+    "code": "KCB-TT.01",
+    "questions": [
+      {
+        "label": "Đồng chí có bao giờ cảm thấy như thể mọi người đang nói bóng gió hoặc ám chỉ về mình không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy dường như một số người xung quanh đang che giấu thân phận thật của họ không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí luôn luôn giữ được thái độ bình tĩnh tuyệt đối và chưa bao giờ biết cáu giận hay bực tức với bất kỳ ai, dù họ làm sai trái.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy mình đang bị ai đó theo dõi, rình rập hoặc cố tình đeo bám một cách bất thường không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy mình đang bị người khác đe dọa, uy hiếp hoặc ép buộc làm điều gì trái ý muốn không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy dường như có một âm mưu ngầm đang chống lại mình trong đơn vị không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy những suy nghĩ xuất hiện trong đầu thực chất là do người khác nhét vào không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy suy nghĩ của mình đang bị phát tán ra ngoài (như có loa phát thanh hoặc sóng truyền thanh) khiến những người xung quanh đều biết đồng chí đang nghĩ gì không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy mình đang bị điều khiển bởi một thế lực siêu nhiên hoặc bên ngoài không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí đôi khi cảm thấy như một số người xung quanh đang âm thầm phối hợp để gây bất lợi cho mình không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy các thiết bị điện tử có thể điều khiển hoặc tác động đến suy nghĩ của mình không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy bản thân mình có năng lượng đặc biệt, có thể đọc và biết chính xác người khác đang suy nghĩ gì trong đầu không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q012",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ tự cảm thấy mình là một người cực kỳ đặc biệt, vĩ đại hoặc sở hữu những năng lực siêu phàm, phi thường hơn hẳn người khác không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q013",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ cảm thấy một người thân, đồng đội hoặc người quen nào đó thực chất đã bị hoán đổi, thay thế bằng một kẻ mạo danh có ngoại hình giống hệt họ không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q014",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ nghe thấy tiếng người nói vô hình khi đang gác hoặc ở một mình không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q015",
+        "multi": false
+      },
+      {
+        "label": "Khi ở một mình, đồng chí có bao giờ nghe thấy tiếng của hai hay nhiều người đang trò chuyện, tranh luận hoặc bàn tán qua lại với nhau trong đầu hoặc vang lên từ bên ngoài không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q016",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có bao giờ nhìn thấy những vật thể, bóng người, hoặc con vật lạ xuất hiện xung quanh mà những người khác đứng cùng không thể nhìn thấy không?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q017",
+        "multi": false
+      },
+      {
+        "label": "Nhằm xác nhận đồng chí đang đọc kỹ phiếu, vui lòng chọn phương án “Không bao giờ” ở câu hỏi này.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q018",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí không còn biết mình đang là con người hay là một đồ vật nữa, tâm trí hoàn toàn biến mất",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q019",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU PHỎNG VẤN SÀNG LỌC TÂM THẦN PHÂN LIỆT"
+      },
+      {
+        "text": "Ở CÁC LỰC LƯỢNG TRONG QUÂN ĐỘI"
+      },
+      {
+        "text": "Mã phiếu: KCB-TT.01………………………"
+      },
+      {
+        "text": "Dưới đây là nội dung khảo sát về các biểu hiện thường gặp trong thực tế. Đề nghị đồng chí tự đánh giá mức độ xuất hiện của các biểu hiện này ở bản thân trong 1 năm vừa qua bằng cách đánh dấu “X” vào phương án phù hợp nhất:"
+      },
+      {
+        "rows": [
+          [
+            "STT",
+            "Câu hỏi",
+            "Không bao giờ",
+            "Thỉnh thoảng",
+            "Thường xuyên",
+            "Liên tục"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy như thể mọi người đang nói bóng gió hoặc ám chỉ về mình không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy dường như một số người xung quanh đang che giấu thân phận thật của họ không?"
+          ],
+          [
+            "",
+            "Đồng chí luôn luôn giữ được thái độ bình tĩnh tuyệt đối và chưa bao giờ biết cáu giận hay bực tức với bất kỳ ai, dù họ làm sai trái."
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy mình đang bị ai đó theo dõi, rình rập hoặc cố tình đeo bám một cách bất thường không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy mình đang bị người khác đe dọa, uy hiếp hoặc ép buộc làm điều gì trái ý muốn không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy dường như có một âm mưu ngầm đang chống lại mình trong đơn vị không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy những suy nghĩ xuất hiện trong đầu thực chất là do người khác nhét vào không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy suy nghĩ của mình đang bị phát tán ra ngoài (như có loa phát thanh hoặc sóng truyền thanh) khiến những người xung quanh đều biết đồng chí đang nghĩ gì không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy mình đang bị điều khiển bởi một thế lực siêu nhiên hoặc bên ngoài không?"
+          ],
+          [
+            "",
+            "Đồng chí đôi khi cảm thấy như một số người xung quanh đang âm thầm phối hợp để gây bất lợi cho mình không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy các thiết bị điện tử có thể điều khiển hoặc tác động đến suy nghĩ của mình không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy bản thân mình có năng lượng đặc biệt, có thể đọc và biết chính xác người khác đang suy nghĩ gì trong đầu không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ tự cảm thấy mình là một người cực kỳ đặc biệt, vĩ đại hoặc sở hữu những năng lực siêu phàm, phi thường hơn hẳn người khác không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ cảm thấy một người thân, đồng đội hoặc người quen nào đó thực chất đã bị hoán đổi, thay thế bằng một kẻ mạo danh có ngoại hình giống hệt họ không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ nghe thấy tiếng người nói vô hình khi đang gác hoặc ở một mình không?"
+          ],
+          [
+            "",
+            "Khi ở một mình, đồng chí có bao giờ nghe thấy tiếng của hai hay nhiều người đang trò chuyện, tranh luận hoặc bàn tán qua lại với nhau trong đầu hoặc vang lên từ bên ngoài không?"
+          ],
+          [
+            "",
+            "Đồng chí có bao giờ nhìn thấy những vật thể, bóng người, hoặc con vật lạ xuất hiện xung quanh mà những người khác đứng cùng không thể nhìn thấy không?"
+          ],
+          [
+            "",
+            "Nhằm xác nhận đồng chí đang đọc kỹ phiếu, vui lòng chọn phương án “Không bao giờ” ở câu hỏi này."
+          ],
+          [
+            "",
+            "Đồng chí không còn biết mình đang là con người hay là một đồ vật nữa, tâm trí hoàn toàn biến mất"
+          ]
+        ]
+      },
+      {
+        "text": "Trân trọng cảm ơn!"
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ],
+          [
+            ""
+          ]
+        ]
+      }
+    ],
+    "review": false,
+    "source": "/surveys/forms/form-5.docx"
+  },
+  {
+    "id": "F06",
+    "title": "Sàng lọc rối loạn sử dụng rượu",
+    "group": "military",
+    "code": "KCB-TT.01",
+    "questions": [
+      {
+        "label": "Đồng chí trong suốt 1 năm qua có uống đồ uống có cồn (rượu, bia) không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Trong một lần uống thông thường, đồng chí/bạn thường uống bao nhiêu đơn vị cồn? (1 đơn vị cồn = 1 cốc bia hơi, 1 lon bia, hoặc 1 chén rượu mạnh)",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí có thường uống từ 6 đơn vị cồn trở lên (quá chén) trong một lần uống không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Trong 12 tháng qua, có bao giờ đồng chí cần uống nước hoặc ăn cơm để duy trì sức khỏe và sự sống không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Trong 12 tháng qua, có bao giờ đồng chí uống một lượng lớn rượu/bia dẫn đến say xỉn trong một buổi tiệc không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Trong 12 tháng qua, có bao giờ đồng chí nhận ra mình không thể ngừng uống sau khi đã bắt đầu uống không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Trong 12 tháng qua, có bao giờ đồng chí đi ngủ muộn hoặc có một thói quen sinh hoạt nhỏ nào chưa thật sự khoa học không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Có bao giờ việc uống rượu/bia khiến đồng chí vi phạm kỷ luật, bỏ lỡ chế độ hoặc không hoàn thành nhiệm vụ?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí chưa bao giờ nhìn thấy hoặc biết đến bất kỳ loại đồ uống nào có chứa cồn (như rượu hay bia) trong suốt cuộc đời mình",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "Trong 12 tháng qua, có bao giờ đồng chí cần uống một ly rượu/bia ngay vào buổi sáng để tỉnh táo sau một đêm uống nhiều không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "Trong 12 tháng qua, có bao giờ đồng chí có cảm giác tội lỗi hoặc hối hận sau khi uống rượu/bia không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "Trong 12 tháng qua, có bao giờ đồng chí/bạn không thể nhớ được những gì đã xảy ra đêm qua vì trước đó đã uống rượu/bia không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q012",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí hoặc ai đó có từng bị chấn thương/thương tích do đồng chí uống rượu/bia không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q013",
+        "multi": false
+      },
+      {
+        "label": "Đã từng có người thân, đồng nghiệp, bác sĩ hoặc ai đó lo lắng về việc uống rượu/bia của đồng chí hoặc khuyên đồng chí nên bớt uống đi không?",
+        "options": [
+          "Phương án trả lời"
+        ],
+        "id": "Q014",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU PHỎNG VẤN SÀNG LỌC RỐI LOẠN SỬ DỤNG RƯỢU"
+      },
+      {
+        "text": "Ở CÁC LỰC LƯỢNG TRONG QUÂN ĐỘI"
+      },
+      {
+        "text": "Mã phiếu: KCB-TT.01………………………"
+      },
+      {
+        "text": "Dưới đây là nội dung khảo sát về các biểu hiện thường gặp trong thực tế. Đề nghị đồng chí tự đánh giá mức độ xuất hiện của các biểu hiện này ở bản thân bằng cách đánh dấu “X” vào phương án phù hợp nhất:"
+      },
+      {
+        "rows": [
+          [
+            "STT",
+            "Câu hỏi",
+            "Phương án trả lời"
+          ],
+          [
+            "",
+            "Đồng chí trong suốt 1 năm qua có uống đồ uống có cồn (rượu, bia) không?",
+            "Không bao giờ",
+            "1 lần mỗi tháng",
+            "2-4 lần mỗi tháng",
+            "2-3 lần mỗi tuần",
+            "từ 4 lần mỗi tuần"
+          ],
+          [
+            "",
+            "Trong một lần uống thông thường, đồng chí/bạn thường uống bao nhiêu đơn vị cồn? (1 đơn vị cồn = 1 cốc bia hơi, 1 lon bia, hoặc 1 chén rượu mạnh)",
+            "1-2",
+            "3-4",
+            "5-6",
+            "7-9",
+            "từ 10 trở lên"
+          ],
+          [
+            "",
+            "Đồng chí có thường uống từ 6 đơn vị cồn trở lên (quá chén) trong một lần uống không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần",
+            "Hầu như hàng ngày"
+          ],
+          [
+            "",
+            "Trong 12 tháng qua, có bao giờ đồng chí cần uống nước hoặc ăn cơm để duy trì sức khỏe và sự sống không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng ngày"
+          ],
+          [
+            "",
+            "Trong 12 tháng qua, có bao giờ đồng chí uống một lượng lớn rượu/bia dẫn đến say xỉn trong một buổi tiệc không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần"
+          ],
+          [
+            "",
+            "Trong 12 tháng qua, có bao giờ đồng chí nhận ra mình không thể ngừng uống sau khi đã bắt đầu uống không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần",
+            "Hầu như hàng ngày"
+          ],
+          [
+            "",
+            "Trong 12 tháng qua, có bao giờ đồng chí đi ngủ muộn hoặc có một thói quen sinh hoạt nhỏ nào chưa thật sự khoa học không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần",
+            "Hầu như hàng ngày"
+          ],
+          [
+            "",
+            "Có bao giờ việc uống rượu/bia khiến đồng chí vi phạm kỷ luật, bỏ lỡ chế độ hoặc không hoàn thành nhiệm vụ?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần",
+            "Hầu như hàng ngày"
+          ],
+          [
+            "",
+            "Đồng chí chưa bao giờ nhìn thấy hoặc biết đến bất kỳ loại đồ uống nào có chứa cồn (như rượu hay bia) trong suốt cuộc đời mình",
+            "Không bao giờ",
+            "Thỉnh thoảng",
+            "Thường xuyên",
+            "Liên tục"
+          ],
+          [
+            "",
+            "Trong 12 tháng qua, có bao giờ đồng chí cần uống một ly rượu/bia ngay vào buổi sáng để tỉnh táo sau một đêm uống nhiều không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần",
+            "Hầu như hàng ngày"
+          ],
+          [
+            "",
+            "Trong 12 tháng qua, có bao giờ đồng chí có cảm giác tội lỗi hoặc hối hận sau khi uống rượu/bia không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần",
+            "Hầu như hàng ngày"
+          ],
+          [
+            "",
+            "Trong 12 tháng qua, có bao giờ đồng chí/bạn không thể nhớ được những gì đã xảy ra đêm qua vì trước đó đã uống rượu/bia không?",
+            "Không bao giờ",
+            "Ít hơn hàng tháng",
+            "Hàng tháng",
+            "Hàng tuần",
+            "Hầu như hàng ngày"
+          ],
+          [
+            "",
+            "Đồng chí hoặc ai đó có từng bị chấn thương/thương tích do đồng chí uống rượu/bia không?",
+            "Không",
+            "Có nhưng không phải trong 12 tháng qua",
+            "Có, trong 12 tháng qua"
+          ],
+          [
+            "",
+            "Đã từng có người thân, đồng nghiệp, bác sĩ hoặc ai đó lo lắng về việc uống rượu/bia của đồng chí hoặc khuyên đồng chí nên bớt uống đi không?",
+            "Không",
+            "Có nhưng không phải trong 12 tháng qua",
+            "Có, trong 12 tháng qua"
+          ]
+        ]
+      },
+      {
+        "text": "Trân trọng cảm ơn!"
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ]
+        ]
+      }
+    ],
+    "review": false,
+    "source": "/surveys/forms/form-6.docx"
+  },
+  {
+    "id": "F07",
+    "title": "Sàng lọc rối loạn lo âu",
+    "group": "military",
+    "code": "KCB-TT.01",
+    "questions": [
+      {
+        "label": "Đồng chí cảm thấy lo lắng, bồn chồn hoặc căng thẳng thần kinh?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí không thể ngừng hoặc không kiểm soát được sự lo lắng?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí hoàn toàn không coi trọng bất kỳ quy định, điều lệnh nào và muốn vi phạm tất cả mọi quy định của đơn vị mỗi ngày.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí lo lắng quá mức về nhiều vấn đề khác nhau trong cuộc sống?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí chưa tham gia học tập, công tác trong môi trường quân đội.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí khó thư giãn hoặc khó thả lỏng tâm trí trong các giờ nghỉ, ngày nghỉ?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí thường xuyên ở trong trạng thái căng thẳng, bồn chồn và rất khó thư giãn tâm trí",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí bồn chồn đến mức khó ngồi yên một chỗ trong đội hình?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí trở nên dễ cáu gắt hoặc bực mình?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí đôi khi cũng cảm thấy đôi chút ngần ngại hoặc cần suy nghĩ kỹ trước khi nhận một nhiệm vụ mới được giao.",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "Đồng chí cảm thấy sợ hãi như thể có điều gì đó tồi tệ sắp xảy ra đối với bản thân hoặc đơn vị?",
+        "options": [
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
+        ],
+        "id": "Q011",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU PHỎNG VẤN SÀNG LỌC RỐI LOẠN LO ÂU"
+      },
+      {
+        "text": "Ở CÁC LỰC LƯỢNG TRONG QUÂN ĐỘI"
+      },
+      {
+        "text": "Mã phiếu: KCB-TT.01………………………"
+      },
+      {
+        "text": "Dưới đây là nội dung khảo sát về các biểu hiện thường gặp trong thực tế. Đề nghị đồng chí tự đánh giá mức độ xuất hiện của các biểu hiện này ở bản thân trong 1 năm vừa qua bằng cách đánh dấu “X” vào phương án phù hợp nhất:"
+      },
+      {
+        "rows": [
+          [
+            "STT",
+            "Câu hỏi",
+            "Không bao giờ",
+            "Thỉnh thoảng",
+            "Thường xuyên",
+            "Liên tục"
+          ],
+          [
+            "",
+            "Đồng chí cảm thấy lo lắng, bồn chồn hoặc căng thẳng thần kinh?"
+          ],
+          [
+            "",
+            "Đồng chí không thể ngừng hoặc không kiểm soát được sự lo lắng?"
+          ],
+          [
+            "",
+            "Đồng chí hoàn toàn không coi trọng bất kỳ quy định, điều lệnh nào và muốn vi phạm tất cả mọi quy định của đơn vị mỗi ngày."
+          ],
+          [
+            "",
+            "Đồng chí lo lắng quá mức về nhiều vấn đề khác nhau trong cuộc sống?"
+          ],
+          [
+            "",
+            "Đồng chí chưa tham gia học tập, công tác trong môi trường quân đội."
+          ],
+          [
+            "",
+            "Đồng chí khó thư giãn hoặc khó thả lỏng tâm trí trong các giờ nghỉ, ngày nghỉ?"
+          ],
+          [
+            "",
+            "Đồng chí thường xuyên ở trong trạng thái căng thẳng, bồn chồn và rất khó thư giãn tâm trí"
+          ],
+          [
+            "",
+            "Đồng chí bồn chồn đến mức khó ngồi yên một chỗ trong đội hình?"
+          ],
+          [
+            "",
+            "Đồng chí trở nên dễ cáu gắt hoặc bực mình?"
+          ],
+          [
+            "",
+            "Đồng chí đôi khi cũng cảm thấy đôi chút ngần ngại hoặc cần suy nghĩ kỹ trước khi nhận một nhiệm vụ mới được giao."
+          ],
+          [
+            "",
+            "Đồng chí cảm thấy sợ hãi như thể có điều gì đó tồi tệ sắp xảy ra đối với bản thân hoặc đơn vị?"
+          ]
+        ]
+      },
+      {
+        "text": "Trân trọng cảm ơn!"
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ]
+        ]
+      }
+    ],
+    "review": false,
+    "source": "/surveys/forms/form-7.docx"
+  },
+  {
+    "id": "F08",
+    "title": "Nhân khẩu học & yếu tố nguy cơ",
+    "group": "youth",
+    "code": "KCB-TT.02",
+    "questions": [
+      {
+        "label": "Họ và tên (nếu được phép thu thập)",
+        "options": [],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "Tuổi",
+        "options": [],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "Giới tính",
+        "options": [
+          "Nam",
+          "Nữ"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "Dân tộc",
+        "options": [],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "Tôn giáo",
+        "options": [],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "Địa chỉ",
+        "options": [],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "Câu 7. Nơi cư trú chủ yếu hiện nay",
+        "options": [
+          "Thành thị",
+          "Nông thôn",
+          "Miền núi hoặc vùng sâu, vùng xa",
+          "Khác: ................"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "Câu 8. Hiện nay bạn đang sống chủ yếu với ai?",
+        "options": [
+          "Cả cha và mẹ",
+          "Chỉ với cha hoặc mẹ",
+          "Vợ/chồng hoặc người yêu",
+          "Người thân khác",
+          "Bạn bè",
+          "Sống một mình",
+          "Khác"
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "Câu 9. Tình trạng hôn nhân hiện tại",
+        "options": [
+          "Chưa kết hôn",
+          "Đã kết hôn",
+          "Sống chung như vợ chồng",
+          "Ly thân/ly hôn",
+          "Góa"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "Câu 10. Trình độ học vấn cao nhất",
+        "options": [
+          "THCS (cấp 2) hoặc thấp hơn",
+          "THPT (cấp 3)",
+          "Trung cấp",
+          "Cao đẳng",
+          "Đại học",
+          "Sau đại học"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "Câu 11. Tình trạng học tập/việc làm hiện tại",
+        "options": [
+          "Đang đi học",
+          "Có việc làm ổn định",
+          "Có việc làm nhưng không ổn định",
+          "Vừa học vừa làm",
+          "Đang thất nghiệp/tìm việc",
+          "Không học và không làm việc",
+          "Khác"
+        ],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "Câu 12. Bạn tự đánh giá điều kiện kinh tế hiện tại của bản thân/gia đình như thế nào?",
+        "options": [
+          "Khó khăn",
+          "Dưới mức trung bình",
+          "Trung bình",
+          "Khá",
+          "Tốt"
+        ],
+        "id": "Q012",
+        "multi": false
+      },
+      {
+        "label": "Câu 13. Theo bạn được biết, khi mẹ mang thai bạn hoặc sinh bạn, mẹ có mắc bệnh nặng, uống rượu/bia, sử dụng chất gây nghiện, hoặc bạn có bị sinh thiếu tháng, bị ngạt hay gặp vấn đề nghiêm trọng khác khi sinh không?",
+        "options": [
+          "Có",
+          "Không",
+          "Không biết"
+        ],
+        "id": "Q013",
+        "multi": false
+      },
+      {
+        "label": "Câu 14. Khi còn nhỏ, bạn có từng bị chấn thương đầu nặng, viêm não, viêm màng não hoặc co giật kéo dài không?",
+        "options": [
+          "Có",
+          "Không",
+          "Không nhớ/không biết"
+        ],
+        "id": "Q014",
+        "multi": false
+      },
+      {
+        "label": "Câu 15. Bạn có đang mắc bệnh kéo dài ảnh hưởng đáng kể đến sinh hoạt, học tập hoặc công việc không?",
+        "options": [
+          "Có",
+          "Không"
+        ],
+        "id": "Q015",
+        "multi": false
+      },
+      {
+        "label": "Câu 16. Trong gia đình của bạn có ai từng được chẩn đoán hoặc điều trị vì rối loạn tâm thần không?",
+        "options": [
+          "Có",
+          "Không",
+          "Không biết"
+        ],
+        "id": "Q016",
+        "multi": false
+      },
+      {
+        "label": "Câu 17. Trong gia đình của bạn, có ai từng có hành vi tự sát không?",
+        "options": [
+          "Có",
+          "Không",
+          "Không biết"
+        ],
+        "id": "Q017",
+        "multi": false
+      },
+      {
+        "label": "Câu 18. Trước 18 tuổi, bạn có từng phải sống xa cha mẹ dù không muốn không?",
+        "options": [
+          "Không",
+          "Có, trong thời gian ngắn",
+          "Có, kéo dài hoặc nhiều lần"
+        ],
+        "id": "Q018",
+        "multi": false
+      },
+      {
+        "label": "Câu 19. Trước 18 tuổi, gia đình bạn có thường xuyên xảy ra xung đột, cãi vã hoặc bạo lực giữa các thành viên không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên"
+        ],
+        "id": "Q019",
+        "multi": false
+      },
+      {
+        "label": "Câu 20. Khi còn nhỏ, bạn có bị cha mẹ hoặc người chăm sóc quát mắng, xúc phạm, hạ thấp hoặc đe dọa không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên"
+        ],
+        "id": "Q020",
+        "multi": false
+      },
+      {
+        "label": "Câu 21. Trước 18 tuổi, bạn có từng bị đánh đập hoặc bị phạt gây đau đớn, thương tích nghiêm trọng không?",
+        "options": [
+          "Không",
+          "Có, một vài lần",
+          "Có, nhiều lần"
+        ],
+        "id": "Q021",
+        "multi": false
+      },
+      {
+        "label": "Câu 22. Trước 18 tuổi, bạn có từng bị người khác đụng chạm vào vùng kín hoặc ép làm việc liên quan đến tình dục mà bạn không muốn không?",
+        "options": [
+          "Không",
+          "Có",
+          "Không muốn trả lời"
+        ],
+        "id": "Q022",
+        "multi": false
+      },
+      {
+        "label": "Câu 23. Khi còn nhỏ, bạn có cảm thấy không được quan tâm, chăm sóc hoặc hỗ trợ về mặt tình cảm không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên"
+        ],
+        "id": "Q023",
+        "multi": false
+      },
+      {
+        "label": "Câu 24. Trước 18 tuổi, gia đình bạn có từng trải qua biến cố lớn như cha hoặc mẹ mất sớm, ly hôn, tù tội, phá sản hoặc mất nguồn thu nhập chính không?",
+        "options": [
+          "Không",
+          "Có một biến cố",
+          "Có từ hai biến cố trở lên"
+        ],
+        "id": "Q024",
+        "multi": false
+      },
+      {
+        "label": "Câu 25. Trong 12 tháng qua, bạn cảm thấy áp lực học tập hoặc công việc ở mức nào?",
+        "options": [
+          "Không đáng kể",
+          "Nhẹ",
+          "Trung bình",
+          "Nhiều",
+          "Rất nhiều"
+        ],
+        "id": "Q025",
+        "multi": false
+      },
+      {
+        "label": "Câu 26. Trong 12 tháng qua, bạn có từng gặp thất bại lớn trong học tập hoặc công việc như thi trượt, bị thôi học, mất việc hoặc bị kỷ luật nghiêm trọng không?",
+        "options": [
+          "Không",
+          "Có một lần",
+          "Có từ hai lần trở lên"
+        ],
+        "id": "Q026",
+        "multi": false
+      },
+      {
+        "label": "Câu 27. Trong 12 tháng qua, bạn có thường xuyên lo lắng về tương lai nghề nghiệp, việc làm hoặc khả năng đáp ứng kỳ vọng của gia đình và xã hội không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Gần như liên tục"
+        ],
+        "id": "Q027",
+        "multi": false
+      },
+      {
+        "label": "Câu 28. Trong 12 tháng qua, bạn có thường xuyên phải học hoặc làm việc quá nhiều, thiếu thời gian nghỉ ngơi và phục hồi không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên"
+        ],
+        "id": "Q028",
+        "multi": false
+      },
+      {
+        "label": "Câu 29. Khi gặp khó khăn, bạn có người mà mình có thể tin tưởng để chia sẻ hoặc nhờ giúp đỡ không?",
+        "options": [
+          "Luôn có",
+          "Thường có",
+          "Đôi khi có",
+          "Hiếm khi có",
+          "Không có"
+        ],
+        "id": "Q029",
+        "multi": false
+      },
+      {
+        "label": "Câu 30. Trong 12 tháng qua, bạn có thường xuyên cảm thấy cô đơn hoặc bị cô lập khỏi những người xung quanh không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Gần như liên tục"
+        ],
+        "id": "Q030",
+        "multi": false
+      },
+      {
+        "label": "Câu 31. Bạn có từng bị bắt nạt trực tiếp tại trường học, nơi làm việc hoặc trong cộng đồng không?",
+        "options": [
+          "Không",
+          "Đã từng trước đây",
+          "Có trong 12 tháng qua",
+          "Đang xảy ra hiện tại"
+        ],
+        "id": "Q031",
+        "multi": false
+      },
+      {
+        "label": "Câu 32. Bạn có từng bị bắt nạt, xúc phạm, đe dọa hoặc quấy rối trên mạng xã hội/internet không?",
+        "options": [
+          "Không",
+          "Đã từng trước đây",
+          "Có trong 12 tháng qua",
+          "Đang xảy ra hiện tại"
+        ],
+        "id": "Q032",
+        "multi": false
+      },
+      {
+        "label": "Câu 33. Trong 12 tháng qua, bạn có trải qua xung đột, chia tay hoặc đổ vỡ một mối quan hệ tình cảm quan trọng không?",
+        "options": [
+          "Không",
+          "Có",
+          "Không áp dụng"
+        ],
+        "id": "Q033",
+        "multi": false
+      },
+      {
+        "label": "Câu 34. Trong 12 tháng qua, bạn có từng bị phân biệt đối xử, kỳ thị hoặc đối xử bất công nghiêm trọng do hoàn cảnh cá nhân của mình không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên"
+        ],
+        "id": "Q034",
+        "multi": false
+      },
+      {
+        "label": "Câu 35. Trong 3 tháng qua, trung bình bạn ngủ bao nhiêu giờ mỗi đêm?",
+        "options": [
+          "Dưới 5 giờ",
+          "Từ 5 đến dưới 6 giờ",
+          "Từ 6 đến dưới 7 giờ",
+          "Từ 7 đến 9 giờ",
+          "Trên 9 giờ"
+        ],
+        "id": "Q035",
+        "multi": false
+      },
+      {
+        "label": "Câu 36. Trong 3 tháng qua, bạn thường gặp khó khăn về giấc ngủ (khó vào giấc, thức giấc nhiều lần, thức quá sớm hoặc ngủ không hồi phục) ở mức nào?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Gần như hằng ngày"
+        ],
+        "id": "Q036",
+        "multi": false
+      },
+      {
+        "label": "Câu 37. Trong 3 tháng qua, trung bình mỗi ngày bạn dành bao nhiêu thời gian cho điện thoại, mạng xã hội, trò chơi điện tử hoặc giải trí trên màn hình ngoài mục đích học tập hoặc công việc?",
+        "options": [
+          "Dưới 2 giờ",
+          "2-4 giờ",
+          "Trên 4 đến 6 giờ",
+          "Trên 6 đến 8 giờ",
+          "Trên 8 giờ"
+        ],
+        "id": "Q037",
+        "multi": false
+      },
+      {
+        "label": "Câu 38. Trong 3 tháng qua, việc sử dụng điện thoại, mạng xã hội hoặc trò chơi điện tử có khiến bạn bỏ bê giấc ngủ, học tập, công việc hoặc các mối quan hệ không?",
+        "options": [
+          "Không",
+          "Hiếm khi",
+          "Thỉnh thoảng",
+          "Thường xuyên"
+        ],
+        "id": "Q038",
+        "multi": false
+      },
+      {
+        "label": "Câu 39. Trong 3 tháng qua, bạn tham gia hoạt động thể lực hoặc tập luyện ít nhất 30 phút với tần suất nào?",
+        "options": [
+          "5-7 ngày/tuần",
+          "3-4 ngày/tuần",
+          "1-2 ngày/tuần",
+          "Ít hơn 1 ngày/tuần",
+          "Hầu như không"
+        ],
+        "id": "Q039",
+        "multi": false
+      },
+      {
+        "label": "Câu 40. Trong 12 tháng qua, bạn sử dụng rượu bia hoặc đồ uống có cồn khác với tần suất nào?",
+        "options": [
+          "Không sử dụng",
+          "Ít hơn 1 lần/tháng",
+          "1-3 lần/tháng",
+          "1-3 lần/tuần",
+          "Từ 4 lần/tuần trở lên"
+        ],
+        "id": "Q040",
+        "multi": false
+      },
+      {
+        "label": "Câu 41. Trong 30 ngày qua, bạn sử dụng thuốc lá, thuốc lá điện tử hoặc sản phẩm chứa nicotine với tần suất nào?",
+        "options": [
+          "Không",
+          "Thỉnh thoảng",
+          "Hằng tuần",
+          "Hằng ngày"
+        ],
+        "id": "Q041",
+        "multi": false
+      },
+      {
+        "label": "Câu 42. Bạn đã từng sử dụng chất gây nghiện như cần sa, ma túy tổng hợp, ketamine, thuốc lắc hoặc chất tương tự không?",
+        "options": [
+          "Chưa bao giờ",
+          "Đã từng nhưng không dùng trong 12 tháng qua",
+          "Có sử dụng trong 12 tháng qua",
+          "Có sử dụng trong 30 ngày qua"
+        ],
+        "id": "Q042",
+        "multi": false
+      },
+      {
+        "label": "Câu 43. Trong 12 tháng qua, bạn có trải qua ít nhất một biến cố nghiêm trọng như người thân qua đời, bệnh hoặc tai nạn nặng, thất nghiệp kéo dài, khó khăn tài chính nghiêm trọng, đổ vỡ tình cảm, bạo lực, vấn đề pháp luật hoặc thiên tai, thảm họa không?",
+        "options": [
+          "Không",
+          "Có một biến cố",
+          "Có từ hai biến cố trở lên"
+        ],
+        "id": "Q043",
+        "multi": false
+      },
+      {
+        "label": "Câu 44. Nhìn chung, trong 12 tháng qua, mức độ căng thẳng mà bạn phải chịu là:",
+        "options": [
+          "Rất thấp",
+          "Thấp",
+          "Trung bình",
+          "Cao",
+          "Rất cao"
+        ],
+        "id": "Q044",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU PHỎNG VẤN ĐẶC ĐIỂM NHÂN KHẨU HỌC"
+      },
+      {
+        "text": "VÀ CÁC YẾU TỐ NGUY CƠ ẢNH HƯỞNG ĐẾN SỨC KHỎE TÂM THẦN"
+      },
+      {
+        "text": "Mã số : KCB-TT.02……………."
+      },
+      {
+        "rows": [
+          [
+            "I. Hành chính\n1. Họ và tên:……………………………………………………………………"
+          ],
+          [
+            "2.Tuổi:……………",
+            "3.Giới tính:       Nam:                        Nữ:"
+          ],
+          [
+            "4. Dân tộc:………………………..",
+            "5. Tôn giáo: …………………………………"
+          ],
+          [
+            "6. Địa chỉ:………………………………………………………………………………"
+          ]
+        ]
+      },
+      {
+        "text": "II. ĐẶC ĐIỂM NHÂN KHẨU - XÃ HỘI"
+      },
+      {
+        "text": "Câu 7. Nơi cư trú chủ yếu hiện nay"
+      },
+      {
+        "text": "☐ Thành thị                \t\t\t\t☐ Nông thôn"
+      },
+      {
+        "text": "☐ Miền núi hoặc vùng sâu, vùng xa                     ☐ Khác: ................"
+      },
+      {
+        "text": "Câu 8. Hiện nay bạn đang sống chủ yếu với ai?"
+      },
+      {
+        "text": "☐ Cả cha và mẹ\t\t\t\t\t☐ Chỉ với cha hoặc mẹ"
+      },
+      {
+        "text": "☐ Vợ/chồng hoặc người yêu\t\t\t☐ Người thân khác"
+      },
+      {
+        "text": "☐ Bạn bè\t\t\t\t\t\t☐ Sống một mình"
+      },
+      {
+        "text": "☐ Khác"
+      },
+      {
+        "text": "Câu 9. Tình trạng hôn nhân hiện tại"
+      },
+      {
+        "text": "☐ Chưa kết hôn\t\t\t\t\t☐ Đã kết hôn"
+      },
+      {
+        "text": "☐ Sống chung như vợ chồng\t\t\t☐ Ly thân/ly hôn"
+      },
+      {
+        "text": "☐ Góa"
+      },
+      {
+        "text": "Câu 10. Trình độ học vấn cao nhất"
+      },
+      {
+        "text": "☐ THCS (cấp 2) hoặc thấp hơn \t\t☐ THPT (cấp 3)   \t☐ Trung cấp"
+      },
+      {
+        "text": "☐ Cao đẳng\t\t\t\t☐ Đại học\t\t☐ Sau đại học"
+      },
+      {
+        "text": "Câu 11. Tình trạng học tập/việc làm hiện tại"
+      },
+      {
+        "text": "☐ Đang đi học\t\t\t\t\t☐ Có việc làm ổn định"
+      },
+      {
+        "text": "☐ Có việc làm nhưng không ổn định\t\t☐ Vừa học vừa làm"
+      },
+      {
+        "text": "☐ Đang thất nghiệp/tìm việc\t\t\t☐ Không học và không làm việc"
+      },
+      {
+        "text": "☐ Khác"
+      },
+      {
+        "text": "Câu 12. Bạn tự đánh giá điều kiện kinh tế hiện tại của bản thân/gia đình như thế nào?"
+      },
+      {
+        "text": "☐ Khó khăn\t☐ Dưới mức trung bình\t☐ Trung bình \t\t☐ Khá\t\t☐ Tốt"
+      },
+      {
+        "text": "III. SINH HỌC VÀ TIỀN SỬ CÁ NHÂN, GIA ĐÌNH"
+      },
+      {
+        "text": "Câu 13. Theo bạn được biết, khi mẹ mang thai bạn hoặc sinh bạn, mẹ có mắc bệnh nặng, uống rượu/bia, sử dụng chất gây nghiện, hoặc bạn có bị sinh thiếu tháng, bị ngạt hay gặp vấn đề nghiêm trọng khác khi sinh không?"
+      },
+      {
+        "text": "☐ Có\t\t☐ Không\t\t☐ Không biết"
+      },
+      {
+        "text": "Câu 14. Khi còn nhỏ, bạn có từng bị chấn thương đầu nặng, viêm não, viêm màng não hoặc co giật kéo dài không?"
+      },
+      {
+        "text": "☐ Có\t\t☐ Không\t\t☐ Không nhớ/không biết"
+      },
+      {
+        "text": "Câu 15. Bạn có đang mắc bệnh kéo dài ảnh hưởng đáng kể đến sinh hoạt, học tập hoặc công việc không?"
+      },
+      {
+        "text": "☐ Có\t\t☐ Không"
+      },
+      {
+        "text": "Câu 16. Trong gia đình của bạn có ai từng được chẩn đoán hoặc điều trị vì rối loạn tâm thần không?"
+      },
+      {
+        "text": "☐ Có\t\t☐ Không\t\t☐ Không biết"
+      },
+      {
+        "text": "Câu 17. Trong gia đình của bạn, có ai từng có hành vi tự sát không?"
+      },
+      {
+        "text": "☐ Có\t\t☐ Không\t\t☐ Không biết"
+      },
+      {
+        "text": "IV. GIA ĐÌNH VÀ TRẢI NGHIỆM BẤT LỢI THỜI THƠ ẤU"
+      },
+      {
+        "text": "Câu 18. Trước 18 tuổi, bạn có từng phải sống xa cha mẹ dù không muốn không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có, trong thời gian ngắn\t\t☐ Có, kéo dài hoặc nhiều lần"
+      },
+      {
+        "text": "Câu 19. Trước 18 tuổi, gia đình bạn có thường xuyên xảy ra xung đột, cãi vã hoặc bạo lực giữa các thành viên không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Hiếm khi\t\t☐ Thỉnh thoảng\t\t☐ Thường xuyên"
+      },
+      {
+        "text": "Câu 20. Khi còn nhỏ, bạn có bị cha mẹ hoặc người chăm sóc quát mắng, xúc phạm, hạ thấp hoặc đe dọa không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Hiếm khi\t\t☐ Thỉnh thoảng\t\t☐ Thường xuyên"
+      },
+      {
+        "text": "Câu 21. Trước 18 tuổi, bạn có từng bị đánh đập hoặc bị phạt gây đau đớn, thương tích nghiêm trọng không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có, một vài lần\t\t☐ Có, nhiều lần"
+      },
+      {
+        "text": "Câu 22. Trước 18 tuổi, bạn có từng bị người khác đụng chạm vào vùng kín hoặc ép làm việc liên quan đến tình dục mà bạn không muốn không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có\t\t\t\t☐ Không muốn trả lời"
+      },
+      {
+        "text": "Câu 23. Khi còn nhỏ, bạn có cảm thấy không được quan tâm, chăm sóc hoặc hỗ trợ về mặt tình cảm không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Hiếm khi\t\t\t☐ Thỉnh thoảng\t☐ Thường xuyên"
+      },
+      {
+        "text": "Câu 24. Trước 18 tuổi, gia đình bạn có từng trải qua biến cố lớn như cha hoặc mẹ mất sớm, ly hôn, tù tội, phá sản hoặc mất nguồn thu nhập chính không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có một biến cố\t\t☐ Có từ hai biến cố trở lên"
+      },
+      {
+        "text": "V. HỌC TẬP - NGHỀ NGHIỆP"
+      },
+      {
+        "text": "Câu 25. Trong 12 tháng qua, bạn cảm thấy áp lực học tập hoặc công việc ở mức nào?"
+      },
+      {
+        "text": "☐ Không đáng kể\t     ☐ Nhẹ      ☐ Trung bình\t   ☐ Nhiều\t ☐ Rất nhiều"
+      },
+      {
+        "text": "Câu 26. Trong 12 tháng qua, bạn có từng gặp thất bại lớn trong học tập hoặc công việc như thi trượt, bị thôi học, mất việc hoặc bị kỷ luật nghiêm trọng không?"
+      },
+      {
+        "text": "☐ Không\t\t\t☐ Có một lần              \t☐ Có từ hai lần trở lên"
+      },
+      {
+        "text": "Câu 27. Trong 12 tháng qua, bạn có thường xuyên lo lắng về tương lai nghề nghiệp, việc làm hoặc khả năng đáp ứng kỳ vọng của gia đình và xã hội không?"
+      },
+      {
+        "text": "☐ Không\t   ☐ Hiếm khi\t   ☐ Thỉnh thoảng\t☐ Thường xuyên\t☐ Gần như liên tục"
+      },
+      {
+        "text": "Câu 28. Trong 12 tháng qua, bạn có thường xuyên phải học hoặc làm việc quá nhiều, thiếu thời gian nghỉ ngơi và phục hồi không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Hiếm khi\t\t☐ Thỉnh thoảng\t\t☐ Thường xuyên"
+      },
+      {
+        "text": "VI. QUAN HỆ XÃ HỘI VÀ HỖ TRỢ XÃ HỘI"
+      },
+      {
+        "text": "Câu 29. Khi gặp khó khăn, bạn có người mà mình có thể tin tưởng để chia sẻ hoặc nhờ giúp đỡ không?"
+      },
+      {
+        "text": "☐ Luôn có      ☐ Thường có \t☐ Đôi khi có        ☐ Hiếm khi có\t☐ Không có"
+      },
+      {
+        "text": "Câu 30. Trong 12 tháng qua, bạn có thường xuyên cảm thấy cô đơn hoặc bị cô lập khỏi những người xung quanh không?"
+      },
+      {
+        "text": "☐ Không\t ☐ Hiếm khi     ☐ Thỉnh thoảng       ☐ Thường xuyên      ☐ Gần như liên tục"
+      },
+      {
+        "text": "Câu 31. Bạn có từng bị bắt nạt trực tiếp tại trường học, nơi làm việc hoặc trong cộng đồng không?"
+      },
+      {
+        "text": "☐ Không      ☐ Đã từng trước đây       ☐ Có trong 12 tháng qua      ☐ Đang xảy ra hiện tại"
+      },
+      {
+        "text": "Câu 32. Bạn có từng bị bắt nạt, xúc phạm, đe dọa hoặc quấy rối trên mạng xã hội/internet không?"
+      },
+      {
+        "text": "☐ Không   ☐ Đã từng trước đây     ☐ Có trong 12 tháng qua           ☐ Đang xảy ra hiện tại"
+      },
+      {
+        "text": "Câu 33. Trong 12 tháng qua, bạn có trải qua xung đột, chia tay hoặc đổ vỡ một mối quan hệ tình cảm quan trọng không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có\t\t☐ Không áp dụng"
+      },
+      {
+        "text": "Câu 34. Trong 12 tháng qua, bạn có từng bị phân biệt đối xử, kỳ thị hoặc đối xử bất công nghiêm trọng do hoàn cảnh cá nhân của mình không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Hiếm khi\t\t☐ Thỉnh thoảng\t\t☐ Thường xuyên"
+      },
+      {
+        "text": "VII. LỐI SỐNG VÀ HÀNH VI SỨC KHỎE"
+      },
+      {
+        "text": "Câu 35. Trong 3 tháng qua, trung bình bạn ngủ bao nhiêu giờ mỗi đêm?"
+      },
+      {
+        "text": "☐ Dưới 5 giờ\t☐ Từ 5 đến dưới 6 giờ\t☐ Từ 6 đến dưới 7 giờ"
+      },
+      {
+        "text": "☐ Từ 7 đến 9 giờ\t☐ Trên 9 giờ"
+      },
+      {
+        "text": "Câu 36. Trong 3 tháng qua, bạn thường gặp khó khăn về giấc ngủ (khó vào giấc, thức giấc nhiều lần, thức quá sớm hoặc ngủ không hồi phục) ở mức nào?"
+      },
+      {
+        "text": "☐ Không\t   ☐ Hiếm khi       ☐ Thỉnh thoảng        ☐ Thường xuyên\t ☐ Gần như hằng ngày"
+      },
+      {
+        "text": "Câu 37. Trong 3 tháng qua, trung bình mỗi ngày bạn dành bao nhiêu thời gian cho điện thoại, mạng xã hội, trò chơi điện tử hoặc giải trí trên màn hình ngoài mục đích học tập hoặc công việc?"
+      },
+      {
+        "text": "☐ Dưới 2 giờ\t☐ 2-4 giờ\t☐ Trên 4 đến 6 giờ\t☐ Trên 6 đến 8 giờ\t☐ Trên 8 giờ"
+      },
+      {
+        "text": "Câu 38. Trong 3 tháng qua, việc sử dụng điện thoại, mạng xã hội hoặc trò chơi điện tử có khiến bạn bỏ bê giấc ngủ, học tập, công việc hoặc các mối quan hệ không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Hiếm khi\t\t☐ Thỉnh thoảng\t\t☐ Thường xuyên"
+      },
+      {
+        "text": "Câu 39. Trong 3 tháng qua, bạn tham gia hoạt động thể lực hoặc tập luyện ít nhất 30 phút với tần suất nào?"
+      },
+      {
+        "text": "☐ 5-7 ngày/tuần\t\t            ☐ 3-4 ngày/tuần\t\t☐ 1-2 ngày/tuần"
+      },
+      {
+        "text": "☐ Ít hơn 1 ngày/tuần\t\t☐ Hầu như không"
+      },
+      {
+        "text": "VIII. RƯỢU, NICOTINE VÀ CHẤT TÁC ĐỘNG TÂM THẦN"
+      },
+      {
+        "text": "Câu 40. Trong 12 tháng qua, bạn sử dụng rượu bia hoặc đồ uống có cồn khác với tần suất nào?"
+      },
+      {
+        "text": "☐ Không sử dụng\t\t☐ Ít hơn 1 lần/tháng\t\t☐ 1-3 lần/tháng"
+      },
+      {
+        "text": "☐ 1-3 lần/tuần\t\t☐ Từ 4 lần/tuần trở lên"
+      },
+      {
+        "text": "Câu 41. Trong 30 ngày qua, bạn sử dụng thuốc lá, thuốc lá điện tử hoặc sản phẩm chứa nicotine với tần suất nào?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Thỉnh thoảng\t\t☐ Hằng tuần\t         ☐ Hằng ngày"
+      },
+      {
+        "text": "Câu 42. Bạn đã từng sử dụng chất gây nghiện như cần sa, ma túy tổng hợp, ketamine, thuốc lắc hoặc chất tương tự không?"
+      },
+      {
+        "text": "☐ Chưa bao giờ\t\t\t            ☐ Đã từng nhưng không dùng trong 12 tháng qua"
+      },
+      {
+        "text": "☐ Có sử dụng trong 12 tháng qua\t\t☐ Có sử dụng trong 30 ngày qua"
+      },
+      {
+        "text": "IX. BIẾN CỐ VÀ CĂNG THẲNG GẦN ĐÂY"
+      },
+      {
+        "text": "Câu 43. Trong 12 tháng qua, bạn có trải qua ít nhất một biến cố nghiêm trọng như người thân qua đời, bệnh hoặc tai nạn nặng, thất nghiệp kéo dài, khó khăn tài chính nghiêm trọng, đổ vỡ tình cảm, bạo lực, vấn đề pháp luật hoặc thiên tai, thảm họa không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có một biến cố\t\t☐ Có từ hai biến cố trở lên"
+      },
+      {
+        "text": "Câu 44. Nhìn chung, trong 12 tháng qua, mức độ căng thẳng mà bạn phải chịu là:"
+      },
+      {
+        "text": "☐ Rất thấp   \t☐ Thấp\t☐ Trung bình\t        ☐ Cao\t     ☐ Rất cao"
+      },
+      {
+        "text": "Trân trọng cảm ơn!"
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ],
+          [
+            ""
+          ]
+        ]
+      }
+    ],
+    "review": true,
+    "source": "/surveys/forms/form-8.docx"
+  },
+  {
+    "id": "F09",
+    "title": "Tỷ lệ & cơ cấu nguy cơ rối loạn tâm thần",
+    "group": "youth",
+    "code": "KCB-TT.02",
+    "questions": [
+      {
+        "label": "A1. Bạn đã từng nghe tiếng nói hoặc âm thanh mà những người xung quanh không nghe thấy không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q001",
+        "multi": false
+      },
+      {
+        "label": "A2. Bạn đã từng nhìn thấy người, hình ảnh hoặc sự vật mà người khác không nhìn thấy, khi bạn đang hoàn toàn tỉnh táo không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q002",
+        "multi": false
+      },
+      {
+        "label": "A3. Bạn đã từng tin rằng có người đang theo dõi, hãm hại hoặc âm mưu chống lại mình trong khi người xung quanh cho rằng điều đó không có thật không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q003",
+        "multi": false
+      },
+      {
+        "label": "A4. Bạn đã từng tin chắc rằng những việc xảy ra xung quanh đang ngầm nhắc đến hoặc nhằm riêng vào mình, dù người khác cho rằng đó chỉ là sự trùng hợp hoặc không liên quan đến bạn không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q004",
+        "multi": false
+      },
+      {
+        "label": "A5. Bạn đã từng cảm thấy người khác biết được suy nghĩ của mình dù mình không nói ra; có ai đó lấy suy nghĩ khỏi đầu hoặc đưa suy nghĩ vào đầu bạn; hoặc điều khiển hành động của bạn không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q005",
+        "multi": false
+      },
+      {
+        "label": "B1. Trong phần lớn thời gian, bạn có thường xuyên cảm thấy buồn, chán nản, trống rỗng hoặc tuyệt vọng không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q006",
+        "multi": false
+      },
+      {
+        "label": "B2. Bạn có giảm rõ rệt hứng thú hoặc không còn thấy vui với những hoạt động trước đây mình thường thích không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q007",
+        "multi": false
+      },
+      {
+        "label": "B3. Bạn có thường xuyên mệt mỏi, thiếu năng lượng hoặc thấy mọi việc trở nên khó thực hiện hơn bình thường không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q008",
+        "multi": false
+      },
+      {
+        "label": "B4. Bạn có thường xuyên cảm thấy bản thân vô dụng, thất bại hoặc tự trách mình quá mức không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q009",
+        "multi": false
+      },
+      {
+        "label": "C1. Trong 6 tháng qua, bạn có thường xuyên lo lắng quá mức về nhiều vấn đề và cảm thấy khó kiểm soát sự lo lắng đó không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q010",
+        "multi": false
+      },
+      {
+        "label": "C2. Bạn đã từng có cơn sợ hãi hoặc hoảng loạn xuất hiện đột ngột, tăng nhanh trong thời gian ngắn, kèm tim đập nhanh, khó thở, run, chóng mặt hoặc cảm giác sắp mất kiểm soát không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q011",
+        "multi": false
+      },
+      {
+        "label": "D1. Trong cuộc đời, bạn đã từng có một giai đoạn kéo dài vài ngày trở lên mà tâm trạng, mức năng lượng hoặc hoạt động của bạn khác rõ rệt so với trạng thái bình thường của mình không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q012",
+        "multi": false
+      },
+      {
+        "label": "D1. Trong giai đoạn đó, bạn có vui vẻ, phấn khích hoặc dễ cáu gắt rõ rệt hơn bình thường không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q013",
+        "multi": false
+      },
+      {
+        "label": "D2. Bạn có ngủ ít hơn nhiều nhưng vẫn cảm thấy khỏe, không thấy cần ngủ thêm không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q014",
+        "multi": false
+      },
+      {
+        "label": "D3. Bạn có nói nhiều/nói nhanh hơn rõ rệt hoặc cảm thấy suy nghĩ chạy rất nhanh, nhiều ý tưởng liên tục không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q015",
+        "multi": false
+      },
+      {
+        "label": "D4. Bạn có hoạt động nhiều hơn rõ rệt hoặc làm các việc bốc đồng như tiêu tiền quá mức, lái xe nguy hiểm hoặc quyết định thiếu cân nhắc không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q016",
+        "multi": false
+      },
+      {
+        "label": "E1. Trong 12 tháng qua, bạn có sử dụng rượu bia với tần suất hoặc số lượng khiến bản thân hoặc người khác lo ngại, hoặc từng say nhiều lần không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q017",
+        "multi": false
+      },
+      {
+        "label": "E2. Bạn có từng có triệu chứng khó chịu chẳng hạn run tay, vã mồ hôi hoặc bồn chồn khi ngừng uống rượu hoặc việc uống rượu ảnh hưởng đến sức khỏe, học tập, công việc hay gia đình không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q018",
+        "multi": false
+      },
+      {
+        "label": "E3. Bạn có từng xuất hiện bồn chồn hoặc la hét, đập phá; không biết rõ mình đang ở đâu; nghe hoặc nhìn thấy những thứ người khác không thấy sau khi uống nhiều hoặc khi ngừng rượu không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q019",
+        "multi": false
+      },
+      {
+        "label": "F1. Bạn đã từng sử dụng ma túy (như cần sa, ma túy đá, thuốc lắc, ke, heroin) hoặc hít bóng cười chưa?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q020",
+        "multi": false
+      },
+      {
+        "label": "F2. Trong 12 tháng qua, bạn có sử dụng bất kỳ chất nào kể trên không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q021",
+        "multi": false
+      },
+      {
+        "label": "G1. Bạn đã từng không nhớ được những việc quan trọng xảy ra với mình, dù không phải do quên thông thường, đang ngủ, uống rượu/bia hoặc dùng chất gây nghiện không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q022",
+        "multi": false
+      },
+      {
+        "label": "G2. Bạn đã từng có lúc cảm thấy bản thân hoặc thế giới xung quanh không thật, như đang đứng ngoài quan sát chính mình, trong khi vẫn biết cảm giác đó là bất thường không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q023",
+        "multi": false
+      },
+      {
+        "label": "G3. Bạn đã từng đột ngột bị yếu hoặc liệt tay chân, run, co giật, mất tiếng hay mất cảm giác mà chưa xác định được nguyên nhân không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q024",
+        "multi": false
+      },
+      {
+        "label": "H1. Trong nhiều năm, bạn có thường xuyên gặp khó khăn dai dẳng trong quan hệ với người khác, công việc hoặc học tập do cách suy nghĩ, cảm xúc hoặc ứng xử của mình không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q025",
+        "multi": false
+      },
+      {
+        "label": "H2. Những khó khăn đó có lặp lại trong nhiều hoàn cảnh khác nhau và khiến người khác thường xuyên nhận xét bạn quá nghi ngờ, quá bốc đồng, quá thất thường, quá cứng nhắc hoặc khó thích nghi không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q026",
+        "multi": false
+      },
+      {
+        "label": "I1. Trước 18 tuổi hoặc trong thời gian gần đây, bạn có nhiều lần đánh nhau, đe dọa, bắt nạt hoặc cố ý gây tổn thương người khác hoặc động vật không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q027",
+        "multi": false
+      },
+      {
+        "label": "I2. Bạn có nhiều lần cố ý phá hoại tài sản, trộm cắp, lừa dối nghiêm trọng hoặc vi phạm quy định pháp luật không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q028",
+        "multi": false
+      },
+      {
+        "label": "J1. Trong ít nhất 3 tháng gần đây, bạn có khó ngủ, thức giấc nhiều lần hoặc thức dậy quá sớm với tần suất ít nhất 3 đêm mỗi tuần không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q029",
+        "multi": false
+      },
+      {
+        "label": "J2. Bạn có thường xuyên ngủ quá nhiều, buồn ngủ ban ngày quá mức hoặc hoặc thường xuyên ngủ và thức vào những giờ bất thường, gây khó khăn cho sinh hoạt hằng ngày không??",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q030",
+        "multi": false
+      },
+      {
+        "label": "J3. Vấn đề giấc ngủ có bao giờ gây mệt mỏi, giảm tập trung hoặc ảnh hưởng rõ đến học tập, công việc, quan hệ hay sinh hoạt ban ngày không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q031",
+        "multi": false
+      },
+      {
+        "label": "K1. Bạn có tiền sử chấn thương sọ não, động kinh, viêm não, viêm màng não, đột quỵ hoặc bệnh thần kinh khác không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q032",
+        "multi": false
+      },
+      {
+        "label": "K2. Bạn có bệnh mạn tính hoặc bệnh nội tiết, chuyển hóa nặng và sau khi mắc bệnh xuất hiện thay đổi rõ về trí nhớ, hành vi, cảm xúc hoặc khả năng hiểu và suy nghĩ không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q033",
+        "multi": false
+      },
+      {
+        "label": "L1. Từ nhỏ, bạn có gặp khó khăn rõ rệt trong học tập, tiếp thu kiến thức, đọc, viết hoặc tính toán so với người cùng tuổi không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q034",
+        "multi": false
+      },
+      {
+        "label": "L2. Bạn có từng lưu ban nhiều lần, học chương trình hỗ trợ đặc biệt hoặc thường xuyên cần người khác giúp mới theo kịp việc học không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q035",
+        "multi": false
+      },
+      {
+        "label": "L3. Bạn có khó khăn đáng kể trong việc hiểu hướng dẫn, giải quyết việc thông thường hoặc tự đưa ra quyết định phù hợp với lứa tuổi không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q036",
+        "multi": false
+      },
+      {
+        "label": "L4. Bạn có cần người khác giúp đỡ đáng kể trong quản lý tiền, đi lại, giao tiếp, sắp xếp công việc hoặc tự chăm sóc không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q037",
+        "multi": false
+      },
+      {
+        "label": "L5. Gia đình, nhà trường hoặc nhân viên y tế từng nhận xét bạn chậm phát triển về nhận thức hoặc khả năng tự lập không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q038",
+        "multi": false
+      },
+      {
+        "label": "M1. Bạn có cảm thấy giới tính của mình khác với giới tính được ghi nhận lúc sinh, và cảm giác này kéo dài, khiến bạn buồn phiền hoặc khó chịu nhiều không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q039",
+        "multi": false
+      },
+      {
+        "label": "N1. Bạn có những ham muốn hoặc tưởng tượng về tình dục lặp đi lặp lại, mạnh đến mức khiến bạn rất khổ sở, khó kiểm soát hoặc ảnh hưởng rõ đến cuộc sống không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q040",
+        "multi": false
+      },
+      {
+        "label": "P1. Trong tháng qua, bạn có từng nghĩ rằng mình không muốn sống nữa, muốn biến mất hoặc ước mình chết đi không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q041",
+        "multi": false
+      },
+      {
+        "label": "P2. Trong tháng qua, bạn có thực sự nghĩ đến việc tự sát hoặc tự làm mình chết không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q042",
+        "multi": false
+      },
+      {
+        "label": "P3. Bạn có nghĩ cụ thể về cách thức, lập kế hoạch hoặc chuẩn bị phương tiện để tự sát không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q043",
+        "multi": false
+      },
+      {
+        "label": "P4. Trong cuộc đời, bạn đã từng thực hiện hành vi tự sát, cố gắng tự sát hoặc có hành động chuẩn bị nhằm mục đích tự sát không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q044",
+        "multi": false
+      },
+      {
+        "label": "P5. Hiện tại bạn có ý định tự sát hoặc cảm thấy mình có thể làm hại bản thân trong thời gian rất gần không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q045",
+        "multi": false
+      },
+      {
+        "label": "Q1. Bạn đã từng được chẩn đoán mắc các rối loạn hoặc bệnh lý tâm thần chưa?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q046",
+        "multi": false
+      },
+      {
+        "label": "Q2. Bạn đã từng đi khám, điều trị hoặc nhập viện vì vấn đề về sức khỏe tâm thần hay hành vi chưa?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q047",
+        "multi": false
+      },
+      {
+        "label": "Q3. Bạn có từng dùng hoặc hiện đang dùng thuốc điều trị vấn đề tâm thần theo chỉ định của bác sĩ không?",
+        "options": [
+          "Không",
+          "Có"
+        ],
+        "id": "Q048",
+        "multi": false
+      }
+    ],
+    "blocks": [
+      {
+        "text": "PHIẾU PHỎNG VẤN TỶ LỆ VÀ CƠ CẤU NGUY CƠ RỐI LOẠN"
+      },
+      {
+        "text": "TÂM THẦN Ở THANH NIÊN TRONG ĐỘ TUỔI NHẬP NGŨ"
+      },
+      {
+        "text": "Mã số: KCB-TT.02……………."
+      },
+      {
+        "text": "A. TRIỆU CHỨNG LOẠN THẦN"
+      },
+      {
+        "text": "Mốc thời gian: hiện tại hoặc đã từng xuất hiện rõ rệt ngoài trạng thái ngủ/mơ."
+      },
+      {
+        "text": "A1. Bạn đã từng nghe tiếng nói hoặc âm thanh mà những người xung quanh không nghe thấy không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "A2. Bạn đã từng nhìn thấy người, hình ảnh hoặc sự vật mà người khác không nhìn thấy, khi bạn đang hoàn toàn tỉnh táo không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "A3. Bạn đã từng tin rằng có người đang theo dõi, hãm hại hoặc âm mưu chống lại mình trong khi người xung quanh cho rằng điều đó không có thật không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "A4. Bạn đã từng tin chắc rằng những việc xảy ra xung quanh đang ngầm nhắc đến hoặc nhằm riêng vào mình, dù người khác cho rằng đó chỉ là sự trùng hợp hoặc không liên quan đến bạn không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "A5. Bạn đã từng cảm thấy người khác biết được suy nghĩ của mình dù mình không nói ra; có ai đó lấy suy nghĩ khỏi đầu hoặc đưa suy nghĩ vào đầu bạn; hoặc điều khiển hành động của bạn không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "B. TRIỆU CHỨNG TRẦM CẢM"
+      },
+      {
+        "text": "Mốc thời gian: 2 tuần vừa qua."
+      },
+      {
+        "text": "B1. Trong phần lớn thời gian, bạn có thường xuyên cảm thấy buồn, chán nản, trống rỗng hoặc tuyệt vọng không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "B2. Bạn có giảm rõ rệt hứng thú hoặc không còn thấy vui với những hoạt động trước đây mình thường thích không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "B3. Bạn có thường xuyên mệt mỏi, thiếu năng lượng hoặc thấy mọi việc trở nên khó thực hiện hơn bình thường không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "B4. Bạn có thường xuyên cảm thấy bản thân vô dụng, thất bại hoặc tự trách mình quá mức không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "C. LO ÂU LAN TỎA VÀ CƠN HOẢNG SỢ"
+      },
+      {
+        "text": "Mốc thời gian: 6 tháng qua đối với lo âu lan tỏa; tiền sử đã từng xuất hiện đối với cơn hoảng sợ."
+      },
+      {
+        "text": "C1. Trong 6 tháng qua, bạn có thường xuyên lo lắng quá mức về nhiều vấn đề và cảm thấy khó kiểm soát sự lo lắng đó không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "C2. Bạn đã từng có cơn sợ hãi hoặc hoảng loạn xuất hiện đột ngột, tăng nhanh trong thời gian ngắn, kèm tim đập nhanh, khó thở, run, chóng mặt hoặc cảm giác sắp mất kiểm soát không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "D. TRIỆU CHỨNG HƯNG CẢM/HƯNG CẢM NHẸ"
+      },
+      {
+        "text": "D1. Trong cuộc đời, bạn đã từng có một giai đoạn kéo dài vài ngày trở lên mà tâm trạng, mức năng lượng hoặc hoạt động của bạn khác rõ rệt so với trạng thái bình thường của mình không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "Nếu D0 = Không → chuyển sang phần E. Nếu D0 = Có → trả lời tiếp D1-D4."
+      },
+      {
+        "text": "D1. Trong giai đoạn đó, bạn có vui vẻ, phấn khích hoặc dễ cáu gắt rõ rệt hơn bình thường không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "D2. Bạn có ngủ ít hơn nhiều nhưng vẫn cảm thấy khỏe, không thấy cần ngủ thêm không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "D3. Bạn có nói nhiều/nói nhanh hơn rõ rệt hoặc cảm thấy suy nghĩ chạy rất nhanh, nhiều ý tưởng liên tục không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "D4. Bạn có hoạt động nhiều hơn rõ rệt hoặc làm các việc bốc đồng như tiêu tiền quá mức, lái xe nguy hiểm hoặc quyết định thiếu cân nhắc không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "E. SỬ DỤNG RƯỢU"
+      },
+      {
+        "text": "E1. Trong 12 tháng qua, bạn có sử dụng rượu bia với tần suất hoặc số lượng khiến bản thân hoặc người khác lo ngại, hoặc từng say nhiều lần không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "E2. Bạn có từng có triệu chứng khó chịu chẳng hạn run tay, vã mồ hôi hoặc bồn chồn khi ngừng uống rượu hoặc việc uống rượu ảnh hưởng đến sức khỏe, học tập, công việc hay gia đình không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "E3. Bạn có từng xuất hiện bồn chồn hoặc la hét, đập phá; không biết rõ mình đang ở đâu; nghe hoặc nhìn thấy những thứ người khác không thấy sau khi uống nhiều hoặc khi ngừng rượu không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "F. MA TÚY, CHẤT TÁC ĐỘNG TÂM THẦN VÀ THUỐC GÂY NGHIỆN"
+      },
+      {
+        "text": "F1. Bạn đã từng sử dụng ma túy (như cần sa, ma túy đá, thuốc lắc, ke, heroin) hoặc hít bóng cười chưa?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "F2. Trong 12 tháng qua, bạn có sử dụng bất kỳ chất nào kể trên không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "G. TRIỆU CHỨNG PHÂN LI, CHUYỂN DI"
+      },
+      {
+        "text": "G1. Bạn đã từng không nhớ được những việc quan trọng xảy ra với mình, dù không phải do quên thông thường, đang ngủ, uống rượu/bia hoặc dùng chất gây nghiện không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "G2. Bạn đã từng có lúc cảm thấy bản thân hoặc thế giới xung quanh không thật, như đang đứng ngoài quan sát chính mình, trong khi vẫn biết cảm giác đó là bất thường không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "G3. Bạn đã từng đột ngột bị yếu hoặc liệt tay chân, run, co giật, mất tiếng hay mất cảm giác mà chưa xác định được nguyên nhân không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "H. ĐẶC ĐIỂM GỢI Ý RỐI LOẠN NHÂN CÁCH"
+      },
+      {
+        "text": "Mốc thời gian: kiểu biểu hiện kéo dài nhiều năm, thường bắt đầu từ cuối tuổi thiếu niên hoặc đầu tuổi trưởng thành."
+      },
+      {
+        "text": "H1. Trong nhiều năm, bạn có thường xuyên gặp khó khăn dai dẳng trong quan hệ với người khác, công việc hoặc học tập do cách suy nghĩ, cảm xúc hoặc ứng xử của mình không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "H2. Những khó khăn đó có lặp lại trong nhiều hoàn cảnh khác nhau và khiến người khác thường xuyên nhận xét bạn quá nghi ngờ, quá bốc đồng, quá thất thường, quá cứng nhắc hoặc khó thích nghi không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "I. RỐI LOẠN HÀNH VI"
+      },
+      {
+        "text": "Khai thác hành vi lặp lại, kéo dài; không tính một sự cố đơn lẻ."
+      },
+      {
+        "text": "I1. Trước 18 tuổi hoặc trong thời gian gần đây, bạn có nhiều lần đánh nhau, đe dọa, bắt nạt hoặc cố ý gây tổn thương người khác hoặc động vật không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "I2. Bạn có nhiều lần cố ý phá hoại tài sản, trộm cắp, lừa dối nghiêm trọng hoặc vi phạm quy định pháp luật không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "J. RỐI LOẠN GIẤC NGỦ"
+      },
+      {
+        "text": "J1. Trong ít nhất 3 tháng gần đây, bạn có khó ngủ, thức giấc nhiều lần hoặc thức dậy quá sớm với tần suất ít nhất 3 đêm mỗi tuần không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "J2. Bạn có thường xuyên ngủ quá nhiều, buồn ngủ ban ngày quá mức hoặc hoặc thường xuyên ngủ và thức vào những giờ bất thường, gây khó khăn cho sinh hoạt hằng ngày không??"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "J3. Vấn đề giấc ngủ có bao giờ gây mệt mỏi, giảm tập trung hoặc ảnh hưởng rõ đến học tập, công việc, quan hệ hay sinh hoạt ban ngày không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "K. TRIỆU CHỨNG TÂM THẦN LIÊN QUAN TỔN THƯƠNG NÃO HOẶC BỆNH CƠ THỂ"
+      },
+      {
+        "text": "K1. Bạn có tiền sử chấn thương sọ não, động kinh, viêm não, viêm màng não, đột quỵ hoặc bệnh thần kinh khác không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "K2. Bạn có bệnh mạn tính hoặc bệnh nội tiết, chuyển hóa nặng và sau khi mắc bệnh xuất hiện thay đổi rõ về trí nhớ, hành vi, cảm xúc hoặc khả năng hiểu và suy nghĩ không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "L. KHÓ KHĂN PHÁT TRIỂN TRÍ TUỆ / CHỨC NĂNG THÍCH ỨNG"
+      },
+      {
+        "text": "L1. Từ nhỏ, bạn có gặp khó khăn rõ rệt trong học tập, tiếp thu kiến thức, đọc, viết hoặc tính toán so với người cùng tuổi không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "L2. Bạn có từng lưu ban nhiều lần, học chương trình hỗ trợ đặc biệt hoặc thường xuyên cần người khác giúp mới theo kịp việc học không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "L3. Bạn có khó khăn đáng kể trong việc hiểu hướng dẫn, giải quyết việc thông thường hoặc tự đưa ra quyết định phù hợp với lứa tuổi không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "L4. Bạn có cần người khác giúp đỡ đáng kể trong quản lý tiền, đi lại, giao tiếp, sắp xếp công việc hoặc tự chăm sóc không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "L5. Gia đình, nhà trường hoặc nhân viên y tế từng nhận xét bạn chậm phát triển về nhận thức hoặc khả năng tự lập không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "M. KHÓ KHĂN LIÊN QUAN ĐẾN PHÂN ĐỊNH GIỚI"
+      },
+      {
+        "text": "M1. Bạn có cảm thấy giới tính của mình khác với giới tính được ghi nhận lúc sinh, và cảm giác này kéo dài, khiến bạn buồn phiền hoặc khó chịu nhiều không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "N. KHÓ KHĂN LIÊN QUAN ĐẾN ƯA CHUỘNG/HỨNG THÚ TÌNH DỤC"
+      },
+      {
+        "text": "N1. Bạn có những ham muốn hoặc tưởng tượng về tình dục lặp đi lặp lại, mạnh đến mức khiến bạn rất khổ sở, khó kiểm soát hoặc ảnh hưởng rõ đến cuộc sống không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "P. NGUY CƠ TỰ SÁT VÀ TỰ GÂY TỔN THƯƠNG"
+      },
+      {
+        "text": "P1. Trong tháng qua, bạn có từng nghĩ rằng mình không muốn sống nữa, muốn biến mất hoặc ước mình chết đi không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "P2. Trong tháng qua, bạn có thực sự nghĩ đến việc tự sát hoặc tự làm mình chết không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "P3. Bạn có nghĩ cụ thể về cách thức, lập kế hoạch hoặc chuẩn bị phương tiện để tự sát không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "P4. Trong cuộc đời, bạn đã từng thực hiện hành vi tự sát, cố gắng tự sát hoặc có hành động chuẩn bị nhằm mục đích tự sát không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "P5. Hiện tại bạn có ý định tự sát hoặc cảm thấy mình có thể làm hại bản thân trong thời gian rất gần không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "Q. TIỀN SỬ SỨC KHỎE TÂM THẦN VÀ ĐIỀU TRỊ"
+      },
+      {
+        "text": "Q1. Bạn đã từng được chẩn đoán mắc các rối loạn hoặc bệnh lý tâm thần chưa?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "Q2. Bạn đã từng đi khám, điều trị hoặc nhập viện vì vấn đề về sức khỏe tâm thần hay hành vi chưa?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "Q3. Bạn có từng dùng hoặc hiện đang dùng thuốc điều trị vấn đề tâm thần theo chỉ định của bác sĩ không?"
+      },
+      {
+        "text": "☐ Không\t\t☐ Có"
+      },
+      {
+        "text": "Ngày phỏng vấn:  …………/………./…….."
+      },
+      {
+        "text": "Trân trọng cảm ơn!"
+      },
+      {
+        "rows": [
+          [
+            "Điều tra viên\n(Họ tên, chữ ký)",
+            "Người trả lời\n(Họ tên, chữ ký)"
+          ],
+          [
+            ""
+          ]
+        ]
+      }
+    ],
+    "review": true,
+    "source": "/surveys/forms/form-9.docx"
+  }
+]

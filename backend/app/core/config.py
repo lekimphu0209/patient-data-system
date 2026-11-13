@@ -38,6 +38,7 @@ class Settings(BaseSettings):
 
     CORS_ORIGINS: List[str] = ["http://localhost:5173"]
 
+    ALLOW_PUBLIC_REGISTRATION: bool = False
     DEFAULT_USER_EMAIL: str = "doctor@example.com"
     DEFAULT_USER_PASSWORD: str = "password123"
 

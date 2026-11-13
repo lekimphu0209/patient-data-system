@@ -1,13 +1,10 @@
-import { createRoute, Navigate } from '@tanstack/react-router'
-
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { requireAuth } from '@/lib/auth-guard'
 import { rootRoute } from '@/routes/__root'
 
 export const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: IndexRedirect,
+  beforeLoad: requireAuth,
+  component: lazyRouteComponent(() => import('@/features/surveys/SurveyWorkspace'), 'SurveyWorkspace'),
 })
-
-function IndexRedirect() {
-  return <Navigate to="/login" />
-}

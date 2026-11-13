@@ -45,15 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserState(readStoredUser())
     getMe()
       .then(setUser)
-      .catch(() => {
-        sessionStorage.removeItem(TOKEN_KEY)
-        sessionStorage.removeItem(USER_KEY)
-        setToken(null)
-        setUserState(null)
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login'
-        }
-      })
+      .catch(() => undefined)
   }, [setUser])
 
   const login = useCallback((newToken: string, newUser: AuthUser) => {
