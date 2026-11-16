@@ -8,6 +8,9 @@ const columns = [
   ['form', 'LOẠI PHIẾU KHẢO SÁT', ''],
 ] as const
 const initialFilters = { search: '', fullName: '', birthDate: '', hometown: '', conclusion: '', form: 'all', status: 'all', unit: 'all' }
+const sortColumns = [...columns.map(([key, label]) => [key, label] as const), ['status', 'TRẠNG THÁI'] as const]
+// Conclusion and form columns share the extra space on wide screens.
+const columnWidths = [48, 240, 160, 190, undefined, undefined, 180, 180]
 type SortKey = typeof columns[number][0] | 'status'
 type Sort = { key: SortKey; direction: number }
 const collator = new Intl.Collator('vi', { numeric: true, sensitivity: 'base' })
@@ -32,6 +35,7 @@ export function SurveyList({ rows, forms, group, form, openImport, view, edit, r
   const [selected, setSelected] = useState(new Set<string>())
   const [page, setPage] = useState(1)
   const checkAll = useRef<HTMLInputElement>(null)
+  const mobileCheckAll = useRef<HTMLInputElement>(null)
   const formsById = useMemo(() => new Map(forms.map(form => [form.id, form])), [forms])
   const scoped = useMemo(() => rows.filter(row => row.group === group && (!form || row.form === form)), [rows, group, form])
   const units = [...new Set(scoped.map(row => row.unit))].sort()
@@ -68,6 +72,7 @@ export function SurveyList({ rows, forms, group, form, openImport, view, edit, r
   const indeterminate = visibleSelected > 0 && !allSelected
   useEffect(() => {
     if (checkAll.current) checkAll.current.indeterminate = indeterminate
+    if (mobileCheckAll.current) mobileCheckAll.current.indeterminate = indeterminate
   }, [indeterminate])
   useEffect(() => {
     setPage(previous => Math.min(previous, pages))
@@ -92,6 +97,16 @@ export function SurveyList({ rows, forms, group, form, openImport, view, edit, r
   function sortIcon(key: SortKey) {
     return sort.key === key ? sort.direction === 1 ? '↑' : '↓' : '↕'
   }
+  function columnFilter([key, , placeholder]: typeof columns[number]) {
+    if (key === 'form') {
+      return <select aria-label="Lọc loại phiếu" value={filters.form} onChange={event => filter('form', event.target.value)}>
+        <option value="all">Tất cả loại phiếu</option>
+        {forms.filter(item => item.group === group && (!form || item.id === form))
+          .map(item => <option key={item.id} value={item.id}>{SHORT[item.id]}</option>)}
+      </select>
+    }
+    return <input aria-label={placeholder} placeholder={placeholder} value={filters[key]} onChange={event => filter(key, event.target.value)} />
+  }
   return <>
     <Title actions={<>
       <button onClick={() => openImport('excel')}><Icon name="excel" /><span>Tải dữ liệu Excel</span></button>
@@ -109,10 +124,10 @@ export function SurveyList({ rows, forms, group, form, openImport, view, edit, r
     </div>
     <section className="panel list-panel">
       <div className="list-controls">
-        <div className="searchbox"><span><Icon name="search" /></span><input aria-label="Tìm kiếm khảo sát"
-          value={filters.search} placeholder="Tìm họ tên, mã đối tượng, quê quán, kết luận..." onChange={event => filter('search', event.target.value)} /></div>
+        <div className="searchbox"><Icon name="search" /><input aria-label="Tìm kiếm khảo sát"
+          value={filters.search} placeholder="Tìm tên, mã đối tượng, quê quán…" onChange={event => filter('search', event.target.value)} /></div>
         <select aria-label="Lọc đơn vị" value={filters.unit} onChange={event => filter('unit', event.target.value)}>
-          <option value="all">Tất cả đơn vị / địa bàn</option>
+          <option value="all">Đơn vị / địa bàn</option>
           {units.map(unit => <option key={unit} value={unit}>{unit || 'Chưa có đơn vị'}</option>)}
         </select>
         <select aria-label="Lọc trạng thái" value={filters.status} onChange={event => filter('status', event.target.value)}>
@@ -120,46 +135,61 @@ export function SurveyList({ rows, forms, group, form, openImport, view, edit, r
           {(['complete', 'review', 'draft'] as const).map(status => <option key={status} value={status}>{STATUS[status]}</option>)}
         </select>
         <button className="smallbtn" onClick={() => { setFilters(initialFilters); setSelected(new Set()); setPage(1) }}>Đặt lại bộ lọc</button>
+        <details className="mobile-list-filters">
+          <summary>Lọc theo cột và sắp xếp</summary>
+          <div className="mobile-filter-fields">
+            {columns.map(column => <label key={column[0]}><span>{column[1]}</span>{columnFilter(column)}</label>)}
+            <label><span>Sắp xếp theo</span>
+              <select value={sort.key} onChange={event => sortBy(event.target.value as SortKey)}>
+                {sortColumns.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+              </select>
+            </label>
+            <label><span>Thứ tự</span>
+              <select value={sort.direction} onChange={event => { setSort({ ...sort, direction: Number(event.target.value) }); setPage(1) }}>
+                <option value={1}>Tăng dần</option><option value={-1}>Giảm dần</option>
+              </select>
+            </label>
+          </div>
+        </details>
       </div>
-      <div className="bulkbar"><strong>{selectedRows.length} đã chọn</strong><div className="bulk-actions">
+      <div className="bulkbar">
+        <label className="mobile-select-page"><input ref={mobileCheckAll} type="checkbox" checked={allSelected}
+          onChange={event => toggle(visible.map(row => row.id), event.target.checked)} />Chọn cả trang</label>
+        <strong>{selectedRows.length} đã chọn</strong><div className="bulk-actions">
         <button disabled={!selectedRows.length} onClick={() => exportRows(selectedRows)}><Icon name="download" /><span>Xuất dữ liệu</span></button>
         <button className="dangerbtn" disabled={!selectedRows.length} onClick={() => remove(selectedRows)}><Icon name="trash" /><span>Xóa đã chọn</span></button>
       </div></div>
-      <div className="tablewrap"><table className="survey-table">
-        <colgroup>{[48, 240, 160, 190, 280, 280, 180, 180].map((width, index) => <col key={index} style={{ width }} />)}</colgroup>
+      <div className="tablewrap"><table className="survey-table" role="table" aria-label="Danh sách khảo sát">
+        <colgroup>{columnWidths.map((width, index) => <col key={index} style={{ width }} />)}</colgroup>
         <thead><tr>
           <th className="checkcol"><input ref={checkAll} type="checkbox" aria-label="Chọn tất cả dòng trên trang" checked={allSelected}
             onChange={event => toggle(visible.map(row => row.id), event.target.checked)} /></th>
-          {columns.map(([key, label, placeholder]) => <th key={key}>
-            <button onClick={() => sortBy(key)} aria-label={`Sắp xếp ${label.toLowerCase()}`}>{label}<span>{sortIcon(key)}</span></button>
-            {key === 'form' ? <select aria-label="Lọc loại phiếu" value={filters.form} onChange={event => filter('form', event.target.value)}>
-              <option value="all">Tất cả loại phiếu</option>
-              {forms.filter(item => item.group === group && (!form || item.id === form))
-                .map(item => <option key={item.id} value={item.id}>{SHORT[item.id]}</option>)}
-            </select> : <input aria-label={placeholder} placeholder={placeholder} value={filters[key]} onChange={event => filter(key, event.target.value)} />}
+          {columns.map(column => <th key={column[0]}>
+            <button onClick={() => sortBy(column[0])} aria-label={`Sắp xếp ${column[1].toLowerCase()}`}>{column[1]}<span>{sortIcon(column[0])}</span></button>
+            {columnFilter(column)}
           </th>)}
           <th style={{ minWidth: 112 }}><button onClick={() => sortBy('status')}>TRẠNG THÁI <span>{sortIcon('status')}</span></button></th>
           <th className="actions-col"><span className="actions-heading">THAO TÁC</span></th>
         </tr></thead>
-        <tbody>{visible.length ? visible.map(row => <tr key={row.id} className={selected.has(row.id) ? 'selected-row' : undefined}>
-          <td className="checkcol"><input aria-label={`Chọn phiếu ${row.id}`} type="checkbox" checked={selected.has(row.id)}
+        <tbody role="rowgroup">{visible.length ? visible.map(row => <tr role="row" key={row.id} className={selected.has(row.id) ? 'selected-row' : undefined}>
+          <td role="cell" className="checkcol"><input aria-label={`Chọn phiếu ${row.id}`} type="checkbox" checked={selected.has(row.id)}
             onChange={event => toggle([row.id], event.target.checked)} /></td>
-          <td><div className="namecell"><span className="personavatar">{initials(row.patient.fullName)}</span><div>
+          <td role="cell" className="subject-cell"><div className="namecell"><span className="personavatar">{initials(row.patient.fullName)}</span><div>
             <div className="patient-name" title={row.patient.fullName}>{row.patient.fullName || 'Chưa có họ tên'}</div>
             <div className="patient-code">{row.person}{row.sample && <span className="sample-tag">Mẫu</span>}</div>
           </div></div></td>
-          <td className="dobcell">{birthLabel(row.patient)}</td>
-          <td className="hometowncell" title={row.patient.hometown}>{row.patient.hometown || '—'}</td>
-          <td className="conclusioncell">{row.conclusion ? <span className="conclusion-text" title={row.conclusion}>{row.conclusion}</span>
+          <td role="cell" className="dobcell"><span className="mobile-field-label">Ngày sinh</span>{birthLabel(row.patient)}</td>
+          <td role="cell" className="hometowncell" title={row.patient.hometown}><span className="mobile-field-label">Quê quán</span>{row.patient.hometown || '—'}</td>
+          <td role="cell" className="conclusioncell"><span className="mobile-field-label">Kết luận về bệnh</span>{row.conclusion ? <span className="conclusion-text" title={row.conclusion}>{row.conclusion}</span>
             : <span className="conclusion-empty">Chưa có kết luận</span>}</td>
-          <td><div className="formname" title={titleOf(row)}>{titleOf(row)}</div><div className="patient-code">{row.form} · {row.source}</div></td>
-          <td><Badge status={row.status} /></td>
-          <td className="actions-col"><div className="row-actions">
+          <td role="cell" className="form-cell"><div className="formname" title={titleOf(row)}>{titleOf(row)}</div><div className="patient-code">{row.form} · {row.source}</div></td>
+          <td role="cell" className="status-cell"><Badge status={row.status} /></td>
+          <td role="cell" className="actions-col"><div className="row-actions">
             <button title="View · Xem phiếu" aria-label={`View ${row.id}`} onClick={() => view(row)}><Icon name="eye" /></button>
             <button title="Edit · Sửa thông tin" aria-label={`Edit ${row.id}`} onClick={() => edit(row)}><Icon name="edit" /></button>
             <button className="delete" title="Delete · Xóa phiếu" aria-label={`Delete ${row.id}`} onClick={() => remove([row])}><Icon name="trash" /></button>
           </div></td>
-        </tr>) : <tr><td colSpan={8}><div className="empty"><div className="empty-icon"><Icon name="file" /></div>
+        </tr>) : <tr role="row" className="empty-row"><td role="cell" colSpan={8}><div className="empty"><div className="empty-icon"><Icon name="file" /></div>
           <strong>Không có phiếu khảo sát phù hợp</strong>
           {scoped.length ? 'Thử thay đổi từ khóa hoặc đặt lại bộ lọc.' : 'Nhập dữ liệu thủ công, tải Excel hoặc tải ảnh khảo sát để bắt đầu.'}
         </div></td></tr>}</tbody>

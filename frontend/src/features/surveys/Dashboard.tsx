@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { formatDate, GROUP, GROUPS, nf, SHORT, STATUS, today, type Group, type Survey, type SurveyForm } from './model'
 import { Icon, Title, type Icons } from './ui'
 
@@ -5,6 +6,14 @@ const STATUS_COLORS = { complete: '#3ba6a3', review: '#e7ad55', draft: '#c6d2df'
 const statusOrder = ['complete', 'review', 'draft'] as const
 
 function Chart({ rows }: { rows: Survey[] }) {
+  const chart = useRef<SVGSVGElement>(null)
+  const [compact, setCompact] = useState(false)
+  useEffect(() => {
+    if (!chart.current) return
+    const observer = new ResizeObserver(([entry]) => setCompact(entry.contentRect.width < 510))
+    observer.observe(chart.current)
+    return () => observer.disconnect()
+  }, [])
   const end = rows.reduce((latest, row) => row.date > latest ? row.date : latest, '') || today()
   const dates = Array.from({ length: 8 }, (_, index) => {
     const date = new Date(`${end}T00:00:00Z`)
@@ -14,21 +23,25 @@ function Chart({ rows }: { rows: Survey[] }) {
   const counts = dates.map(date => GROUPS.map(group => rows.filter(row => row.date === date && row.group === group).length))
   const highest = Math.max(0, ...counts.flat())
   const step = Math.max(1, Math.ceil(highest / 4))
-  const base = 235
-  const plotHeight = 196
-  const slot = (760 - 40 - 12) / dates.length
+  const width = compact ? 400 : 760
+  const height = compact ? 212 : 280
+  const left = compact ? 32 : 40
+  const base = height - (compact ? 32 : 45)
+  const plotHeight = base - (compact ? 18 : 39)
+  const slot = (width - left - 12) / dates.length
   const barWidth = Math.min(24, slot * 0.26)
-  return <svg className="dash-chart" viewBox="0 0 760 280" role="img" aria-label="Số phiếu khảo sát theo ngày, thanh niên và quân nhân">
+  return <svg ref={chart} className={`dash-chart ${compact ? 'compact' : ''}`} viewBox={`0 0 ${width} ${height}`}
+    role="img" aria-label="Số phiếu khảo sát theo ngày, thanh niên và quân nhân">
     <title>Phiếu khảo sát theo ngày</title>
     {Array.from({ length: 5 }, (_, index) => {
       const y = base - index * plotHeight / 4
       return <g key={index}>
-        <line x1={40} x2={748} y1={y} y2={y} stroke="#e7edf2" strokeDasharray={index ? '4 5' : '0'} />
-        <text x={26} y={y + 4} textAnchor="end" className="chart-tick">{nf(step * index)}</text>
+        <line x1={left} x2={width - 12} y1={y} y2={y} stroke="#e7edf2" strokeDasharray={index ? '4 5' : '0'} />
+        <text x={left - (compact ? 8 : 14)} y={y + 4} textAnchor="end" className="chart-tick">{nf(step * index)}</text>
       </g>
     })}
     {dates.map((date, index) => {
-      const x = 40 + slot * (index + 0.5)
+      const x = left + slot * (index + 0.5)
       return <g key={date}>
         {counts[index].map((count, groupIndex) => {
           const height = count / (step * 4) * plotHeight
@@ -37,10 +50,10 @@ function Chart({ rows }: { rows: Survey[] }) {
             <title>{GROUP[GROUPS[groupIndex]]} · {formatDate(date)}: {count} phiếu</title>
           </rect>
         })}
-        <text x={x} y={265} textAnchor="middle" className="chart-tick">{date.slice(8)}/{date.slice(5, 7)}</text>
+        <text x={x} y={height - (compact ? 9 : 15)} textAnchor="middle" className="chart-tick">{date.slice(8)}/{date.slice(5, 7)}</text>
       </g>
     })}
-    {!highest && <text x="400" y="129" textAnchor="middle" className="chart-empty">Chưa có dữ liệu khảo sát</text>}
+    {!highest && <text x={width / 2 + (compact ? 10 : 20)} y={height / 2 - 11} textAnchor="middle" className="chart-empty">Chưa có dữ liệu khảo sát</text>}
   </svg>
 }
 

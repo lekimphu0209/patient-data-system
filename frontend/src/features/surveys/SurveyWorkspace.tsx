@@ -78,6 +78,8 @@ function Workspace({ forms, records, recordError, reconnect }: {
   const [page, setPage] = useState(readPage)
   const [samples, setSamples] = useState(() => readSamples(forms))
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_KEY) !== 'false')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const mobileMenuButton = useRef<HTMLButtonElement>(null)
   const [expanded, setExpanded] = useState({ youth: true, military: true })
   const [dialog, setDialog] = useState<Dialog>()
   const [source, setSource] = useState<SurveyForm>()
@@ -95,6 +97,7 @@ function Workspace({ forms, records, recordError, reconnect }: {
   useEffect(() => {
     function onHash() {
       setPage(readPage())
+      setMobileMenuOpen(false)
       window.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', onHash)
@@ -104,8 +107,17 @@ function Workspace({ forms, records, recordError, reconnect }: {
     }
   }, [])
   useEffect(() => {
-    document.body.classList.toggle('sidebar-collapsed', collapsed)
-    return () => document.body.classList.remove('sidebar-collapsed')
+    const mobile = window.matchMedia('(max-width: 850px)')
+    const updateLayout = () => {
+      document.body.classList.toggle('sidebar-collapsed', collapsed && !mobile.matches)
+      if (!mobile.matches) setMobileMenuOpen(false)
+    }
+    updateLayout()
+    mobile.addEventListener('change', updateLayout)
+    return () => {
+      mobile.removeEventListener('change', updateLayout)
+      document.body.classList.remove('sidebar-collapsed')
+    }
   }, [collapsed])
   useEffect(() => {
     document.title = `${APP_NAME} · ${page.group ? GROUP[page.group] : 'Dashboard'}`
@@ -121,6 +133,10 @@ function Workspace({ forms, records, recordError, reconnect }: {
     if (group) setExpanded(previous => ({ ...previous, [group]: true }))
     if (page.group === group && activeForm === form) setListVersion(version => version + 1)
     setPage({ group, form })
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false)
+      mobileMenuButton.current?.focus()
+    }
     location.hash = group ? group + (form ? '/' + form : '') : 'dashboard'
     window.scrollTo(0, 0)
   }
@@ -207,7 +223,22 @@ function Workspace({ forms, records, recordError, reconnect }: {
   }
 
   return <>
-    <aside className="sidebar">
+    <div className="mobile-masthead">
+      <a href="#dashboard" aria-label="Dashboard" onClick={event => { event.preventDefault(); navigate() }}>
+        <img src="/surveys/hospital-103.png" alt="Logo Bệnh viện Quân y 103" />
+      </a>
+      <strong>{APP_NAME}</strong>
+      <button ref={mobileMenuButton} type="button" aria-expanded={mobileMenuOpen} aria-controls="workspace-sidebar"
+        aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'} onClick={() => setMobileMenuOpen(open => !open)}>
+        <Icon name={mobileMenuOpen ? 'close' : 'hamburger'} />
+      </button>
+    </div>
+    <aside id="workspace-sidebar" className={`sidebar ${mobileMenuOpen ? 'mobile-menu-open' : ''}`} onKeyDown={event => {
+      if (event.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false)
+        mobileMenuButton.current?.focus()
+      }
+    }}>
       <div className="sidebar-brand-row">
         <a className="brand" href="#dashboard" onClick={event => { event.preventDefault(); navigate() }}>
           <img className="brandmark" src="/surveys/hospital-103.png" alt="Logo Bệnh viện Quân y 103" />

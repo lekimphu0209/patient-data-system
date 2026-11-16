@@ -6,6 +6,7 @@ export const Icons = {
   users: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m20 0v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /><circle cx="9" cy="7" r="4" /></>,
   shield: <><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z" /><path d="m9 12 2 2 4-4" /></>,
   menu: <><path d="m14 6-6 6 6 6" /></>,
+  hamburger: <><path d="M4 6h16M4 12h16M4 18h16" /></>,
   chevron: <><path d="m9 5 7 7-7 7" /></>,
   eye: <><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></>,
   edit: <><path d="M12 20H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7m4-1 6 6M9 15l1-5L19 1a2 2 0 0 1 3 3l-9 10-4 1Z" /></>,

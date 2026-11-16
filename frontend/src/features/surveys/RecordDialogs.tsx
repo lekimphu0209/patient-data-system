@@ -205,7 +205,9 @@ export function RecordDetail({ record, form, related, forms, initialTab, close, 
 
 export function SourceDialog({ form, close }: { form: SurveyForm; close: () => void }) {
   return <Modal title={form.title} close={close} overlay>
-    <a href={form.source} download className="primary smallbtn source-download">↓ Tải Word gốc</a>
+    <a href={form.source} download className="primary smallbtn source-download">
+      <Icon name="download" /><span>Tải Word gốc</span>
+    </a>
     <p className="hint spaced">Bản xem nội dung trích xuất. Tệp Word giữ đầy đủ định dạng và hướng dẫn chuyển câu.</p>
     {form.blocks.map((block, index) => 'text' in block ? <p className="source-text" key={index}>{block.text}</p>
       : <div className="tablewrap" key={index}><table className="source-table"><tbody>{block.rows.map((row, rowIndex) =>
