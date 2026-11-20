@@ -31,13 +31,14 @@ export function Badge({ status }: { status: Status }) {
   return <span className={`pill ${status === 'draft' ? 'gray' : status === 'review' ? 'amber' : ''}`}>{STATUS[status]}</span>
 }
 
-export function Modal({ title, children, footer, size = '', close, overlay = false }: {
+export function Modal({ title, children, footer, size = '', close, overlay = false, closeLabel }: {
   title: string
   children: ReactNode
   footer?: ReactNode
   size?: string
   close: () => void
   overlay?: boolean
+  closeLabel?: string
 }) {
   const closeButton = useRef<HTMLButtonElement>(null)
   const dialog = useRef<HTMLElement>(null)
@@ -78,7 +79,7 @@ export function Modal({ title, children, footer, size = '', close, overlay = fal
       <section ref={dialog} className={`modalbox ${size}`} role="dialog" aria-modal="true" aria-label={title}>
         <div className="modalhead">
           <div><h2>{title}</h2></div>
-          <button ref={closeButton} aria-label={overlay ? 'Đóng mẫu gốc' : 'Đóng popup'} onClick={close}><Icon name="close" /></button>
+          <button ref={closeButton} aria-label={closeLabel || (overlay ? 'Đóng mẫu gốc' : 'Đóng popup')} onClick={close}><Icon name="close" /></button>
         </div>
         <div className="modalbody">{children}</div>
         {footer && <div className="modal-footer">{footer}</div>}

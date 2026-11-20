@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createRecords, deleteRecords, getForms, getRecord, getRecords, surveyError, updateRecord } from './api'
 import { Dashboard } from './Dashboard'
 import { ExcelDialog } from './ExcelDialog'
-import { PhotoDialog } from './PhotoDialog'
+import { ExtractDialog } from './ExtractDialog'
+import { OriginalDialog } from './OriginalDialog'
 import { Editor, RecordDetail, SourceDialog, type DetailTab } from './RecordDialogs'
 import { SurveyList } from './SurveyList'
 import { Icon, Modal } from './ui'
@@ -83,6 +84,7 @@ function Workspace({ forms, records, recordError, reconnect }: {
   const [expanded, setExpanded] = useState({ youth: true, military: true })
   const [dialog, setDialog] = useState<Dialog>()
   const [source, setSource] = useState<SurveyForm>()
+  const [original, setOriginal] = useState<Survey>()
   const [toast, setToast] = useState('')
   const toastTimer = useRef<number>()
   const [busy, setBusy] = useState(false)
@@ -219,7 +221,7 @@ function Workspace({ forms, records, recordError, reconnect }: {
     }, `Đã xóa ${selected.length} phiếu khảo sát.`)
   }
   const pickerTitle = {
-    manual: 'Chọn kiểu biểu mẫu khảo sát', excel: 'Chọn mẫu phiếu để tải Excel', ocr: 'Chọn mẫu phiếu để trích xuất từ ảnh',
+    manual: 'Chọn kiểu biểu mẫu khảo sát', excel: 'Chọn mẫu phiếu để tải Excel', ocr: 'Chọn mẫu phiếu để trích xuất từ ảnh/PDF',
   }
 
   return <>
@@ -280,7 +282,7 @@ function Workspace({ forms, records, recordError, reconnect }: {
         {page.group ? <SurveyList key={`${page.group}/${activeForm || 'all'}/${listVersion}`}
           rows={rows} forms={forms} group={page.group} form={activeForm} pageSize={pageSize} setPageSize={setPageSize} sort={sort} setSort={setSort}
           openImport={action => setDialog({ type: 'pick', group: page.group!, action })}
-          view={row => void loadDetail(row, false)} edit={row => void loadDetail(row, true)}
+          view={row => void loadDetail(row, false)} viewOriginal={setOriginal} edit={row => void loadDetail(row, true)}
           remove={rows => setDialog({ type: 'delete', rows })} exportRows={exportRows} />
           : <Dashboard rows={rows} forms={forms} navigate={navigate} add={() => setDialog({ type: 'group' })}
             exportAll={() => void exportRows(rows)} analyze={id => {
@@ -307,23 +309,24 @@ function Workspace({ forms, records, recordError, reconnect }: {
         </button>)}</div>
     </Modal>}
     {dialog?.type === 'manual' && <Editor key={dialog.record?.id || dialog.form.id} form={dialog.form} original={dialog.record}
-      records={records} busy={busy} close={close} save={saveManual} showSource={() => setSource(dialog.form)} notify={notify} />}
+      records={records} busy={busy} close={close} save={saveManual} showSource={() => setSource(dialog.form)}
+      viewOriginal={setOriginal} notify={notify} />}
     {dialog?.type === 'excel' && <ExcelDialog form={dialog.form} records={records} busy={busy} close={close} notify={notify}
       save={selected => void perform(async () => {
         await createRecords(selected)
         await reload()
       }, `Đã nhập ${selected.length} phiếu khảo sát.`, true)} />}
-    {dialog?.type === 'ocr' && <PhotoDialog form={dialog.form} records={records} close={close} notify={notify} save={async row => {
+    {dialog?.type === 'ocr' && <ExtractDialog form={dialog.form} records={records} close={close} notify={notify} save={async row => {
       await createRecords([row])
       await reload()
-    }} open={row => {
+    }} viewOriginal={setOriginal} open={row => {
       const saved = client.getQueryData<Survey[]>(RECORDS_KEY)?.find(record => record.id === row.id)
-      void loadDetail(saved || { ...row, hasOCR: true }, false, 'ocr')
+      void loadDetail(saved || { ...row, hasOCR: true, hasOriginal: true }, false)
     }} />}
     {dialog?.type === 'view' && <RecordDetail key={dialog.record.id} record={dialog.record} form={dialog.form} forms={forms}
       related={rows.filter(row => row.group === dialog.record.group && row.person === dialog.record.person
         && Boolean(row.sample) === Boolean(dialog.record.sample))}
-      initialTab={dialog.tab} close={close} showSource={() => setSource(dialog.form)}
+      initialTab={dialog.tab} close={close} showSource={() => setSource(dialog.form)} viewOriginal={setOriginal}
       edit={() => setDialog({ type: 'manual', form: dialog.form, record: dialog.record })}
       view={row => void loadDetail(row, false)} exportRecord={() => void exportRows([dialog.record])} />}
     {dialog?.type === 'analysis' && <Analysis form={dialog.form} rows={rows} close={close} />}
@@ -338,6 +341,7 @@ function Workspace({ forms, records, recordError, reconnect }: {
       <div className="hint">{dialog.rows.slice(0, 8).map(row => row.id).join(' · ')}{dialog.rows.length > 8 ? ' · …' : ''}</div>
     </Modal>}
     {source && <SourceDialog form={source} close={() => setSource(undefined)} />}
+    {original && <OriginalDialog record={original} close={() => setOriginal(undefined)} />}
     <div id="toast" role="status" className={toast ? 'show' : ''}>{toast}</div>
   </>
 }

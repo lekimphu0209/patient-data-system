@@ -12,7 +12,7 @@ const fieldLabels = {
   unit: 'Đơn vị / địa bàn', id: 'Mã phiếu *', date: 'Ngày khảo sát *',
 }
 
-export function Editor({ form, original, records, busy, save, close, showSource, notify }: {
+export function Editor({ form, original, records, busy, save, close, showSource, viewOriginal, notify }: {
   form: SurveyForm
   original?: Survey
   records: Survey[]
@@ -20,6 +20,7 @@ export function Editor({ form, original, records, busy, save, close, showSource,
   save: (record: Survey, editing: boolean) => void
   close: () => void
   showSource: () => void
+  viewOriginal: (record: Survey) => void
   notify: (message: string) => void
 }) {
   const [person, setPerson] = useState(original?.person || '')
@@ -79,7 +80,9 @@ export function Editor({ form, original, records, busy, save, close, showSource,
     <div className="modal-toolbar">
       <span className={`pill ${form.group === 'youth' ? 'blue' : ''}`}>{GROUP[form.group]}</span>
       <span className="sub">{form.id} · {form.code}</span>
-      <button type="button" className="smallbtn right" onClick={showSource}>Xem mẫu gốc</button>
+      {original?.hasOriginal && <button type="button" className="smallbtn right" onClick={() => viewOriginal(original)}>
+        <Icon name="file" /><span>Xem phiếu gốc</span></button>}
+      <button type="button" className={`smallbtn ${original?.hasOriginal ? '' : 'right'}`} onClick={showSource}>Xem mẫu phiếu trống</button>
     </div>
     <form ref={editor} className="survey-editor" onSubmit={event => { event.preventDefault(); submit('complete') }}>
       <div className="editor-section">Thông tin đối tượng <span>Dùng chung cho các phiếu cùng mã</span></div>
@@ -134,7 +137,7 @@ export function Editor({ form, original, records, busy, save, close, showSource,
       })}</div>
       <div className="field spaced"><label htmlFor="ed-note">Ghi chú đối soát</label>
         <textarea id="ed-note" name="note" maxLength={20000} defaultValue={original?.note} placeholder="Các thông tin còn thiếu hoặc cần kiểm tra..." /></div>
-      {original?.ocr && <details className="notice"><summary>Xem dữ liệu OCR và ảnh gốc</summary><OCRContent record={original} /></details>}
+      {original?.ocr && <details className="notice"><summary>Xem kết quả trích xuất OCR</summary><OCRContent record={original} /></details>}
     </form>
   </Modal>
 }
@@ -142,11 +145,10 @@ export function Editor({ form, original, records, busy, save, close, showSource,
 export type DetailTab = 'survey' | 'related' | 'ocr'
 
 function OCRContent({ record }: { record: Survey }) {
-  return <>{record.ocrImage && <img className="ocr-image" src={record.ocrImage} alt="Ảnh gốc phiếu khảo sát" />}
-    <p className="source-text">{record.ocr}</p></>
+  return <p className="source-text">{record.ocr}</p>
 }
 
-export function RecordDetail({ record, form, related, forms, initialTab, close, showSource, edit, view, exportRecord }: {
+export function RecordDetail({ record, form, related, forms, initialTab, close, showSource, viewOriginal, edit, view, exportRecord }: {
   record: Survey
   form: SurveyForm
   related: Survey[]
@@ -154,6 +156,7 @@ export function RecordDetail({ record, form, related, forms, initialTab, close, 
   initialTab: DetailTab
   close: () => void
   showSource: () => void
+  viewOriginal: (record: Survey) => void
   edit: () => void
   view: (row: Survey) => void
   exportRecord: () => void
@@ -165,9 +168,10 @@ export function RecordDetail({ record, form, related, forms, initialTab, close, 
     ['Ngày khảo sát', formatDate(record.date)], ['Loại phiếu', form.title], ['Mã phiếu', record.id], ['Nguồn nhập', record.source],
   ]
   const tabs: [DetailTab, string][] = [['survey', 'Nội dung phiếu'], ['related', `Các phiếu cùng đối tượng (${related.length})`]]
-  if (record.ocr) tabs.push(['ocr', 'Ảnh & dữ liệu OCR'])
+  if (record.ocr) tabs.push(['ocr', 'Dữ liệu OCR'])
   return <Modal title="Thông tin phiếu khảo sát" size="wide" close={close} footer={<>
-    <button onClick={showSource}>Xem mẫu gốc</button>
+    <button onClick={showSource}>Xem mẫu phiếu trống</button>
+    {record.hasOriginal && <button onClick={() => viewOriginal(record)}><Icon name="file" /><span>Xem phiếu gốc</span></button>}
     <button className="right" onClick={exportRecord}><Icon name="download" /><span>Xuất dữ liệu</span></button>
     <button className="primary" onClick={edit}><Icon name="edit" /><span>Chỉnh sửa thông tin</span></button>
   </>}>

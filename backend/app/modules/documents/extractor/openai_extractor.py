@@ -14,6 +14,7 @@ import json
 import logging
 
 from app.core.config import settings
+from app.core.openai_client import openai_client, reasoning_options
 from app.modules.documents.extractor.base import (
     SYSTEM_PROMPT,
     ExamExtractor,
@@ -34,20 +35,6 @@ class OpenAIExamExtractor(ExamExtractor):
         self.vision = vision
         self.model = model or (settings.OCR_MODEL if vision else settings.DOC_PARSER_MODEL)
 
-    def _client(self):
-        from openai import OpenAI
-
-        if not settings.OPENAI_API_KEY:
-            raise RuntimeError(
-                "Chưa cấu hình OPENAI_API_KEY. Đặt biến này trong .env, hoặc chuyển "
-                "OCR_PROVIDER/DOC_PARSER_PROVIDER sang 'stub' để chạy thử."
-            )
-        return OpenAI(
-            api_key=settings.OPENAI_API_KEY,
-            base_url=settings.OPENAI_BASE_URL or None,
-            timeout=settings.EXTRACTION_TIMEOUT_SECONDS,
-        )
-
     def extract(
         self, content: DocumentContent, specs: list[FieldSpec], disease_label: str
     ) -> ExtractionOutcome:
@@ -67,14 +54,14 @@ class OpenAIExamExtractor(ExamExtractor):
                 }
             )
 
-        response = self._client().chat.completions.create(
+        response = openai_client().chat.completions.create(
             model=self.model,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": parts},
             ],
             response_format={"type": "json_object"},
-            temperature=0,
+            **reasoning_options(),
         )
 
         raw_text = response.choices[0].message.content or "{}"

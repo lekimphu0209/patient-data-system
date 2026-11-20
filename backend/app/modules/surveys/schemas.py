@@ -53,6 +53,7 @@ class RecordInput(BaseModel):
     note: LongText = ""
     ocr: Annotated[str, StringConstraints(max_length=200000)] | None = None
     ocrImage: Annotated[str, StringConstraints(max_length=5000000)] | None = None
+    documentId: Annotated[int, Field(gt=0)] | None = None
     updatedAt: datetime | None = None
 
     @field_validator("id")

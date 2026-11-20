@@ -6746,3 +6746,128 @@ main {
     grid-column: 1 / -1;
   }
 }
+
+/* --- Phiếu gốc (ảnh/PDF đã bóc tách) & hộp thoại trích xuất --- */
+.original-heading {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  color: #294b5b;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.survey-table td.original-cell {
+  white-space: nowrap;
+}
+.original-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid #9dbdce;
+  border-radius: 8px;
+  background: #fff;
+  color: #245671;
+  font-size: 14px;
+  font-weight: 600;
+}
+.original-link:hover {
+  background: #e7f1f7;
+  border-color: #4e8fae;
+}
+.original-link:focus-visible {
+  outline: 3px solid #8dc3ce;
+  outline-offset: 2px;
+}
+.original-link .ui-icon {
+  width: 18px;
+  height: 18px;
+}
+.original-none {
+  color: #8a9ba5;
+}
+.original-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.original-toolbar .sub {
+  flex: 1 1 200px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.original-toolbar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.original-frame {
+  display: block;
+  width: 100%;
+  height: min(75vh, 960px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f5f8fa;
+}
+.original-image {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.survey-upload-form .pick-meta {
+  display: block;
+  margin-top: 2px;
+}
+.extract-person {
+  margin-bottom: 14px;
+}
+.extract-person input {
+  width: 100%;
+}
+.extract-person .hint {
+  display: block;
+  margin-top: 4px;
+}
+.extract-uncertain ul {
+  margin: 6px 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.extract-uncertain li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.progress > div.is-working {
+  background-image: linear-gradient(90deg, #288b71 0%, #6cc3a8 50%, #288b71 100%);
+  background-size: 200% 100%;
+  animation: extract-working 1.4s linear infinite;
+}
+@keyframes extract-working {
+  from { background-position: 200% 0; }
+  to { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress > div.is-working {
+    animation: none;
+  }
+}
+@media (max-width: 850px) {
+  .original-frame {
+    height: 70vh;
+  }
+  .original-link {
+    min-height: 44px;
+  }
+}

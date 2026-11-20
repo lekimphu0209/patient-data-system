@@ -40,8 +40,11 @@ export type Survey = {
   updatedAt?: string
   sample?: boolean
   ocr?: string | null
-  ocrImage?: string | null
   hasOCR?: boolean
+  /** File ảnh/PDF đã upload để bóc tách — chỉ gửi khi tạo bản ghi. */
+  documentId?: number | null
+  hasOriginal?: boolean
+  originalType?: 'pdf' | 'image' | null
 }
 export type ImportAction = 'manual' | 'excel' | 'ocr'
 export const today = () => new Intl.DateTimeFormat('en-CA', {

@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse, Response
 from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert as postgres_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
@@ -9,8 +10,16 @@ from sqlalchemy.orm import Session, lazyload
 
 from app.core.database import get_db
 from app.core.deps import get_current_active_user
+from app.modules.documents.models import Document
 from app.modules.surveys.models import SurveyRecord, SurveySubject
-from app.modules.surveys.schemas import DeleteBatch, FORMS, RecordBatch, RecordInput
+from app.modules.surveys.ocr.service import (
+    ExtractionUnavailableError,
+    SurveyExtractionError,
+    extract_survey,
+    original_file,
+    release_documents,
+)
+from app.modules.surveys.schemas import FORM_BY_ID, DeleteBatch, FORMS, RecordBatch, RecordInput
 
 router = APIRouter(dependencies=[Depends(get_current_active_user)])
 
@@ -20,7 +29,13 @@ def get_forms():
     return FORMS
 
 
-def serialize(record: SurveyRecord, has_ocr: bool, include_ocr: bool = False):
+def original_type(mime_type: str | None, has_legacy_image: bool) -> str | None:
+    if mime_type:
+        return "pdf" if mime_type == "application/pdf" else "image"
+    return "image" if has_legacy_image else None
+
+
+def serialize(record: SurveyRecord, has_ocr: bool, original: str | None, include_ocr: bool = False):
     subject = record.subject
     data = {
         "id": record.id,
@@ -42,24 +57,80 @@ def serialize(record: SurveyRecord, has_ocr: bool, include_ocr: bool = False):
         "note": record.note,
         "updatedAt": record.updated_at.replace(tzinfo=timezone.utc),
         "hasOCR": has_ocr,
+        "hasOriginal": original is not None,
+        "originalType": original,
     }
     if include_ocr:
-        data.update(ocr=record.ocr, ocrImage=record.ocr_image)
+        data["ocr"] = record.ocr
     return data
+
+
+def record_rows(db: Session, *conditions):
+    """Bản ghi kèm cờ OCR và loại file gốc, không phải nạp các cột văn bản/ảnh nặng."""
+    statement = (
+        select(
+            SurveyRecord,
+            SurveyRecord.ocr.is_not(None),
+            SurveyRecord.ocr_image.is_not(None),
+            Document.mime_type,
+        )
+        .outerjoin(Document, SurveyRecord.document_id == Document.id)
+        .where(*conditions)
+    )
+    return db.execute(statement)
 
 
 @router.get("/records")
 def list_records(db: Session = Depends(get_db)):
-    records = db.execute(select(SurveyRecord, SurveyRecord.ocr.is_not(None)))
-    return [serialize(record, has_ocr) for record, has_ocr in records]
+    return [
+        serialize(record, has_ocr, original_type(mime, legacy))
+        for record, has_ocr, legacy, mime in record_rows(db)
+    ]
 
 
 @router.get("/record")
 def get_record(id: str = Query(max_length=120), db: Session = Depends(get_db)):
+    row = record_rows(db, SurveyRecord.id == id).first()
+    if row is None:
+        raise HTTPException(404, "Phiếu khảo sát không còn tồn tại.")
+    record, has_ocr, legacy, mime = row
+    return serialize(record, has_ocr, original_type(mime, legacy), include_ocr=True)
+
+
+@router.post("/extract")
+def extract(
+    form: str = Query(max_length=3),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """Bóc tách một phiếu đã điền (ảnh/PDF) thành bản nháp; chưa tạo bản ghi."""
+    definition = FORM_BY_ID.get(form)
+    if definition is None:
+        raise HTTPException(422, "Mã biểu mẫu không hợp lệ.")
+    try:
+        return extract_survey(db, definition, file).to_dict()
+    except SurveyExtractionError as error:
+        raise HTTPException(422, str(error)) from error
+    except ExtractionUnavailableError as error:
+        raise HTTPException(502, str(error)) from error
+
+
+@router.get("/original")
+def get_original(id: str = Query(max_length=120), db: Session = Depends(get_db)):
     record = db.get(SurveyRecord, id)
     if record is None:
         raise HTTPException(404, "Phiếu khảo sát không còn tồn tại.")
-    return serialize(record, bool(record.ocr), include_ocr=True)
+    original = original_file(db, record)
+    if original is None:
+        raise HTTPException(404, "Phiếu này không có file gốc hoặc file đã bị xoá khỏi máy chủ.")
+    if original.path:
+        return FileResponse(
+            original.path,
+            media_type=original.media_type,
+            filename=original.file_name,
+            content_disposition_type="inline",
+        )
+    return Response(original.content, media_type=original.media_type)
 
 
 def save_subjects(db: Session, records: list[RecordInput], *, merge: bool) -> None:
@@ -93,12 +164,15 @@ def write_record(row: SurveyRecord, data: RecordInput) -> None:
 def create_records(batch: RecordBatch, db: Session = Depends(get_db)):
     if len({record.id for record in batch.records}) != len(batch.records):
         raise HTTPException(409, "Mã phiếu bị trùng trong dữ liệu nhập.")
+    documents = {record.documentId for record in batch.records if record.documentId}
+    if documents and len(set(db.scalars(select(Document.id).where(Document.id.in_(documents))))) != len(documents):
+        raise HTTPException(422, "File gốc của phiếu không còn trên máy chủ. Hãy tải file lên lại.")
     try:
         save_subjects(db, batch.records, merge=True)
         for data in batch.records:
             row = SurveyRecord(
                 id=data.id, person=data.person, group=data.group, form=data.form,
-                source=data.source, ocr=data.ocr, ocr_image=data.ocrImage,
+                source=data.source, ocr=data.ocr, ocr_image=data.ocrImage, document_id=data.documentId,
             )
             write_record(row, data)
             db.add(row)
@@ -129,6 +203,13 @@ def update_record(data: RecordInput, db: Session = Depends(get_db)):
 
 @router.post("/delete")
 def delete_records(batch: DeleteBatch, db: Session = Depends(get_db)):
+    documents = set(db.scalars(
+        select(SurveyRecord.document_id)
+        .where(SurveyRecord.id.in_(batch.ids), SurveyRecord.document_id.is_not(None))
+    ))
     result = db.execute(delete(SurveyRecord).where(SurveyRecord.id.in_(batch.ids)))
+    files = release_documents(db, documents)
     db.commit()
+    for path in files:
+        path.unlink(missing_ok=True)
     return {"count": result.rowcount}

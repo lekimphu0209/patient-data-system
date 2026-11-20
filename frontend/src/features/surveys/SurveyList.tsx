@@ -10,19 +10,20 @@ const columns = [
 const initialFilters = { search: '', fullName: '', birthDate: '', hometown: '', conclusion: '', form: 'all', status: 'all', unit: 'all' }
 const sortColumns = [...columns.map(([key, label]) => [key, label] as const), ['status', 'TRẠNG THÁI'] as const]
 // Conclusion and form columns share the extra space on wide screens.
-const columnWidths = [48, 240, 160, 190, undefined, undefined, 180, 180]
+const columnWidths = [48, 240, 160, 190, undefined, undefined, 118, 180, 180]
 type SortKey = typeof columns[number][0] | 'status'
 type Sort = { key: SortKey; direction: number }
 const collator = new Intl.Collator('vi', { numeric: true, sensitivity: 'base' })
 const lower = (text: string) => text.toLocaleLowerCase('vi')
 
-export function SurveyList({ rows, forms, group, form, openImport, view, edit, remove, exportRows, pageSize, setPageSize, sort, setSort }: {
+export function SurveyList({ rows, forms, group, form, openImport, view, viewOriginal, edit, remove, exportRows, pageSize, setPageSize, sort, setSort }: {
   rows: Survey[]
   forms: SurveyForm[]
   group: Group
   form?: string
   openImport: (action: ImportAction) => void
   view: (row: Survey) => void
+  viewOriginal: (row: Survey) => void
   edit: (row: Survey) => void
   remove: (rows: Survey[]) => void
   exportRows: (rows: Survey[]) => void
@@ -168,6 +169,7 @@ export function SurveyList({ rows, forms, group, form, openImport, view, edit, r
             <button onClick={() => sortBy(column[0])} aria-label={`Sắp xếp ${column[1].toLowerCase()}`}>{column[1]}<span>{sortIcon(column[0])}</span></button>
             {columnFilter(column)}
           </th>)}
+          <th className="original-col"><span className="original-heading">PHIẾU GỐC</span></th>
           <th style={{ minWidth: 112 }}><button onClick={() => sortBy('status')}>TRẠNG THÁI <span>{sortIcon('status')}</span></button></th>
           <th className="actions-col"><span className="actions-heading">THAO TÁC</span></th>
         </tr></thead>
@@ -183,15 +185,20 @@ export function SurveyList({ rows, forms, group, form, openImport, view, edit, r
           <td role="cell" className="conclusioncell"><span className="mobile-field-label">Kết luận về bệnh</span>{row.conclusion ? <span className="conclusion-text" title={row.conclusion}>{row.conclusion}</span>
             : <span className="conclusion-empty">Chưa có kết luận</span>}</td>
           <td role="cell" className="form-cell"><div className="formname" title={titleOf(row)}>{titleOf(row)}</div><div className="patient-code">{row.form} · {row.source}</div></td>
+          <td role="cell" className="original-cell"><span className="mobile-field-label">Phiếu gốc</span>
+            {row.hasOriginal ? <button className="original-link" title={`Xem phiếu gốc ${row.originalType === 'pdf' ? '(PDF)' : '(ảnh)'}`}
+              aria-label={`Xem phiếu gốc ${row.id}`} onClick={() => viewOriginal(row)}>
+              <Icon name={row.originalType === 'pdf' ? 'file' : 'image'} /><span>{row.originalType === 'pdf' ? 'PDF' : 'Ảnh'}</span>
+            </button> : <span className="original-none" title="Phiếu nhập tay hoặc từ Excel">—</span>}</td>
           <td role="cell" className="status-cell"><Badge status={row.status} /></td>
           <td role="cell" className="actions-col"><div className="row-actions">
             <button title="View · Xem phiếu" aria-label={`View ${row.id}`} onClick={() => view(row)}><Icon name="eye" /></button>
             <button title="Edit · Sửa thông tin" aria-label={`Edit ${row.id}`} onClick={() => edit(row)}><Icon name="edit" /></button>
             <button className="delete" title="Delete · Xóa phiếu" aria-label={`Delete ${row.id}`} onClick={() => remove([row])}><Icon name="trash" /></button>
           </div></td>
-        </tr>) : <tr role="row" className="empty-row"><td role="cell" colSpan={8}><div className="empty"><div className="empty-icon"><Icon name="file" /></div>
+        </tr>) : <tr role="row" className="empty-row"><td role="cell" colSpan={9}><div className="empty"><div className="empty-icon"><Icon name="file" /></div>
           <strong>Không có phiếu khảo sát phù hợp</strong>
-          {scoped.length ? 'Thử thay đổi từ khóa hoặc đặt lại bộ lọc.' : 'Nhập dữ liệu thủ công, tải Excel hoặc tải ảnh khảo sát để bắt đầu.'}
+          {scoped.length ? 'Thử thay đổi từ khóa hoặc đặt lại bộ lọc.' : 'Nhập dữ liệu thủ công, tải Excel hoặc tải ảnh/PDF phiếu khảo sát để bắt đầu.'}
         </div></td></tr>}</tbody>
       </table></div>
       <div className="pagination"><span>Hiển thị {filtered.length ? (current - 1) * pageSize + 1 : 0}–{Math.min(current * pageSize, filtered.length)} / {filtered.length} phiếu</span>

@@ -25,9 +25,12 @@ class Settings(BaseSettings):
     # "openai" dùng API thật, "stub" trả dữ liệu giả để chạy/dev không tốn tiền.
     # Khi team có model OCR riêng thì thêm provider mới vào extractor/factory.py.
     OCR_PROVIDER: str = "openai"
-    OCR_MODEL: str = "gpt-4o"
+    OCR_MODEL: str = "gpt-5.6-luna"
     DOC_PARSER_PROVIDER: str = "openai"
-    DOC_PARSER_MODEL: str = "gpt-4o-mini"
+    DOC_PARSER_MODEL: str = "gpt-5.6-luna"
+    # none | low | medium | high | xhigh — chỉ dòng model suy luận (GPT-5 trở lên)
+    # nhận tham số này. Để trống khi dùng model cũ như gpt-4o.
+    EXTRACTION_REASONING_EFFORT: str = "low"
 
     EXTRACTION_MAX_PAGES: int = 10
     EXTRACTION_TIMEOUT_SECONDS: int = 180

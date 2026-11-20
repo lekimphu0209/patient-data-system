@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from sqlalchemy import JSON, Date, DateTime, ForeignKeyConstraint, String, Text
+from sqlalchemy import JSON, Date, DateTime, ForeignKey, ForeignKeyConstraint, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -39,6 +39,8 @@ class SurveyRecord(Base):
     note: Mapped[str] = mapped_column(Text)
     ocr: Mapped[str | None] = mapped_column(Text, deferred=True)
     ocr_image: Mapped[str | None] = mapped_column(Text, deferred=True)
+    # File gốc (ảnh/PDF) đã upload để bóc tách; ``ocr_image`` chỉ còn cho dữ liệu cũ.
+    document_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("documents.id"))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
     subject: Mapped[SurveySubject] = relationship(lazy="joined")

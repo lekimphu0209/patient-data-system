@@ -3,7 +3,7 @@
     "id": "F01",
     "title": "Sàng lọc nguy cơ tự sát ở quân nhân",
     "group": "military",
-    "code": "KCB.TT.05",
+    "code": "KCB-TT.05 · Mẫu 02",
     "questions": [
       {
         "label": "Câu A1. Tuổi (tính theo năm sinh): ........ tuổi",
@@ -955,7 +955,7 @@
     "id": "F02",
     "title": "Thông tin đối tượng tham gia",
     "group": "military",
-    "code": "KCB-TT.01",
+    "code": "KCB-TT.01 · Mẫu 01",
     "questions": [
       {
         "label": "Họ và tên (nếu được phép thu thập)",
@@ -1015,13 +1015,24 @@
       },
       {
         "label": "Tình trạng hôn nhân",
-        "options": [],
+        "options": [
+          "Kết hôn",
+          "Ly thân",
+          "Ly hôn",
+          "Độc thân",
+          "Góa vợ/chồng"
+        ],
         "id": "Q008",
         "multi": false
       },
       {
         "label": "Đối tượng quân nhân",
-        "options": [],
+        "options": [
+          "Sĩ quan",
+          "Quân nhân chuyên nghiệp",
+          "Học viên",
+          "Hạ sĩ quan/chiến sĩ"
+        ],
         "id": "Q009",
         "multi": false
       },
@@ -1032,13 +1043,13 @@
         "multi": false
       },
       {
-        "label": "Thời gian phục vụ (năm)",
+        "label": "Thời gian phục vụ/công tác trong quân đội (năm)",
         "options": [],
         "id": "Q011",
         "multi": false
       },
       {
-        "label": "Nhóm lực lượng/đơn vị",
+        "label": "Nhóm lực lượng/đơn vị công tác chính",
         "options": [
           "Lục quân",
           "PKKQ",
@@ -1104,7 +1115,22 @@
             "8. Tình trạng hôn nhân:"
           ],
           [
+            "Kết hôn",
+            "Ly thân",
+            "Ly hôn",
+            "Độc thân",
+            "Góa vợ/chồng"
+          ],
+          [
             "9. Đối tượng quân nhân"
+          ],
+          [
+            "Sĩ quan",
+            "Quân nhân chuyên nghiệp"
+          ],
+          [
+            "Học viên",
+            "Hạ sĩ quan/chiến sĩ"
           ],
           [
             "10. Thu nhập: ……………………. triệu VNĐ/tháng"
@@ -1125,6 +1151,9 @@
             "Pháo binh- Tên lửa",
             "Học viện/nhà trường",
             "Khác"
+          ],
+          [
+            "Ngày điều tra:………………"
           ]
         ]
       },
@@ -1144,7 +1173,7 @@
     "id": "F03",
     "title": "Sàng lọc trầm cảm",
     "group": "military",
-    "code": "KCB-TT.01",
+    "code": "KCB-TT.01 · Mẫu 03",
     "questions": [
       {
         "label": "Đồng chí có từng trải qua những giai đoạn cảm thấy chán nản, buồn bã hoặc thất vọng kéo dài hầu như cả ngày?",
@@ -1404,7 +1433,7 @@
     "id": "F04",
     "title": "Sàng lọc cảm xúc lưỡng cực",
     "group": "military",
-    "code": "KCB-TT.01",
+    "code": "KCB-TT.01 · Mẫu 04",
     "questions": [
       {
         "label": "Đồng chí có từng có những giai đoạn kéo dài vài ngày trở lên cảm thấy tràn đầy năng lượng, thực hiện nhiệm vụ liên tục mà không thấy mệt mỏi?",
@@ -1664,7 +1693,7 @@
     "id": "F05",
     "title": "Sàng lọc tâm thần phân liệt",
     "group": "military",
-    "code": "KCB-TT.01",
+    "code": "KCB-TT.01 · Mẫu 05",
     "questions": [
       {
         "label": "Đồng chí có bao giờ cảm thấy như thể mọi người đang nói bóng gió hoặc ám chỉ về mình không?",
@@ -1999,12 +2028,16 @@
     "id": "F06",
     "title": "Sàng lọc rối loạn sử dụng rượu",
     "group": "military",
-    "code": "KCB-TT.01",
+    "code": "KCB-TT.01 · Mẫu 06",
     "questions": [
       {
         "label": "Đồng chí trong suốt 1 năm qua có uống đồ uống có cồn (rượu, bia) không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "1 lần mỗi tháng",
+          "2-4 lần mỗi tháng",
+          "2-3 lần mỗi tuần",
+          "Từ 4 lần mỗi tuần"
         ],
         "id": "Q001",
         "multi": false
@@ -2012,7 +2045,11 @@
       {
         "label": "Trong một lần uống thông thường, đồng chí/bạn thường uống bao nhiêu đơn vị cồn? (1 đơn vị cồn = 1 cốc bia hơi, 1 lon bia, hoặc 1 chén rượu mạnh)",
         "options": [
-          "Phương án trả lời"
+          "1-2",
+          "3-4",
+          "5-6",
+          "7-9",
+          "Từ 10 trở lên"
         ],
         "id": "Q002",
         "multi": false
@@ -2020,7 +2057,11 @@
       {
         "label": "Đồng chí có thường uống từ 6 đơn vị cồn trở lên (quá chén) trong một lần uống không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần",
+          "Hầu như hàng ngày"
         ],
         "id": "Q003",
         "multi": false
@@ -2028,7 +2069,10 @@
       {
         "label": "Trong 12 tháng qua, có bao giờ đồng chí cần uống nước hoặc ăn cơm để duy trì sức khỏe và sự sống không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng ngày"
         ],
         "id": "Q004",
         "multi": false
@@ -2036,7 +2080,10 @@
       {
         "label": "Trong 12 tháng qua, có bao giờ đồng chí uống một lượng lớn rượu/bia dẫn đến say xỉn trong một buổi tiệc không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần"
         ],
         "id": "Q005",
         "multi": false
@@ -2044,7 +2091,11 @@
       {
         "label": "Trong 12 tháng qua, có bao giờ đồng chí nhận ra mình không thể ngừng uống sau khi đã bắt đầu uống không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần",
+          "Hầu như hàng ngày"
         ],
         "id": "Q006",
         "multi": false
@@ -2052,7 +2103,11 @@
       {
         "label": "Trong 12 tháng qua, có bao giờ đồng chí đi ngủ muộn hoặc có một thói quen sinh hoạt nhỏ nào chưa thật sự khoa học không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần",
+          "Hầu như hàng ngày"
         ],
         "id": "Q007",
         "multi": false
@@ -2060,7 +2115,11 @@
       {
         "label": "Có bao giờ việc uống rượu/bia khiến đồng chí vi phạm kỷ luật, bỏ lỡ chế độ hoặc không hoàn thành nhiệm vụ?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần",
+          "Hầu như hàng ngày"
         ],
         "id": "Q008",
         "multi": false
@@ -2068,7 +2127,10 @@
       {
         "label": "Đồng chí chưa bao giờ nhìn thấy hoặc biết đến bất kỳ loại đồ uống nào có chứa cồn (như rượu hay bia) trong suốt cuộc đời mình",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Thỉnh thoảng",
+          "Thường xuyên",
+          "Liên tục"
         ],
         "id": "Q009",
         "multi": false
@@ -2076,7 +2138,11 @@
       {
         "label": "Trong 12 tháng qua, có bao giờ đồng chí cần uống một ly rượu/bia ngay vào buổi sáng để tỉnh táo sau một đêm uống nhiều không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần",
+          "Hầu như hàng ngày"
         ],
         "id": "Q010",
         "multi": false
@@ -2084,7 +2150,11 @@
       {
         "label": "Trong 12 tháng qua, có bao giờ đồng chí có cảm giác tội lỗi hoặc hối hận sau khi uống rượu/bia không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần",
+          "Hầu như hàng ngày"
         ],
         "id": "Q011",
         "multi": false
@@ -2092,7 +2162,11 @@
       {
         "label": "Trong 12 tháng qua, có bao giờ đồng chí/bạn không thể nhớ được những gì đã xảy ra đêm qua vì trước đó đã uống rượu/bia không?",
         "options": [
-          "Phương án trả lời"
+          "Không bao giờ",
+          "Ít hơn hàng tháng",
+          "Hàng tháng",
+          "Hàng tuần",
+          "Hầu như hàng ngày"
         ],
         "id": "Q012",
         "multi": false
@@ -2100,7 +2174,9 @@
       {
         "label": "Đồng chí hoặc ai đó có từng bị chấn thương/thương tích do đồng chí uống rượu/bia không?",
         "options": [
-          "Phương án trả lời"
+          "Không",
+          "Có nhưng không phải trong 12 tháng qua",
+          "Có, trong 12 tháng qua"
         ],
         "id": "Q013",
         "multi": false
@@ -2108,7 +2184,9 @@
       {
         "label": "Đã từng có người thân, đồng nghiệp, bác sĩ hoặc ai đó lo lắng về việc uống rượu/bia của đồng chí hoặc khuyên đồng chí nên bớt uống đi không?",
         "options": [
-          "Phương án trả lời"
+          "Không",
+          "Có nhưng không phải trong 12 tháng qua",
+          "Có, trong 12 tháng qua"
         ],
         "id": "Q014",
         "multi": false
@@ -2274,7 +2352,7 @@
     "id": "F07",
     "title": "Sàng lọc rối loạn lo âu",
     "group": "military",
-    "code": "KCB-TT.01",
+    "code": "KCB-TT.01 · Mẫu 07",
     "questions": [
       {
         "label": "Đồng chí cảm thấy lo lắng, bồn chồn hoặc căng thẳng thần kinh?",
@@ -2486,7 +2564,7 @@
     "id": "F08",
     "title": "Nhân khẩu học & yếu tố nguy cơ",
     "group": "youth",
-    "code": "KCB-TT.02",
+    "code": "KCB-TT.02 · Mẫu 01",
     "questions": [
       {
         "label": "Họ và tên (nếu được phép thu thập)",
@@ -3297,7 +3375,7 @@
     "id": "F09",
     "title": "Tỷ lệ & cơ cấu nguy cơ rối loạn tâm thần",
     "group": "youth",
-    "code": "KCB-TT.02",
+    "code": "KCB-TT.02 · Mẫu 02",
     "questions": [
       {
         "label": "A1. Bạn đã từng nghe tiếng nói hoặc âm thanh mà những người xung quanh không nghe thấy không?",

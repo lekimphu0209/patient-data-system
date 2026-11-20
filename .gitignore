@@ -65,3 +65,6 @@ htmlcov/
 .tox/
 .nox/
 BV103/
+# Downloaded datasets (rclone from Google Drive)
+data/*
+!data/.gitkeep

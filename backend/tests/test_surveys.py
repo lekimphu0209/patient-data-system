@@ -71,7 +71,12 @@ def test_ocr_attachment_is_only_in_detail():
         records = client.get(f"{base}/records", headers=headers).json()
         listed = next(record for record in records if record["id"] == id)
         assert listed["hasOCR"] and "ocr" not in listed and "ocrImage" not in listed
+        assert listed["hasOriginal"] and listed["originalType"] == "image"
         detail = client.get(f"{base}/record", params={"id": id}, headers=headers).json()
         assert detail["ocr"] == row["ocr"]
-        assert detail["ocrImage"] == row["ocrImage"]
+        assert "ocrImage" not in detail
+        original = client.get(f"{base}/original", params={"id": id}, headers=headers)
+        assert original.status_code == 200
+        assert original.headers["content-type"] == "image/jpeg"
+        assert original.content == b"a"
         client.post(f"{base}/delete", json={"ids": [id]}, headers=headers)
