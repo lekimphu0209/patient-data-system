@@ -31,3 +31,28 @@ def never_call_paid_apis():
 
     for key, value in original.items():
         setattr(settings, key, value)
+
+
+@pytest.fixture
+def storage(tmp_path, monkeypatch):
+    """Thư mục lưu file phiếu khảo sát riêng cho từng test."""
+    from app.modules.surveys.ocr import service
+
+    monkeypatch.setattr(service, "STORAGE_DIR", tmp_path)
+    return tmp_path
+
+
+@pytest.fixture
+def api():
+    """Client đã đăng nhập bằng tài khoản mặc định."""
+    from fastapi.testclient import TestClient
+
+    from app.core.config import settings
+    from app.main import app
+
+    with TestClient(app) as client:
+        login = client.post("/api/v1/auth/login", json={
+            "email": settings.DEFAULT_USER_EMAIL, "password": settings.DEFAULT_USER_PASSWORD,
+        })
+        client.headers["Authorization"] = f"Bearer {login.json()['access_token']}"
+        yield client

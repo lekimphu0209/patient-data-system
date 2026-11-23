@@ -6,14 +6,11 @@ Mọi test chạy với bộ bóc tách giả lập hoặc bộ thay thế — k
 import io
 from uuid import uuid4
 
-import fitz
 import pytest
-from fastapi.testclient import TestClient
 from PIL import Image
 
 from app.core.config import settings
 from app.core.database import SessionLocal
-from app.main import app
 from app.modules.documents.models import Document, OcrExtraction
 from app.modules.surveys.ocr import extractor as extractor_module
 from app.modules.surveys.ocr import service as service_module
@@ -21,53 +18,7 @@ from app.modules.surveys.ocr.extractor import ModelOutput
 from app.modules.surveys.ocr.pages import UnreadableFileError, load_pages
 from app.modules.surveys.ocr.schema import NO_EVENT, form_prompt, normalize, response_schema
 from app.modules.surveys.schemas import FORM_BY_ID
-
-BASE = "/api/v1/surveys"
-
-
-# ---------- dữ liệu thử ----------
-
-
-def make_pdf(pages=("PHIEU SANG LOC TRAM CAM", None, "Trang 3")) -> bytes:
-    """PDF nhiều trang; ``None`` là trang trắng."""
-    document = fitz.open()
-    for text in pages:
-        page = document.new_page()
-        if text is not None:
-            page.insert_text((72, 72), text, fontsize=20)
-            for row in range(12):  # kẻ bảng như phiếu thật để trang có đủ "mực"
-                page.draw_rect(fitz.Rect(60, 100 + row * 40, 540, 140 + row * 40), width=4)
-    data = document.tobytes()
-    document.close()
-    return data
-
-
-def make_image(size=(40, 20), mode="RGB", fmt="JPEG", orientation=None) -> bytes:
-    image = Image.new(mode, size, (200, 30, 30, 0) if mode == "RGBA" else (200, 30, 30))
-    buffer = io.BytesIO()
-    if orientation:
-        exif = Image.Exif()
-        exif[0x0112] = orientation
-        image.save(buffer, format=fmt, exif=exif)
-    else:
-        image.save(buffer, format=fmt)
-    return buffer.getvalue()
-
-
-@pytest.fixture
-def storage(tmp_path, monkeypatch):
-    monkeypatch.setattr(service_module, "STORAGE_DIR", tmp_path)
-    return tmp_path
-
-
-@pytest.fixture
-def api():
-    with TestClient(app) as client:
-        login = client.post("/api/v1/auth/login", json={
-            "email": settings.DEFAULT_USER_EMAIL, "password": settings.DEFAULT_USER_PASSWORD,
-        })
-        client.headers["Authorization"] = f"Bearer {login.json()['access_token']}"
-        yield client
+from tests.survey_files import BASE, make_image, make_pdf
 
 
 def use_extractor(monkeypatch, extract):
@@ -243,7 +194,7 @@ def test_extract_returns_draft_and_keeps_original(api, storage):
     assert response.status_code == 200, response.text
     draft = response.json()
     assert draft["model"] == "stub" and draft["pageCount"] == 3 and draft["pagesRead"] == [1, 3]
-    assert draft["subject"]["code"] == "STUB-001"
+    assert draft["subject"]["code"] == "STUB.001" and draft["form"] == "F03"
     assert draft["answers"]["Q001"] == "Không bao giờ" and "Q002" not in draft["answers"]
     assert "Bỏ qua trang trắng: 2." in draft["warnings"]
     assert "phieu.pdf" in draft["summary"]

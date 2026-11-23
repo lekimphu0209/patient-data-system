@@ -82,6 +82,10 @@ async def lifespan(app: FastAPI):
             password=settings.DEFAULT_USER_PASSWORD,
             full_name="Bác sĩ A",
         )
+        from app.modules.surveys.legacy import rename_legacy_options
+        renamed = rename_legacy_options(db)
+        if renamed:
+            logger.info("Đã chuyển %d phiếu khảo sát sang tên phương án mới.", renamed)
     finally:
         db.close()
     yield

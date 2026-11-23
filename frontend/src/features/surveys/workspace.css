@@ -6871,3 +6871,86 @@ main {
     min-height: 44px;
   }
 }
+
+/* Câu được chuyển qua theo chỉ dẫn: không áp dụng (khoá) hoặc chỉ hết bắt buộc. */
+.question.is-skipped {
+  opacity: .45;
+}
+.question.is-optional {
+  opacity: .75;
+}
+
+/* Tải file nhiều phiếu của một người */
+.formpick button.pick-bundle {
+  border-style: dashed;
+  border-color: #9cc9b9;
+  background: #f4faf6;
+}
+.extract-confirm {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #eee5cd;
+  border-radius: 8px;
+  background: #fffaee;
+  font-size: 12px;
+}
+.extract-confirm input {
+  width: 100%;
+}
+.code-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.code-choices .smallbtn {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.code-choices .smallbtn.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.extract-results {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.extract-result {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.extract-result-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.extract-result-head .pick-meta {
+  display: block;
+  margin-top: 2px;
+}
+.extract-result .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.extract-result details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.extract-skipped ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+.notice.amber p {
+  margin: 0;
+}
+.notice.amber p + p {
+  margin-top: 4px;
+}

@@ -1,22 +1,25 @@
 import { api } from '@/lib/api'
-import type { Answers, Survey, SurveyForm } from './model'
+import type { Answers, Group, Survey, SurveyForm } from './model'
 
-/** Bản nháp bóc tách từ một file phiếu đã điền; chưa phải bản ghi. */
+export type DraftSubject = {
+  code: string | null
+  full_name: string | null
+  birth_year: string | null
+  birth_date: string | null
+  hometown: string | null
+  unit: string | null
+  survey_date: string | null
+}
+
+/** Bản nháp bóc tách một phiếu đã điền; chưa phải bản ghi. */
 export type SurveyDraft = {
+  form: string
   documentId: number
   fileName: string
   pageCount: number
   pagesRead: number[]
   model: string
-  subject: {
-    code: string | null
-    full_name: string | null
-    birth_year: string | null
-    birth_date: string | null
-    hometown: string | null
-    unit: string | null
-    survey_date: string | null
-  }
+  subject: DraftSubject
   answers: Answers
   uncertain: string[]
   notes: string
@@ -24,14 +27,35 @@ export type SurveyDraft = {
   summary: string
 }
 
-export async function extractSurvey(form: string, file: File, onUpload: (fraction: number) => void): Promise<SurveyDraft> {
+/** Kết quả tách một file chứa nhiều phiếu của một người. */
+export type BundleResult = {
+  fileName: string
+  pageCount: number
+  model: string
+  subject: DraftSubject
+  /** Các cách đọc mã đối tượng khác nhau; hơn một mã nghĩa là cần người dùng xác nhận. */
+  codeCandidates: string[]
+  drafts: SurveyDraft[]
+  skipped: { pages: number[]; reason: string }[]
+  warnings: string[]
+}
+
+async function upload<T>(path: string, params: Record<string, string>, file: File, onUpload: (fraction: number) => void) {
   const body = new FormData()
   body.append('file', file)
-  const response = await api.post('/surveys/extract', body, {
-    params: { form },
+  const response = await api.post<T>(path, body, {
+    params,
     onUploadProgress: event => { if (event.total) onUpload(event.loaded / event.total) },
   })
   return response.data
+}
+export const extractSurvey = (form: string, file: File, onUpload: (fraction: number) => void) =>
+  upload<SurveyDraft>('/surveys/extract', { form }, file, onUpload)
+export const extractBundle = (group: Group, file: File, onUpload: (fraction: number) => void) =>
+  upload<BundleResult>('/surveys/extract-bundle', { group }, file, onUpload)
+/** Bỏ file đã bóc tách nhưng không lưu thành phiếu. */
+export async function discardDocuments(ids: number[]) {
+  if (ids.length) await api.post('/surveys/discard-documents', { ids })
 }
 
 export type OriginalFile = { url: string; type: string; name: string }

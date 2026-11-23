@@ -13,7 +13,10 @@ export type Group = keyof typeof GROUP
 export type Status = keyof typeof STATUS
 export type Answer = string | string[]
 export type Answers = Record<string, Answer>
-export type Question = { id: string; label: string; options: string[]; multi: boolean }
+/** Chỉ dẫn chuyển câu: câu không áp dụng khi câu ``question`` được trả lời ``answer``.
+ *  ``keepAnswer``: câu chỉ hết bắt buộc, người trả lời vẫn đánh thì giữ; không có thì câu trả lời bị bỏ. */
+export type SkipRule = { question: string; answer: string; keepAnswer?: boolean }
+export type Question = { id: string; label: string; options: string[]; multi: boolean; skipIf?: SkipRule }
 export type SurveyForm = {
   id: string
   group: Group
@@ -65,6 +68,31 @@ export const subjectFields = ['fullName', 'birthDate', 'birthYear', 'hometown'] 
 export const isSampleCode = (id: string) => /^MAU-(TN|QN)-/i.test(id)
 export const newId = (prefix: string) => `${prefix}-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`
 
+// Mã đối tượng dạng thống nhất (khớp backend ``canonical_code``): chữ in hoa, các phần ngăn
+// cách bằng một dấu chấm — "PT.CK 001", "pt. ck-001" -> "PT.CK.001"; "QK1. 02" -> "QK1.02".
+const CODE_SEPARATOR = /[\s._\-–—·:]+/
+export const canonicalCode = (value: string) => value.toUpperCase().split(CODE_SEPARATOR).filter(Boolean).join('.')
+/** Khoá so khớp mã: bỏ thêm số 0 đứng đầu ("PT.CK.001" ~ "PT.CK.1"). */
+export const codeKey = (value: string) => canonicalCode(value).split('.')
+  .map(part => /^\d+$/.test(part) ? String(Number(part)) : part).join('.')
+/** Mã nhập/đọc được -> mã đối tượng đã có nếu khớp, ngược lại dạng thống nhất. */
+export function resolvePerson(value: string, known: string[]) {
+  const code = canonicalCode(value)
+  if (!code) return ''
+  return known.find(person => codeKey(person) === codeKey(code)) || code
+}
+
+/** [1, 2, 3, 5] -> "1–3, 5" */
+export function pageRanges(pages: number[]) {
+  const ranges: [number, number][] = []
+  for (const page of [...pages].sort((first, second) => first - second)) {
+    const last = ranges[ranges.length - 1]
+    if (last && last[1] === page - 1) last[1] = page
+    else ranges.push([page, page])
+  }
+  return ranges.map(([start, end]) => start === end ? String(start) : `${start}–${end}`).join(', ')
+}
+
 export function subjectErrors(patient: Subject) {
   const errors = []
   if (patient.birthDate && (!validDate(patient.birthDate) || patient.birthDate > today())) {
@@ -79,29 +107,23 @@ export function subjectErrors(patient: Subject) {
   return errors
 }
 
-const SKIP_RULES: Record<string, [string, string]> = {
-  Q014: ['Q013', 'Chưa bao giờ'], Q015: ['Q013', 'Chưa bao giờ'],
-  Q016: ['Q013', 'Chưa bao giờ'], Q017: ['Q013', 'Chưa bao giờ'],
-  Q019: ['Q018', 'Không gặp sự kiện đáng kể'],
-  Q021: ['Q020', 'Không có'], Q022: ['Q020', 'Không có'], Q023: ['Q020', 'Không có'],
-  Q024: ['Q020', 'Không có'], Q025: ['Q020', 'Không có'], Q026: ['Q020', 'Không có'], Q027: ['Q020', 'Không có'],
-  Q029: ['Q028', 'Không có ai'], Q030: ['Q028', 'Không có ai'],
+export function isSkipped(answers: Answers, question: Question) {
+  const rule = question.skipIf
+  if (!rule) return false
+  const value = answers[rule.question]
+  return Array.isArray(value) ? value.includes(rule.answer) : value === rule.answer
 }
-export function isSkipped(form: SurveyForm, answers: Answers, question: Question) {
-  const rule = SKIP_RULES[question.id]
-  if (form.id !== 'F01' || !rule) return false
-  const value = answers[rule[0]]
-  return Array.isArray(value) ? value.some(option => option.startsWith(rule[1])) : Boolean(value?.startsWith(rule[1]))
-}
+/** Câu được chuyển qua nhưng vẫn giữ câu trả lời (chỉ hết bắt buộc). */
+export const keepsSkippedAnswer = (question: Question) => Boolean(question.skipIf?.keepAnswer)
 export function progress(form: SurveyForm, answers: Answers) {
-  const applicable = form.questions.filter(question => !isSkipped(form, answers, question))
+  const applicable = form.questions.filter(question => !isSkipped(answers, question))
   return { count: applicable.filter(question => hasAnswer(answers[question.id])).length, total: applicable.length }
 }
 export function validateAnswers(form: SurveyForm, answers: Answers) {
   const errors: string[] = []
   for (const question of form.questions) {
     const answer = answers[question.id]
-    if (!hasAnswer(answer) || isSkipped(form, answers, question)) continue
+    if (!hasAnswer(answer) || (isSkipped(answers, question) && !keepsSkippedAnswer(question))) continue
     const values = Array.isArray(answer) ? answer : [answer]
     if (question.options.length && values.some(value => !question.options.includes(value))) {
       errors.push(`${question.id}: đáp án không hợp lệ`)
@@ -125,7 +147,7 @@ export function prepareAnswers(form: SurveyForm, answers: Answers, patient: Subj
     }
     if (label === 'Địa chỉ' && patient.hometown && !result[id]) result[id] = patient.hometown
     if (typeof result[id] === 'string') result[id] = (result[id] as string).trim()
-    if (!hasAnswer(result[id]) || isSkipped(form, result, question)) delete result[id]
+    if (!hasAnswer(result[id]) || (isSkipped(result, question) && !keepsSkippedAnswer(question))) delete result[id]
   }
   return result
 }

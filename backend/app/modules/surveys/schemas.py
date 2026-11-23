@@ -17,6 +17,24 @@ LongText = Annotated[str, StringConstraints(max_length=20000)]
 Answer = LongText | Annotated[list[LongText], Field(max_length=50)]
 
 
+def skipped_questions(form: dict, answers: dict) -> set[str]:
+    """Câu không áp dụng theo chỉ dẫn chuyển câu (``skipIf`` trong forms.json).
+
+    ``keepAnswer`` = câu chỉ hết bắt buộc; người trả lời vẫn đánh thì giữ lại.
+    Không có ``keepAnswer`` = câu trả lời của câu bị chuyển qua bị bỏ.
+    """
+    skipped = set()
+    for question in form["questions"]:
+        rule = question.get("skipIf")
+        if not rule:
+            continue
+        control = answers.get(rule["question"])
+        chosen = control if isinstance(control, list) else [control]
+        if rule["answer"] in chosen:
+            skipped.add(question["id"])
+    return skipped
+
+
 class SubjectInput(BaseModel):
     fullName: ShortText = ""
     birthDate: date | Literal[""] = ""
@@ -75,30 +93,12 @@ class RecordInput(BaseModel):
         form = FORM_BY_ID.get(self.form)
         if not form or form["group"] != self.group:
             raise ValueError("Mã biểu mẫu không thuộc nhóm đối tượng.")
-        if self.form == "F01":
-            skip_rules = {
-                "Q013": ("Chưa bao giờ", ("Q014", "Q015", "Q016", "Q017")),
-                "Q018": ("Không gặp sự kiện đáng kể", ("Q019",)),
-                "Q020": ("Không có", ("Q021", "Q022", "Q023", "Q024", "Q025", "Q026", "Q027")),
-                "Q028": ("Không có ai", ("Q029", "Q030")),
-            }
-            skipped = {
-                question
-                for control, (prefix, questions) in skip_rules.items()
-                if any(
-                    answer.startswith(prefix)
-                    for answer in (
-                        self.answers.get(control, [])
-                        if isinstance(self.answers.get(control), list)
-                        else [self.answers.get(control, "")]
-                    )
-                )
-                for question in questions
-            }
-            self.answers = {key: value for key, value in self.answers.items() if key not in skipped}
-        else:
-            skipped = set()
         questions = {question["id"]: question for question in form["questions"]}
+        skipped = skipped_questions(form, self.answers)
+        self.answers = {
+            key: value for key, value in self.answers.items()
+            if key not in skipped or questions[key]["skipIf"].get("keepAnswer")
+        }
         for key, value in self.answers.items():
             question = questions.get(key)
             if not question or question["multi"] != isinstance(value, list):
@@ -123,3 +123,7 @@ class RecordBatch(BaseModel):
 
 class DeleteBatch(BaseModel):
     ids: list[Code] = Field(min_length=1)
+
+
+class DocumentBatch(BaseModel):
+    ids: list[Annotated[int, Field(gt=0)]] = Field(min_length=1, max_length=50)

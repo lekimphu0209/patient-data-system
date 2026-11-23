@@ -19,6 +19,7 @@ type Dialog =
   | { type: 'pick'; group: Group; action: ImportAction }
   | { type: 'manual'; form: SurveyForm; record?: Survey }
   | { type: 'excel' | 'ocr' | 'analysis'; form: SurveyForm }
+  | { type: 'bundle'; group: Group }
   | { type: 'view'; form: SurveyForm; record: Survey; tab: DetailTab }
   | { type: 'delete'; rows: Survey[] }
 
@@ -34,7 +35,7 @@ function Analysis({ form, rows, close }: { form: SurveyForm; rows: Survey[]; clo
   const [questionId, setQuestionId] = useState(form.questions[0].id)
   const question = form.questions.find(item => item.id === questionId)!
   const completed = rows.filter(row => row.form === form.id && row.status === 'complete')
-  const valid = completed.filter(row => hasAnswer(row.answers[questionId]) && !isSkipped(form, row.answers, question))
+  const valid = completed.filter(row => hasAnswer(row.answers[questionId]) && !isSkipped(row.answers, question))
   const counts = new Map<string, number>()
   for (const row of valid) {
     const answer = row.answers[questionId]
@@ -220,6 +221,9 @@ function Workspace({ forms, records, recordError, reconnect }: {
       if (real.length) await reload()
     }, `Đã xóa ${selected.length} phiếu khảo sát.`)
   }
+  // Tải file phiếu đã điền: một mẫu đã chọn, hoặc nhiều mẫu của một người (tự tách).
+  const extractTarget: { form?: SurveyForm; group: Group } | undefined = dialog?.type === 'bundle' ? { group: dialog.group }
+    : dialog?.type === 'ocr' ? { form: dialog.form, group: dialog.form.group } : undefined
   const pickerTitle = {
     manual: 'Chọn kiểu biểu mẫu khảo sát', excel: 'Chọn mẫu phiếu để tải Excel', ocr: 'Chọn mẫu phiếu để trích xuất từ ảnh/PDF',
   }
@@ -301,7 +305,12 @@ function Workspace({ forms, records, recordError, reconnect }: {
     </Modal>}
     {dialog?.type === 'pick' && <Modal title={pickerTitle[dialog.action]} size="slim" close={close}>
       <p className="sub" style={{ marginBottom: 18 }}>Đối tượng {GROUP[dialog.group].toLowerCase()} · Chọn biểu mẫu tương ứng với dữ liệu cần nhập.</p>
-      <div className="formpick">{forms.filter(form => form.group === dialog.group).map(form =>
+      <div className="formpick">{dialog.action === 'ocr' && <button className="pick-bundle" onClick={() => setDialog({ type: 'bundle', group: dialog.group })}>
+          <span className="pick-icon"><Icon name="file" /></span><span>Nhiều phiếu của một người — tự tách theo mẫu
+            <span className="pick-meta">Một file gồm nhiều mẫu khác nhau của cùng một người · hệ thống tự nhận diện từng phiếu</span></span>
+          <span className="arrow"><Icon name="chevron" /></span>
+        </button>}
+        {forms.filter(form => form.group === dialog.group).map(form =>
         <button key={form.id} onClick={() => setDialog({ type: dialog.action, form })}>
           <span className="pick-icon"><Icon name="file" /></span><span>{form.title}
             <span className="pick-meta">{form.id} · {form.code} · {form.questions.length} mục nhập liệu</span></span>
@@ -316,13 +325,15 @@ function Workspace({ forms, records, recordError, reconnect }: {
         await createRecords(selected)
         await reload()
       }, `Đã nhập ${selected.length} phiếu khảo sát.`, true)} />}
-    {dialog?.type === 'ocr' && <ExtractDialog form={dialog.form} records={records} close={close} notify={notify} save={async row => {
-      await createRecords([row])
-      await reload()
-    }} viewOriginal={setOriginal} open={row => {
-      const saved = client.getQueryData<Survey[]>(RECORDS_KEY)?.find(record => record.id === row.id)
-      void loadDetail(saved || { ...row, hasOCR: true, hasOriginal: true }, false)
-    }} />}
+    {extractTarget && <ExtractDialog key={extractTarget.form?.id || extractTarget.group} form={extractTarget.form}
+      group={extractTarget.group} forms={forms} records={records} close={close} notify={notify}
+      save={async rows => {
+        await createRecords(rows)
+        await reload()
+      }} viewOriginal={setOriginal} open={row => {
+        const saved = client.getQueryData<Survey[]>(RECORDS_KEY)?.find(record => record.id === row.id)
+        void loadDetail(saved || { ...row, hasOCR: true, hasOriginal: true }, false)
+      }} />}
     {dialog?.type === 'view' && <RecordDetail key={dialog.record.id} record={dialog.record} form={dialog.form} forms={forms}
       related={rows.filter(row => row.group === dialog.record.group && row.person === dialog.record.person
         && Boolean(row.sample) === Boolean(dialog.record.sample))}

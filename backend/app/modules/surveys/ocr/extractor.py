@@ -1,8 +1,9 @@
 """Gọi model thị giác đọc phiếu khảo sát.
 
 ``OpenAISurveyExtractor`` dùng structured output (JSON schema strict) để model chỉ
-trả về phương án có trong biểu mẫu. ``StubSurveyExtractor`` trả kết quả cố định,
-không gọi ra ngoài — dùng cho test và khi chưa cấu hình API key.
+trả về phương án có trong biểu mẫu (``extract``) hoặc mã biểu mẫu có trong nhóm
+(``classify`` — nhận diện trang của file nhiều phiếu). ``StubSurveyExtractor`` trả
+kết quả cố định, không gọi ra ngoài — dùng cho test và khi chưa cấu hình API key.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ from typing import Any, Protocol
 from app.core.config import settings
 from app.core.openai_client import openai_client, reasoning_options
 from app.modules.documents.extractor.factory import MODE_OCR, resolve_provider
+from app.modules.surveys.ocr.bundle import CLASSIFY_PROMPT, classify_prompt, classify_schema, header_strip
 from app.modules.surveys.ocr.pages import PageSet
 from app.modules.surveys.ocr.schema import SUBJECT_FIELDS, SYSTEM_PROMPT, form_prompt, response_schema
 
@@ -24,6 +26,7 @@ logger = logging.getLogger(__name__)
 # Lớp văn bản PDF chỉ là gợi ý; cắt bớt để không lấn át phần ảnh.
 MAX_TEXT_LAYER = 20_000
 MAX_OUTPUT_TOKENS = 16_000
+MAX_CLASSIFY_TOKENS = 4_000
 
 
 class ModelResponseError(RuntimeError):
@@ -41,6 +44,14 @@ class ModelOutput:
 class SurveyExtractor(Protocol):
     def extract(self, form: dict[str, Any], pages: PageSet) -> ModelOutput: ...
 
+    def classify(self, forms: list[dict[str, Any]], pages: PageSet) -> ModelOutput: ...
+
+
+def _image(jpeg: bytes) -> dict[str, Any]:
+    encoded = base64.b64encode(jpeg).decode("ascii")
+    # Dấu chọn và mã mẫu in trên phiếu rất nhỏ — bắt buộc độ phân giải cao.
+    return {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded}", "detail": "high"}}
+
 
 class OpenAISurveyExtractor:
     def __init__(self, model: str | None = None):
@@ -50,12 +61,7 @@ class OpenAISurveyExtractor:
         parts: list[dict[str, Any]] = [{"type": "text", "text": form_prompt(form)}]
         for page in pages.pages:
             parts.append({"type": "text", "text": f"Ảnh trang {page.number}:"})
-            encoded = base64.b64encode(page.jpeg).decode("ascii")
-            parts.append({
-                "type": "image_url",
-                # Dấu chọn trên phiếu rất nhỏ — bắt buộc độ phân giải cao.
-                "image_url": {"url": f"data:image/jpeg;base64,{encoded}", "detail": "high"},
-            })
+            parts.append(_image(page.jpeg))
         text_layer = pages.text_layer
         if text_layer:
             parts.append({
@@ -66,17 +72,25 @@ class OpenAISurveyExtractor:
         return parts
 
     def extract(self, form: dict[str, Any], pages: PageSet) -> ModelOutput:
+        return self._complete(
+            SYSTEM_PROMPT, self._content(form, pages), "survey_extraction", response_schema(form), MAX_OUTPUT_TOKENS,
+        )
+
+    def classify(self, forms: list[dict[str, Any]], pages: PageSet) -> ModelOutput:
+        content: list[dict[str, Any]] = [{"type": "text", "text": classify_prompt(forms)}]
+        for page in pages.pages:
+            content.append({"type": "text", "text": f"Trang {page.number}:"})
+            content.append(_image(header_strip(page.jpeg)))
+        return self._complete(CLASSIFY_PROMPT, content, "page_forms", classify_schema(forms), MAX_CLASSIFY_TOKENS)
+
+    def _complete(
+        self, system: str, content: list[dict[str, Any]], name: str, schema: dict[str, Any], max_tokens: int,
+    ) -> ModelOutput:
         response = openai_client().chat.completions.create(
             model=self.model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": self._content(form, pages)},
-            ],
-            response_format={
-                "type": "json_schema",
-                "json_schema": {"name": "survey_extraction", "strict": True, "schema": response_schema(form)},
-            },
-            max_completion_tokens=MAX_OUTPUT_TOKENS,
+            messages=[{"role": "system", "content": system}, {"role": "user", "content": content}],
+            response_format={"type": "json_schema", "json_schema": {"name": name, "strict": True, "schema": schema}},
+            max_completion_tokens=max_tokens,
             **reasoning_options(),
         )
         choice = response.choices[0]
@@ -108,7 +122,7 @@ class StubSurveyExtractor:
             else:
                 answers[question["id"]] = [options[0]] if question["multi"] else options[0]
         subject = dict.fromkeys(SUBJECT_FIELDS)
-        subject.update(code="STUB-001", full_name="Nguyễn Văn Giả Lập")
+        subject.update(code="STUB.001", full_name="Nguyễn Văn Giả Lập")
         return ModelOutput(
             raw={
                 "form_check": {"is_expected_form": True, "observed_title": form["title"]},
@@ -120,6 +134,15 @@ class StubSurveyExtractor:
             provider="stub",
             model="stub",
         )
+
+    def classify(self, forms: list[dict[str, Any]], pages: PageSet) -> ModelOutput:
+        """Coi mọi trang là một phiếu của mẫu đầu tiên trong nhóm."""
+        items = [
+            {"page": page.number, "form": forms[0]["id"], "starts_form": index == 0, "printed_code": None,
+             "subject_code": None}
+            for index, page in enumerate(pages.pages)
+        ]
+        return ModelOutput(raw={"pages": items}, provider="stub", model="stub")
 
 
 def get_survey_extractor() -> SurveyExtractor:

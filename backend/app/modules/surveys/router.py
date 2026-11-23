@@ -15,11 +15,13 @@ from app.modules.surveys.models import SurveyRecord, SurveySubject
 from app.modules.surveys.ocr.service import (
     ExtractionUnavailableError,
     SurveyExtractionError,
+    discard_unsaved,
+    extract_bundle,
     extract_survey,
     original_file,
     release_documents,
 )
-from app.modules.surveys.schemas import FORM_BY_ID, DeleteBatch, FORMS, RecordBatch, RecordInput
+from app.modules.surveys.schemas import FORM_BY_ID, DeleteBatch, DocumentBatch, FORMS, Group, RecordBatch, RecordInput
 
 router = APIRouter(dependencies=[Depends(get_current_active_user)])
 
@@ -113,6 +115,32 @@ def extract(
         raise HTTPException(422, str(error)) from error
     except ExtractionUnavailableError as error:
         raise HTTPException(502, str(error)) from error
+
+
+@router.post("/extract-bundle")
+def extract_bundle_file(
+    group: Group = Query(),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """Tách một file chứa nhiều phiếu của MỘT người thành từng phiếu rồi bóc tách; chưa tạo bản ghi."""
+    forms = [form for form in FORMS if form["group"] == group]
+    try:
+        return extract_bundle(db, group, forms, file).to_dict()
+    except SurveyExtractionError as error:
+        raise HTTPException(422, str(error)) from error
+    except ExtractionUnavailableError as error:
+        raise HTTPException(502, str(error)) from error
+
+
+@router.post("/discard-documents")
+def discard_documents(batch: DocumentBatch, db: Session = Depends(get_db)):
+    """Xoá file đã bóc tách mà người dùng không lưu thành phiếu."""
+    files = discard_unsaved(db, set(batch.ids))
+    db.commit()
+    for path in files:
+        path.unlink(missing_ok=True)
+    return {"count": len(files)}
 
 
 @router.get("/original")

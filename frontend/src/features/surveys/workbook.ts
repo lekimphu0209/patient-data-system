@@ -1,4 +1,4 @@
-import { GROUP, isSampleCode, isSkipped, prepareAnswers, progress, subjectErrors, subjectFields, validDate, validateAnswers,
+import { GROUP, isSampleCode, isSkipped, keepsSkippedAnswer, prepareAnswers, progress, resolvePerson, subjectErrors, subjectFields, validDate, validateAnswers,
   type Answers, type Subject, type Survey, type SurveyForm } from './model'
 
 const META = [
@@ -65,7 +65,8 @@ export async function exportWorkbook(rows: Survey[], forms: SurveyForm[]) {
       ...base(row),
       ...Object.fromEntries(form.questions.map(question => {
         const answer = row.answers[question.id]
-        return [question.id, isSkipped(form, row.answers, question) ? '' : Array.isArray(answer) ? answer.join(' | ') : answer || '']
+        const blank = isSkipped(row.answers, question) && !keepsSkippedAnswer(question)
+        return [question.id, blank ? '' : Array.isArray(answer) ? answer.join(' | ') : answer || '']
       })),
     }))
     utils.book_append_sheet(book, utils.json_to_sheet(data), form.id)
@@ -121,7 +122,7 @@ export async function readWorkbook(file: File, form: SurveyForm, records: Survey
     const errors: string[] = []
     const warnings: string[] = []
     const id = value('ma_phieu')
-    const person = value('ma_doi_tuong')
+    const person = resolvePerson(value('ma_doi_tuong'), [...known.keys(), ...subjects.keys()])
     const date = formatDateCell(cells.ngay_khao_sat)
     const earlier = subjects.get(person)
     const patient = mergeSubject({

@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import {
   answerText, birthLabel, emptySubject, formatDate, GROUP, hasAnswer, initials, isSampleCode, isSkipped,
-  newId, prepareAnswers, progress, STATUS, subjectErrors, subjectFields, today, validateAnswers,
+  keepsSkippedAnswer, newId, prepareAnswers, progress, resolvePerson, STATUS, subjectErrors, subjectFields, today,
+  validateAnswers,
   type Answers, type Status, type Survey, type SurveyForm,
 } from './model'
 import { Badge, Icon, Modal } from './ui'
@@ -31,9 +32,12 @@ export function Editor({ form, original, records, busy, save, close, showSource,
   const editor = useRef<HTMLFormElement>(null)
   const counts = progress(form, answers)
 
+  const knownPersons = () => [...new Set(records.filter(record => record.group === form.group).map(record => record.person))]
   function fillKnownPatient() {
     if (original || !person.trim()) return
-    const existing = records.find(record => record.group === form.group && record.person === person.trim())
+    const code = resolvePerson(person, knownPersons())
+    setPerson(code)
+    const existing = records.find(record => record.group === form.group && record.person === code)
     if (existing) {
       setPatient(existing.patient)
       notify('Đã điền thông tin hồ sơ có cùng mã đối tượng.')
@@ -44,7 +48,8 @@ export function Editor({ form, original, records, busy, save, close, showSource,
     const data = new FormData(editor.current)
     const field = (name: string) => String(data.get(name) || '').trim()
     const recordId = field('id')
-    if (!person.trim() || !recordId) {
+    const code = original ? original.person : resolvePerson(person, knownPersons())
+    if (!code || !recordId) {
       notify('Mã đối tượng và mã phiếu không được để trống.')
       return
     }
@@ -64,7 +69,7 @@ export function Editor({ form, original, records, busy, save, close, showSource,
       return
     }
     save({
-      ...original, id: recordId, person: person.trim(), patient: subject, group: form.group, form: form.id,
+      ...original, id: recordId, person: code, patient: subject, group: form.group, form: form.id,
       unit: field('unit'), date: field('date'), source: original?.source || 'Thủ công', status: targetStatus,
       conclusion: field('conclusion'), note: field('note'), answers: prepared,
     }, Boolean(original))
@@ -89,7 +94,7 @@ export function Editor({ form, original, records, busy, save, close, showSource,
       <div className="fieldgrid">
         <div className="field"><label htmlFor="ed-person">{fieldLabels.person}</label>
           <input id="ed-person" name="person" required readOnly={Boolean(original)} maxLength={120}
-            placeholder={`VD: ${form.group === 'youth' ? 'TN' : 'QN'}-0001`} value={person}
+            placeholder={`VD: ${form.group === 'youth' ? 'PT.CK.001' : 'QK1.01'}`} value={person}
             onBlur={fillKnownPatient} onChange={event => setPerson(event.target.value)} /></div>
         {subjectFields.map(key => <div className="field" key={key}><label htmlFor={`ed-${key}`}>{fieldLabels[key]}</label>
           <input id={`ed-${key}`} name={key} value={patient[key]} onChange={event => setPatient({ ...patient, [key]: event.target.value })}
@@ -115,24 +120,27 @@ export function Editor({ form, original, records, busy, save, close, showSource,
       </div>
       <div className="editor-section">Nội dung phiếu <span>{form.title}</span></div>
       {form.id === 'F01' && <div className="notice">Áp dụng chuyển câu theo Câu 5, 7a, 8, 16. Câu 20a–20d luôn phải trả lời. Thông tin định danh được giữ ở hồ sơ riêng.</div>}
-      {form.id === 'F09' && <div className="notice amber">Nguồn có D1 lặp và chỉ dẫn D0 chưa khớp. Hệ thống giữ nguyên và chưa tự chuyển câu tại phần D.</div>}
+      {form.id === 'F09' && <div className="notice">Phần D: nếu D0 = Không thì D1–D4 không bắt buộc; câu trả lời đã đánh vẫn được giữ. Phiếu giấy in nhầm câu D0 thành “D1”.</div>}
       <div className="questions-panel">{form.questions.map(question => {
         const { id: key, label, options, multi } = question
         const value = answers[key]
-        const skipped = isSkipped(form, answers, question)
-        return <div className="question" key={key} style={skipped ? { opacity: 0.45 } : undefined}>
+        const skipped = isSkipped(answers, question)
+        const optional = skipped && keepsSkippedAnswer(question)
+        const disabled = skipped && !optional
+        return <div className={`question ${disabled ? 'is-skipped' : optional ? 'is-optional' : ''}`} key={key}>
           <div className="qtitle"><span className="qindex">{key}</span>{label}</div>
           {options.length ? <div className="choices">{options.map((option, index) => {
             const values = Array.isArray(value) ? value : []
             return <label className="choice" key={index}><input name={key} type={multi ? 'checkbox' : 'radio'} value={option}
-              disabled={skipped} checked={multi ? values.includes(option) : value === option}
+              disabled={disabled} checked={multi ? values.includes(option) : value === option}
               onChange={event => setAnswers(previous => ({
                 ...previous, [key]: multi ? event.target.checked ? [...values, option] : values.filter(item => item !== option) : option,
               }))} />{option}</label>
-          })}</div> : <textarea name={key} aria-label={label} disabled={skipped} maxLength={20000}
+          })}</div> : <textarea name={key} aria-label={label} disabled={disabled} maxLength={20000}
             placeholder="Nhập câu trả lời theo phiếu gốc..." value={answerText(value) || ''}
             onChange={event => setAnswers({ ...answers, [key]: event.target.value })} />}
-          {skipped && <div className="skip-note hint">Không áp dụng theo chỉ dẫn chuyển câu.</div>}
+          {skipped && <div className="skip-note hint">{optional ? 'Không bắt buộc theo chỉ dẫn chuyển câu; câu trả lời đã đánh vẫn được giữ.'
+            : 'Không áp dụng theo chỉ dẫn chuyển câu.'}</div>}
         </div>
       })}</div>
       <div className="field spaced"><label htmlFor="ed-note">Ghi chú đối soát</label>
@@ -188,10 +196,11 @@ export function RecordDetail({ record, form, related, forms, initialTab, close, 
       <div className="tablewrap"><table className="viewtable"><thead><tr><th>CÂU HỎI</th><th>CÂU TRẢ LỜI</th></tr></thead>
         <tbody>{form.questions.map(question => {
           const answer = record.answers[question.id]
-          const display = isSkipped(form, record.answers, question) ? 'Không áp dụng theo chuyển câu'
-            : !hasAnswer(answer) ? 'Chưa trả lời' : undefined
+          const skipped = isSkipped(record.answers, question)
+          const display = !hasAnswer(answer) ? skipped ? 'Không áp dụng theo chuyển câu' : 'Chưa trả lời' : undefined
           return <tr key={question.id}><td title={question.label}><span className="qindex">{question.id}</span>{question.label}</td>
-            <td title={display || answerText(answer)}>{display ? <span className="answer-empty">{display}</span> : answerText(answer)}</td></tr>
+            <td title={display || answerText(answer)}>{display ? <span className="answer-empty">{display}</span>
+              : <>{answerText(answer)}{skipped && <span className="answer-empty"> (không bắt buộc)</span>}</>}</td></tr>
         })}</tbody></table></div>
       <div className="notice"><b>Ghi chú:</b> {record.note || 'Chưa có ghi chú.'}</div>
     </>}

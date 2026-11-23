@@ -56,8 +56,10 @@ Quy tắc đọc chữ viết tay (câu văn bản tự do và thông tin địn
 - Mỗi mã trong "uncertain" phải là mã câu (Qxxx) hoặc tên trường định danh mà bạn không chắc chắn.
 
 Thông tin định danh (subject) chỉ lấy khi được viết trên phiếu, không có thì null:
-- code: phần viết tay sau tiền tố in sẵn ở mục "Mã số"/"Mã phiếu" (ví dụ in "KCB-TT.01" rồi viết tay
-  "QK1.01" thì code là "QK1.01"). Không lấy tiền tố in sẵn.
+- code: mã đối tượng viết tay. Thường viết sau tiền tố in sẵn ở mục "Mã số"/"Mã phiếu" (ví dụ in
+  "KCB-TT.01" rồi viết tay "QK1.01" thì code là "QK1.01"), hoặc viết tay riêng ở lề/góc trên của trang
+  đầu khi mục "Mã số" để trống (ví dụ "PT.CK 001", "PT.TL 143"). Chép đúng chữ và số như viết, giữ dấu
+  chấm/khoảng trắng phân cách. Không lấy tiền tố in sẵn, mã mẫu in sẵn ("KCB-TT.02- Mẫu 01") hay số trang.
 - full_name: chỉ lấy từ mục "Họ và tên"; KHÔNG lấy từ chữ ký hay tên ký ở cuối phiếu.
 - birth_year (4 chữ số), birth_date (YYYY-MM-DD, chỉ khi có đủ ngày tháng năm),
   hometown (chỉ mục "Quê quán"; KHÔNG lấy "Địa chỉ"), unit (chỉ mục "Đơn vị"/"Địa bàn" ghi rõ),
@@ -99,6 +101,8 @@ def form_prompt(form: dict[str, Any]) -> str:
         f"Phiếu có {len(form['questions'])} câu, theo đúng thứ tự in trên giấy:",
         "",
     ]
+    if form.get("ocrHint"):
+        lines[2:2] = [f"Lưu ý riêng của mẫu này: {form['ocrHint']}"]
     for index, question in enumerate(form["questions"], start=1):
         lines.append(f"{question['id']} — câu thứ {index} — {_question_kind(question)}: {question['label']}")
         if question["options"]:
@@ -166,12 +170,29 @@ def _iso_date(value: Any, *, earliest: int) -> str | None:
     return parsed.isoformat() if earliest <= parsed.year and parsed <= _today() else None
 
 
-def _code(value: Any) -> str | None:
-    text = _clean(value, 200)
-    # Model đôi khi chép cả tiền tố in sẵn của đề tài ("KCB-TT.01", "KCB.TT").
-    text = re.sub(r"^KCB[\s.\-]*TT(?:[\s.\-]*\d+)?[\s.:\-]*", "", text, flags=re.IGNORECASE)
-    text = re.sub(r"\s+", "", text).strip(".:-")
-    return text[:MAX_CODE] or None
+# Tiền tố in sẵn của đề tài ("KCB-TT.01", "KCB.TT", "KCB-TT.02- Mẫu 01") mà model đôi khi chép theo.
+PRINTED_PREFIX = re.compile(r"^KCB[\s.\-]*TT(?:[\s.\-]*\d+)?(?:[\s.\-]*M[ẪẫAa]U[\s.]*\d+)?[\s.:\-]*", re.I)
+CODE_SEPARATOR = re.compile(r"[\s._\-–—·:]+")
+
+
+def canonical_code(value: Any) -> str | None:
+    """Mã đối tượng dạng thống nhất: chữ in hoa, các phần ngăn cách bằng một dấu chấm.
+
+    Người điền viết cùng một mã theo nhiều kiểu ("PT.CK 001", "PT.Ck.001", "PT. CK-001");
+    gom về một dạng ("PT.CK.001", "QK1.02") để các phiếu của cùng một người khớp mã.
+    Giữ nguyên chữ số (kể cả số 0 đứng đầu) như trên phiếu.
+    """
+    text = PRINTED_PREFIX.sub("", _clean(value, 200))
+    parts = [part for part in CODE_SEPARATOR.split(text.upper()) if part]
+    return ".".join(parts)[:MAX_CODE] or None
+
+
+def code_key(value: Any) -> str | None:
+    """Khoá so khớp mã: như ``canonical_code`` nhưng bỏ số 0 đứng đầu ("PT.CK.001" ~ "PT.CK.1")."""
+    code = canonical_code(value)
+    if not code:
+        return None
+    return ".".join(str(int(part)) if part.isdigit() else part for part in code.split("."))
 
 
 def _subject(raw: dict[str, Any]) -> dict[str, str | None]:
@@ -181,7 +202,7 @@ def _subject(raw: dict[str, Any]) -> dict[str, str | None]:
     if birth_date and birth_year and birth_date[:4] != birth_year:
         birth_date = None
     return {
-        "code": _code(raw.get("code")),
+        "code": canonical_code(raw.get("code")),
         "full_name": _clean(raw.get("full_name"), MAX_SHORT) or None,
         "birth_year": birth_year or (birth_date[:4] if birth_date else None),
         "birth_date": birth_date,

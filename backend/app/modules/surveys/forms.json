@@ -153,7 +153,11 @@
           "Dưới 2 tháng (4)"
         ],
         "id": "Q014",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q013",
+          "answer": "Chưa bao giờ (1)"
+        }
       },
       {
         "label": "Câu 6.1. Ở lần toan tự sát gần đây nhất, đồng chí đã dùng cách nào? (có thể chọn nhiều đáp án)",
@@ -168,7 +172,11 @@
           "Không muốn trả lời"
         ],
         "id": "Q015",
-        "multi": true
+        "multi": true,
+        "skipIf": {
+          "question": "Q013",
+          "answer": "Chưa bao giờ (1)"
+        }
       },
       {
         "label": "Câu 6.2. Lần toan tự sát gần đây nhất xảy ra khi nào?",
@@ -177,7 +185,11 @@
           "Trong thời gian phục vụ, học tập trong quân đội"
         ],
         "id": "Q016",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q013",
+          "answer": "Chưa bao giờ (1)"
+        }
       },
       {
         "label": "Câu 6.3. Lý do chính dẫn đến lần toan tự sát gần đây nhất là gì? (chọn tối đa 2 đáp án)",
@@ -194,7 +206,11 @@
           "Không rõ lý do hoặc không muốn trả lời"
         ],
         "id": "Q017",
-        "multi": true
+        "multi": true,
+        "skipIf": {
+          "question": "Q013",
+          "answer": "Chưa bao giờ (1)"
+        }
       },
       {
         "label": "Câu 7a. Trong 6 tháng qua, đồng chí có gặp sự kiện nào dưới đây không? (có thể chọn nhiều đáp án)",
@@ -221,7 +237,11 @@
           "Ảnh hưởng rất nặng; cảm thấy khó chịu đựng hoặc khó tiếp tục nhiệm vụ (4)"
         ],
         "id": "Q019",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q018",
+          "answer": "Không gặp sự kiện đáng kể"
+        }
       },
       {
         "label": "Câu 8. Trong 4 tuần qua, những ý nghĩ muốn chết, không muốn tiếp tục sống hoặc nghĩ đến việc tự sát xuất hiện với đồng chí thường xuyên như thế nào?",
@@ -242,7 +262,11 @@
           "Từ 4 giờ trở lên, kéo dài phần lớn thời gian trong ngày hoặc gần như liên tục (4)"
         ],
         "id": "Q021",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q020",
+          "answer": "Không có (1)"
+        }
       },
       {
         "label": "Câu 10. Trong 4 tuần qua, vào lúc những ý nghĩ trên mạnh nhất, đồng chí có thể tự dừng những ý nghĩ đó hoặc chuyển sự chú ý sang việc khác không?",
@@ -252,7 +276,11 @@
           "Không thể hoặc gần như không thể dừng; những ý nghĩ đó chi phối phần lớn suy nghĩ (4)"
         ],
         "id": "Q022",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q020",
+          "answer": "Không có (1)"
+        }
       },
       {
         "label": "Câu 11. Trong 7 ngày qua, lần gần nhất đồng chí có những ý nghĩ trên là khi nào?",
@@ -262,7 +290,11 @@
           "Đang có ngay lúc trả lời phiếu (4)"
         ],
         "id": "Q023",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q020",
+          "answer": "Không có (1)"
+        }
       },
       {
         "label": "Câu 12. Trong 4 tuần qua, đồng chí đã nghĩ đến cách thức tự sát cụ thể và khả năng tiếp cận phương tiện liên quan ở mức nào?",
@@ -272,7 +304,11 @@
           "Đã nghĩ đến cách thức cụ thể và hiện có thể tiếp cận phương tiện liên quan như vũ khí, thuốc hoặc phương tiện khác (4)"
         ],
         "id": "Q024",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q020",
+          "answer": "Không có (1)"
+        }
       },
       {
         "label": "Câu 13. Trong 4 tuần qua, đồng chí đã lập kế hoạch hoặc thực hiện hành động chuẩn bị cho việc tự sát ở mức nào? (ví dụ: chọn thời điểm, địa điểm, cất giữ phương tiện hoặc viết lời nhắn để lại)",
@@ -282,7 +318,11 @@
           "Đã thực hiện ít nhất một hành động chuẩn bị (4)"
         ],
         "id": "Q025",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q020",
+          "answer": "Không có (1)"
+        }
       },
       {
         "label": "Câu 14. Ngay lúc này, đồng chí có ý định thực hiện tự sát ở mức nào?",
@@ -292,7 +332,11 @@
           "Có ý định rõ ràng, đã quyết định thực hiện hoặc cảm thấy khó tự ngăn mình thực hiện (4)"
         ],
         "id": "Q026",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q020",
+          "answer": "Không có (1)"
+        }
       },
       {
         "label": "Câu 15. Khi những ý nghĩ tự sát mạnh nhất, những điều giữ đồng chí lại như gia đình, trách nhiệm, niềm tin, sợ đau đớn hoặc sợ cái chết có ngăn được đồng chí thực hiện tự sát không? (chỉ dành cho người có ý nghĩ tự sát ở Câu 8)",
@@ -302,7 +346,11 @@
           "Không ngăn được, hoặc tôi không thấy còn điều gì giữ mình lại (4)"
         ],
         "id": "Q027",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q020",
+          "answer": "Không có (1)"
+        }
       },
       {
         "label": "Câu 16. Khi gặp khó khăn nghiêm trọng, đồng chí có bao nhiêu người thực sự tin tưởng và có thể liên hệ để được hỗ trợ?",
@@ -324,7 +372,11 @@
           "Không thể trông cậy vào người đó (4)"
         ],
         "id": "Q029",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q028",
+          "answer": "Không có ai (4)"
+        }
       },
       {
         "label": "Câu 18. Nếu cần được hỗ trợ khẩn cấp, đồng chí có thể liên hệ với người này trong vòng 24 giờ tới không?",
@@ -335,7 +387,11 @@
           "Không thể liên hệ hoặc người đó không thể hỗ trợ (4)"
         ],
         "id": "Q030",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q028",
+          "answer": "Không có ai (4)"
+        }
       },
       {
         "label": "Câu 19. Trước đây, khi gặp khó khăn lớn, đồng chí thường tìm kiếm sự giúp đỡ như thế nào?",
@@ -2611,7 +2667,7 @@
           "Thành thị",
           "Nông thôn",
           "Miền núi hoặc vùng sâu, vùng xa",
-          "Khác: ................"
+          "Khác"
         ],
         "id": "Q007",
         "multi": false
@@ -3477,7 +3533,7 @@
         "multi": false
       },
       {
-        "label": "D1. Trong cuộc đời, bạn đã từng có một giai đoạn kéo dài vài ngày trở lên mà tâm trạng, mức năng lượng hoặc hoạt động của bạn khác rõ rệt so với trạng thái bình thường của mình không?",
+        "label": "D0. Trong cuộc đời, bạn đã từng có một giai đoạn kéo dài vài ngày trở lên mà tâm trạng, mức năng lượng hoặc hoạt động của bạn khác rõ rệt so với trạng thái bình thường của mình không?",
         "options": [
           "Không",
           "Có"
@@ -3492,7 +3548,12 @@
           "Có"
         ],
         "id": "Q013",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q012",
+          "answer": "Không",
+          "keepAnswer": true
+        }
       },
       {
         "label": "D2. Bạn có ngủ ít hơn nhiều nhưng vẫn cảm thấy khỏe, không thấy cần ngủ thêm không?",
@@ -3501,7 +3562,12 @@
           "Có"
         ],
         "id": "Q014",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q012",
+          "answer": "Không",
+          "keepAnswer": true
+        }
       },
       {
         "label": "D3. Bạn có nói nhiều/nói nhanh hơn rõ rệt hoặc cảm thấy suy nghĩ chạy rất nhanh, nhiều ý tưởng liên tục không?",
@@ -3510,7 +3576,12 @@
           "Có"
         ],
         "id": "Q015",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q012",
+          "answer": "Không",
+          "keepAnswer": true
+        }
       },
       {
         "label": "D4. Bạn có hoạt động nhiều hơn rõ rệt hoặc làm các việc bốc đồng như tiêu tiền quá mức, lái xe nguy hiểm hoặc quyết định thiếu cân nhắc không?",
@@ -3519,7 +3590,12 @@
           "Có"
         ],
         "id": "Q016",
-        "multi": false
+        "multi": false,
+        "skipIf": {
+          "question": "Q012",
+          "answer": "Không",
+          "keepAnswer": true
+        }
       },
       {
         "label": "E1. Trong 12 tháng qua, bạn có sử dụng rượu bia với tần suất hoặc số lượng khiến bản thân hoặc người khác lo ngại, hoặc từng say nhiều lần không?",
@@ -3908,7 +3984,7 @@
         "text": "D. TRIỆU CHỨNG HƯNG CẢM/HƯNG CẢM NHẸ"
       },
       {
-        "text": "D1. Trong cuộc đời, bạn đã từng có một giai đoạn kéo dài vài ngày trở lên mà tâm trạng, mức năng lượng hoặc hoạt động của bạn khác rõ rệt so với trạng thái bình thường của mình không?"
+        "text": "D0. Trong cuộc đời, bạn đã từng có một giai đoạn kéo dài vài ngày trở lên mà tâm trạng, mức năng lượng hoặc hoạt động của bạn khác rõ rệt so với trạng thái bình thường của mình không?"
       },
       {
         "text": "☐ Không\t\t☐ Có"
@@ -4193,6 +4269,7 @@
       }
     ],
     "review": true,
-    "source": "/surveys/forms/form-9.docx"
+    "source": "/surveys/forms/form-9.docx",
+    "ocrHint": "Trên phiếu in, câu D0 bị in nhầm nhãn “D1” nên phần D có hai câu cùng nhãn D1: câu “Trong cuộc đời, bạn đã từng có một giai đoạn…” là D0 (Q012); câu “Trong giai đoạn đó…” là D1 (Q013)."
   }
 ]

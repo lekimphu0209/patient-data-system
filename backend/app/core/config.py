@@ -33,8 +33,13 @@ class Settings(BaseSettings):
     EXTRACTION_REASONING_EFFORT: str = "low"
 
     EXTRACTION_MAX_PAGES: int = 10
+    # File nhiều phiếu của một người (tự tách theo mẫu): bộ quân nhân ~17 trang có
+    # nội dung, thanh niên ~9. Vượt ngưỡng gần như chắc là file của nhiều người.
+    EXTRACTION_BUNDLE_MAX_PAGES: int = 30
+    # Số phiếu đọc song song khi tách file nhiều phiếu.
+    EXTRACTION_CONCURRENCY: int = 4
     EXTRACTION_TIMEOUT_SECONDS: int = 180
-    EXTRACTION_MAX_FILE_MB: int = 20
+    EXTRACTION_MAX_FILE_MB: int = 40
     # DPI khi render trang PDF thành ảnh cho vision model. Cao hơn thì đọc chữ
     # viết tay tốt hơn nhưng tốn token ảnh hơn.
     EXTRACTION_PDF_DPI: int = 200
