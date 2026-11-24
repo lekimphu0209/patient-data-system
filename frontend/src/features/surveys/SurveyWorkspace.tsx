@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createRecords, deleteRecords, getForms, getRecord, getRecords, surveyError, updateRecord } from './api'
+import { AssistantWidget } from '../assistant/AssistantWidget'
 import { Dashboard } from './Dashboard'
 import { ExcelDialog } from './ExcelDialog'
 import { ExtractDialog } from './ExtractDialog'
@@ -341,6 +342,12 @@ function Workspace({ forms, records, loading, recordError, reconnect }: {
     </Modal>}
     {source && <SourceDialog form={source} close={() => setSource(undefined)} />}
     {original && <OriginalDialog record={original} close={() => setOriginal(undefined)} />}
+    <AssistantWidget openPerson={(group, person) => {
+      const row = records.filter(item => item.group === group && item.person === person)
+        .sort((first, second) => first.form.localeCompare(second.form))[0]
+      if (row) void loadDetail(row, false)
+      else notify(`Không tìm thấy phiếu của đối tượng ${person}.`)
+    }} />
     <div id="toast" role="status" className={toast ? 'show' : ''}>{toast}</div>
   </>
 }

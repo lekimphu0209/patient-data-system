@@ -26,6 +26,22 @@ Khi chạy frontend riêng, vào `frontend/`, chạy `npm ci` và `npm run dev`.
 - Thông tin đối tượng dùng chung giữa các phiếu có cùng mã đối tượng trong một nhóm. Phiếu lưu trên PostgreSQL; giao diện chỉ hiển thị dữ liệu thật (không còn phiếu mẫu giả lập) và chưa hiện số liệu cho tới khi tải xong.
 - Dữ liệu bệnh án và lần khám của phiên bản trước vẫn lưu trong các bảng cũ. API tương thích tiếp tục phục vụ dữ liệu đó. Việc chuyển hồ sơ cũ sang một trong chín mẫu khảo sát cần quy tắc ánh xạ nghiệp vụ riêng.
 
+## Trợ lý dữ liệu
+
+Nút tròn góc dưới bên phải mở khung hỏi đáp. Người dùng gõ câu hỏi tiếng Việt, ví dụ "Quân nhân trả lời thế nào về ý định tự sát hiện tại?" hoặc "Liệt kê thanh niên có nghĩ đến tự sát trong tháng qua". Trợ lý trả lời ngắn gọn, kèm bảng hoặc biểu đồ, có nút tải CSV và dòng "Cách tính". Bấm mã đối tượng trong bảng để mở phiếu của người đó. Khung có các thẻ gợi ý theo từng loại phân tích, và hội thoại được giữ trong phiên đăng nhập.
+
+- **Backend** (`backend/app/modules/assistant/`, API `/api/v1/assistant`):
+  - LLM chọn một trong các công cụ phân tích định sẵn: tổng quan, phân bố câu trả lời, so sánh theo nhóm (giới tính, nhóm tuổi, đầu mã, hai câu hỏi), tìm đối tượng theo câu trả lời, hồ sơ một đối tượng, tiến độ đối soát, xu hướng theo thời gian.
+  - Câu hỏi ngoài các công cụ đó thì LLM tự viết một câu SELECT (truy vấn nâng cao).
+  - Mọi truy vấn chạy trên ảnh chụp dữ liệu trong SQLite bộ nhớ: chỉ đọc, giới hạn thời gian và số dòng, không chạm database thật.
+- **Hiển thị và nhật ký:** người dùng không thấy SQL. SQL, tham số công cụ, người hỏi và câu trả lời được ghi vào bảng `assistant_logs`.
+- **Quyền riêng tư:** họ tên, ngày sinh, quê quán chỉ hiển thị cho người dùng, không gửi cho LLM. Hệ thống lọc theo cột và theo giá trị, kể cả khi bị ghép trong chuỗi.
+- **Cấu hình:**
+  - `ASSISTANT_MODEL`: để trống thì dùng `OCR_MODEL`. Gọi qua OpenAI Responses API với `store=false`.
+  - `ASSISTANT_REASONING_EFFORT`, `ASSISTANT_MAX_STEPS`, `ASSISTANT_RATE_PER_MINUTE` (mặc định 12 câu/phút/người).
+  - Không có `OPENAI_API_KEY` thì trợ lý báo chưa cấu hình.
+- **Chi phí:** khoảng 20 nghìn token đầu vào mỗi câu hỏi (dưới $0,01 với `gpt-5.6-luna`). Mỗi câu mất khoảng 3–9 giây.
+
 ## Nạp một lần dữ liệu scan của bệnh viện
 
 `backend/scripts/hospital_ingest.sh` sao lưu, xoá dữ liệu bệnh nhân cũ rồi nạp toàn bộ phiếu trong `data/Đối tượng thanh niên` và `data/Đối tượng nhập ngũ ` (mỗi file chứa phiếu của nhiều người, xếp theo mã). Chạy lại được khi bị ngắt mà không gọi lại VLM. Xem `backend/scripts/hospital_ingest/README.md`.

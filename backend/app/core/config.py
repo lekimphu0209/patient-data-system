@@ -44,6 +44,15 @@ class Settings(BaseSettings):
     # viết tay tốt hơn nhưng tốn token ảnh hơn.
     EXTRACTION_PDF_DPI: int = 200
 
+    # --- Trợ lý dữ liệu (hỏi đáp bằng LLM + function calling) ---
+    # Để trống thì dùng OCR_MODEL.
+    ASSISTANT_MODEL: str = ""
+    ASSISTANT_REASONING_EFFORT: str = "low"
+    # Số lượt gọi LLM tối đa cho một câu hỏi (mỗi lượt có thể gọi nhiều công cụ).
+    ASSISTANT_MAX_STEPS: int = 6
+    # Số câu hỏi tối đa mỗi người dùng trong một phút.
+    ASSISTANT_RATE_PER_MINUTE: int = 12
+
     CORS_ORIGINS: List[str] = ["http://localhost:5173"]
 
     ALLOW_PUBLIC_REGISTRATION: bool = False
