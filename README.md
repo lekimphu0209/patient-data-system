@@ -26,6 +26,30 @@ Khi chạy frontend riêng, vào `frontend/`, chạy `npm ci` và `npm run dev`.
 - Thông tin đối tượng dùng chung giữa các phiếu có cùng mã đối tượng trong một nhóm. Phiếu lưu trên PostgreSQL; giao diện chỉ hiển thị dữ liệu thật (không còn phiếu mẫu giả lập) và chưa hiện số liệu cho tới khi tải xong.
 - Dữ liệu bệnh án và lần khám của phiên bản trước vẫn lưu trong các bảng cũ. API tương thích tiếp tục phục vụ dữ liệu đó. Việc chuyển hồ sơ cũ sang một trong chín mẫu khảo sát cần quy tắc ánh xạ nghiệp vụ riêng.
 
+## Bệnh án
+
+Menu "Bệnh án" có hai trang: **Tâm thần phân liệt (F20)** và **Trầm cảm (F32)**. Giao diện dựng theo bản thiết kế `103_design_v2` (CSS `clinical.css` sao nguyên văn).
+
+- **Danh sách bệnh nhân:** tìm theo mã, họ tên, chẩn đoán; xem hoặc xoá bệnh nhân (xoá luôn mọi lần khám). Cột chẩn đoán lấy từ lần khám gần nhất.
+- **Thêm bệnh nhân:** mã (duy nhất, không phân biệt hoa thường), họ tên, tuổi, giới tính và bệnh án lần khám đầu tiên. Các mục chuyên môn bổ sung sau.
+- **Trang bệnh án:**
+  - lịch sử khám dạng timeline ngang, bấm từng ngày để xem/sửa lần khám đó;
+  - "Thêm lần khám" tạo biểu mẫu trống mới;
+  - mục lục các phần bên trái, thanh lưu cố định ở đáy;
+  - rời trang khi chưa lưu thì hỏi xác nhận.
+- **Lưu đồng thời:** dùng khoá lạc quan (`revision`). Hai người cùng sửa thì người lưu sau được báo tải lại, không ghi đè.
+- **Tải bệnh án:**
+  - Ảnh JPG/PNG/WebP hoặc PDF, tối đa 40 MB (`EXTRACTION_MAX_FILE_MB`), đọc tối đa 30 trang.
+  - Model thị giác `OCR_MODEL` đọc theo JSON schema chặt của biểu mẫu, rồi lưu thành **một bệnh nhân mới** (nguồn OCR, cần đối soát). File gốc và tóm tắt lần đọc được giữ để đối chiếu.
+  - Không đọc được mã thì sinh mã `OCR-…`; không đọc được ngày khám thì dùng ngày vào viện, rồi mới đến ngày tải lên.
+  - Mã trùng hồ sơ có sẵn thì từ chối, không tạo hồ sơ khác và không ghi đè.
+- **Biểu mẫu** nằm trong `backend/app/modules/clinical/forms.json`, chuyển từ mẫu Word nghiên cứu. Mẫu Word gốc tải được tại trang bệnh án (`frontend/public/clinical/`).
+- **Lưu trữ:**
+  - API `/api/v1/clinical`;
+  - bảng `clinical_patients`, `clinical_visits`;
+  - file trong `storage/clinical`.
+- **Trợ lý dữ liệu:** hỏi được về bệnh án (thống kê, phân bố một trường, tìm bệnh nhân theo điều kiện). Họ tên, quê quán, nơi ở của bệnh nhân không gửi cho LLM.
+
 ## Trợ lý dữ liệu
 
 Nút tròn góc dưới bên phải mở khung hỏi đáp. Người dùng gõ câu hỏi tiếng Việt, ví dụ "Quân nhân trả lời thế nào về ý định tự sát hiện tại?" hoặc "Liệt kê thanh niên có nghĩ đến tự sát trong tháng qua". Trợ lý trả lời ngắn gọn, kèm bảng hoặc biểu đồ, có nút tải CSV và dòng "Cách tính". Bấm mã đối tượng trong bảng để mở phiếu của người đó. Khung có các thẻ gợi ý theo từng loại phân tích, và hội thoại được giữ trong phiên đăng nhập.

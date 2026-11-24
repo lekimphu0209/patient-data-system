@@ -430,6 +430,10 @@
 .ast-send:disabled { opacity: .4; cursor: default; }
 .ast-disclaimer { margin: 6px 14px 10px; font-size: 11px; color: #8a9a9d; text-align: center; }
 
+/* Trang bệnh án có thanh lưu cố định ở đáy: đẩy nút và khung trợ lý lên để không che nút "Lưu". */
+body:has(.clinical-savebar) .ast-launcher { bottom: 112px; }
+body:has(.clinical-savebar) .ast-panel { bottom: 184px; height: min(600px, calc(100vh - 210px)); }
+
 @media (max-width: 640px) {
   .ast-panel, .ast-panel.wide { inset: 0; width: 100%; height: 100%; border-radius: 0; border: 0; }
   .ast-wide-toggle { display: none !important; }

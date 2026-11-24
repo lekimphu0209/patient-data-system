@@ -397,7 +397,7 @@ def test_api_requires_login_and_configured_llm(client):
     suggestions = client.get("/api/v1/assistant/suggestions").json()["tools"]
     assert [item["title"] for item in suggestions] == [
         "Tổng quan số liệu", "Phân bố câu trả lời", "So sánh theo nhóm", "Tìm đối tượng theo câu trả lời",
-        "Hồ sơ một đối tượng", "Tiến độ đối soát", "Xu hướng theo thời gian"]
+        "Hồ sơ một đối tượng", "Tiến độ đối soát", "Xu hướng theo thời gian", "Thống kê bệnh án"]
     assert all(item["examples"] and item["description"] for item in suggestions)
 
 

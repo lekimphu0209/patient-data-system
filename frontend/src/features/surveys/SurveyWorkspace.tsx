@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createRecords, deleteRecords, getForms, getRecord, getRecords, surveyError, updateRecord } from './api'
 import { AssistantWidget } from '../assistant/AssistantWidget'
+import { ClinicalPage, clinicalHash, readClinicalRoute, type ClinicalRoute, type LeaveGuard } from '../clinical/ClinicalPages'
+import type { ClinicalType } from '../clinical/api'
 import { Dashboard } from './Dashboard'
 import { ExcelDialog } from './ExcelDialog'
 import { ExtractDialog } from './ExtractDialog'
@@ -15,7 +17,7 @@ import { APP_NAME, dropLegacySamples, GROUP, GROUPS, hasAnswer, isSkipped, SHORT
   type Group, type ImportAction, type Survey, type SurveyForm } from './model'
 import styles from './workspace.css?url'
 
-type Page = { group?: Group; form?: string }
+type Page = { group?: Group; form?: string; clinical?: ClinicalRoute }
 type Dialog =
   | { type: 'group' }
   | { type: 'pick'; group: Group; action: ImportAction }
@@ -29,9 +31,11 @@ const RECORDS_KEY = ['survey-records'] as const
 const SIDEBAR_KEY = 'ta-sidebar-collapsed'
 
 function readPage(): Page {
-  const [group, form] = location.hash.slice(1).split('/')
-  return group === 'youth' || group === 'military' ? { group, form } : {}
+  const [group, ...rest] = location.hash.slice(1).split('/')
+  if (group === 'clinical') return { clinical: readClinicalRoute(rest) }
+  return group === 'youth' || group === 'military' ? { group, form: rest[0] } : {}
 }
+const CLINICAL_NAV: [ClinicalType, string][] = [['F20', 'Tâm thần phân liệt'], ['F32', 'Trầm cảm']]
 
 function Analysis({ form, rows, close }: { form: SurveyForm; rows: Survey[]; close: () => void }) {
   const [questionId, setQuestionId] = useState(form.questions[0].id)
@@ -83,7 +87,13 @@ function Workspace({ forms, records, loading, recordError, reconnect }: {
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_KEY) !== 'false')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const mobileMenuButton = useRef<HTMLButtonElement>(null)
-  const [expanded, setExpanded] = useState({ youth: true, military: true })
+  // Như bản thiết kế: đang ở Bệnh án thì thu gọn hai nhóm khảo sát, mở nhóm Bệnh án.
+  const [expanded, setExpanded] = useState(() => {
+    const clinical = Boolean(readPage().clinical)
+    return { youth: !clinical, military: !clinical, clinical }
+  })
+  const leaveGuard = useRef<LeaveGuard | null>(null)
+  const setLeaveGuard = useCallback((guard: LeaveGuard | null) => { leaveGuard.current = guard }, [])
   const [dialog, setDialog] = useState<Dialog>()
   const [source, setSource] = useState<SurveyForm>()
   const [original, setOriginal] = useState<Survey>()
@@ -101,7 +111,9 @@ function Workspace({ forms, records, loading, recordError, reconnect }: {
   useEffect(dropLegacySamples, [])
   useEffect(() => {
     function onHash() {
-      setPage(readPage())
+      const next = readPage()
+      setPage(next)
+      if (next.clinical) setExpanded({ youth: false, military: false, clinical: true })
       setMobileMenuOpen(false)
       window.scrollTo(0, 0)
     }
@@ -125,16 +137,35 @@ function Workspace({ forms, records, loading, recordError, reconnect }: {
     }
   }, [collapsed])
   useEffect(() => {
-    document.title = `${APP_NAME} · ${page.group ? GROUP[page.group] : 'Dashboard'}`
+    document.title = `${APP_NAME} · ${page.clinical ? 'Bệnh án ' + CLINICAL_NAV.find(([type]) => type === page.clinical!.type)![1]
+      : page.group ? GROUP[page.group] : 'Dashboard'}`
     return () => { document.title = APP_NAME }
-  }, [page.group])
+  }, [page.group, page.clinical])
 
   function notify(message: string) {
     setToast(message)
     window.clearTimeout(toastTimer.current)
     toastTimer.current = window.setTimeout(() => setToast(''), 4800)
   }
+  /** Rời trang bệnh án đang có thay đổi chưa lưu thì hỏi xác nhận trước. */
+  function guarded(next: () => void) {
+    if (leaveGuard.current?.(next)) return
+    next()
+  }
+  function clinicalGo(type: ClinicalType, id = '', route: 'list' | 'new' | 'record' = 'list') {
+    guarded(() => {
+      setExpanded({ youth: false, military: false, clinical: true })
+      const hash = clinicalHash(type, id, route)
+      setPage({ clinical: readClinicalRoute(hash.split('/').slice(1)) })
+      if (mobileMenuOpen) setMobileMenuOpen(false)
+      if (location.hash.slice(1) !== hash) location.hash = hash
+      window.scrollTo(0, 0)
+    })
+  }
   function navigate(group?: Group, form?: string) {
+    guarded(() => go(group, form))
+  }
+  function go(group?: Group, form?: string) {
     if (group) setExpanded(previous => ({ ...previous, [group]: true }))
     if (page.group === group && activeForm === form) setListVersion(version => version + 1)
     setPage({ group, form })
@@ -243,7 +274,7 @@ function Workspace({ forms, records, loading, recordError, reconnect }: {
           aria-label={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'} onClick={toggleSidebar}><Icon name="menu" /></button>
       </div>
       <nav id="nav" aria-label="Điều hướng chính">
-        <button className={`parent ${page.group ? '' : 'active'}`} title="Dashboard" aria-label="Dashboard" onClick={() => navigate()}>
+        <button className={`parent ${page.group || page.clinical ? '' : 'active'}`} title="Dashboard" aria-label="Dashboard" onClick={() => navigate()}>
           <span className="ni"><Icon name="dashboard" /></span><span className="nav-text">Dashboard</span>
         </button>
         {GROUPS.map(group => {
@@ -266,13 +297,31 @@ function Workspace({ forms, records, loading, recordError, reconnect }: {
             </div>
           </div>
         })}
+        <div className="nav-group">
+          <div className={`nav-parent-row ${page.clinical ? 'current-group' : ''}`}>
+            <button className={`parent ${page.clinical ? 'active' : ''}`} title="Bệnh án" aria-label="Bệnh án"
+              onClick={() => clinicalGo(page.clinical?.type || 'F20')}>
+              <span className="ni"><Icon name="file" /></span><span className="nav-text">Bệnh án</span>
+            </button>
+            <button className={`submenu-toggle ${expanded.clinical ? 'is-open' : ''}`} aria-label={`${expanded.clinical ? 'Đóng' : 'Mở'} submenu Bệnh án`}
+              aria-expanded={expanded.clinical} aria-controls="submenu-clinical"
+              onClick={() => setExpanded({ ...expanded, clinical: !expanded.clinical })}><Icon name="chevron" /></button>
+          </div>
+          <div id="submenu-clinical" className="submenu" hidden={!expanded.clinical}>
+            {CLINICAL_NAV.map(([type, title]) => <button key={type} title={title}
+              className={page.clinical?.type === type ? 'active' : ''} onClick={() => clinicalGo(type)}>
+              <span className="subdot" /><span>{title}</span>
+            </button>)}
+          </div>
+        </div>
       </nav>
     </aside>
     <div className="shell">
       <header><div className="header-heading"><strong className="system-name">{APP_NAME}</strong></div></header>
       <main id="main">
         {recordError && <div className="sync-warning">{surveyError(recordError)} <button className="smallbtn" onClick={() => reconnect()}>Kết nối lại</button></div>}
-        {loading ? <p className="records-loading" role="status">Đang tải dữ liệu khảo sát…</p>
+        {page.clinical ? <ClinicalPage route={page.clinical} go={clinicalGo} notify={notify} setGuard={setLeaveGuard} />
+          : loading ? <p className="records-loading" role="status">Đang tải dữ liệu khảo sát…</p>
           : page.group ? <SurveyList key={`${page.group}/${activeForm || 'all'}/${listVersion}`}
           rows={rows} forms={forms} group={page.group} form={activeForm} pageSize={pageSize} setPageSize={setPageSize} sort={sort} setSort={setSort}
           openImport={action => setDialog({ type: 'pick', group: page.group!, action })}

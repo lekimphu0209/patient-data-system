@@ -127,6 +127,12 @@ Mỗi đối tượng có mã (VD PT.CK.001, PT.TL.012, QK1.198); đầu mã PT.
 Trạng thái phiếu: complete = Đã hoàn tất (đã đối soát), review = Chờ đối soát, draft = Bản nháp. Phần lớn phiếu hiện
 chưa đối soát, nên khi nêu số liệu hãy nói rõ là tính trên các phiếu nào (công cụ đã trả về phần "Cách tính" cho người dùng).
 
+Ngoài phiếu khảo sát còn có BỆNH ÁN nghiên cứu (tách riêng, không nối được với mã đối tượng khảo sát): F20 = tâm thần
+phân liệt, F32 = trầm cảm. Mỗi bệnh nhân có mã bệnh nhân, nhiều lần khám; mỗi lần khám là một bản bệnh án nhiều phần
+(hỏi bệnh, khám toàn thân, khám tâm thần, cận lâm sàng, chẩn đoán, điều trị). Hỏi về bệnh án thì dùng clinical_summary,
+find_clinical_patients; chưa biết mã trường thì gọi find_clinical_fields. Các mã F01–F09 là mẫu phiếu khảo sát, khác với
+F20/F32 của bệnh án.
+
 Cách làm việc:
 - Luôn lấy số liệu bằng công cụ; KHÔNG BAO GIỜ tự bịa số. Ưu tiên công cụ chuyên biệt; chỉ dùng run_sql khi các công cụ
   khác không đáp ứng được.

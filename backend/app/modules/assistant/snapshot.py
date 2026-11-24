@@ -25,6 +25,8 @@ from typing import Any, Iterable
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.modules.clinical.models import ClinicalPatient
+from app.modules.clinical.schema import FIELDS as CLINICAL_FIELDS, FORMS as CLINICAL_FORMS, SECTION_OF
 from app.modules.surveys.models import SurveyRecord, SurveySubject
 from app.modules.surveys.schemas import FORMS, skipped_questions
 
@@ -58,16 +60,28 @@ CREATE TABLE answers (
 CREATE INDEX answers_question ON answers (form, question);
 CREATE INDEX answers_person ON answers (grp, person);
 CREATE INDEX records_person ON records (grp, person);
+CREATE TABLE clinical_patients (
+  patient_id TEXT PRIMARY KEY, type TEXT, code TEXT, full_name TEXT, age INTEGER, age_group TEXT, sex TEXT,
+  source TEXT, visits INTEGER, first_visit TEXT, latest_visit TEXT, latest_diagnosis TEXT
+);
+CREATE TABLE clinical_fields (
+  patient_id TEXT, type TEXT, visit_id TEXT, visit_date TEXT, visit_no INTEGER, is_latest INTEGER,
+  section TEXT, field TEXT, label TEXT, kind TEXT, value TEXT
+);
+CREATE INDEX clinical_fields_field ON clinical_fields (type, field);
 """
 
 # Mô tả cho LLM khi phải tự viết truy vấn (công cụ "truy vấn nâng cao").
-SCHEMA_DOC = """Cơ sở dữ liệu SQLite (chỉ đọc) gồm 4 bảng:
+SCHEMA_DOC = """Cơ sở dữ liệu SQLite (chỉ đọc). Phiếu khảo sát gồm 4 bảng:
 - questions(form, question, grp, form_title, position, label, kind, options): danh mục câu hỏi. kind: 'single' | 'multi' | 'text' | 'identity'. options: các đáp án nối bằng ' | '.
 - subjects(grp, person, code_prefix, full_name, birth_date, birth_year, hometown, gender, age, age_group): mỗi đối tượng một dòng. grp: 'youth' (thanh niên) | 'military' (quân nhân). person: mã đối tượng (VD 'PT.CK.001', 'QK1.01'). code_prefix: phần đầu mã ('PT.CK', 'PT.TL', 'QK1'). gender: 'Nam' | 'Nữ' | NULL. age: tuổi (số) hoặc NULL. age_group: 'Dưới 20' | '20–24' | '25–29' | '30 trở lên' | 'Chưa rõ'.
 - records(record_id, grp, form, person, code_prefix, status, survey_date, source, answered, applicable, has_conclusion): mỗi phiếu một dòng. form: 'F01'..'F09'. status: 'complete' (Đã hoàn tất) | 'review' (Chờ đối soát) | 'draft' (Bản nháp). survey_date: 'YYYY-MM-DD'. answered/applicable: số câu đã trả lời / số câu áp dụng.
 - answers(record_id, grp, form, person, status, question, value): mỗi đáp án đã chọn một dòng; câu nhiều lựa chọn có nhiều dòng; value là đúng chữ của đáp án. Câu bị chuyển qua hoặc bỏ trống thì không có dòng.
 Khoá nối: answers.record_id = records.record_id; (grp, person) nối records/answers/subjects.
-Đếm người dùng COUNT(DISTINCT grp || '|' || person)."""
+Đếm người dùng COUNT(DISTINCT grp || '|' || person).
+Bệnh án nghiên cứu (tách riêng với phiếu khảo sát, không có mã nối với subjects):
+- clinical_patients(patient_id, type, code, full_name, age, age_group, sex, source, visits, first_visit, latest_visit, latest_diagnosis): mỗi bệnh nhân một dòng. type: 'F20' (tâm thần phân liệt) | 'F32' (trầm cảm). source: 'Thủ công' | 'OCR'.
+- clinical_fields(patient_id, type, visit_id, visit_date, visit_no, is_latest, section, field, label, kind, value): mỗi giá trị đã nhập của mỗi lần khám một dòng (trường nhiều lựa chọn tách nhiều dòng). visit_no: 1 = khám lần đầu. is_latest = 1 cho lần khám gần nhất. Không có dòng cho trường để trống."""
 
 SAFE_FUNCTIONS = {
     "count", "sum", "avg", "min", "max", "total", "group_concat", "round", "abs", "lower", "upper",
@@ -149,7 +163,8 @@ def _values(answer: Any) -> list[str]:
     return [str(value).strip() for value in values if isinstance(value, (str, int, float)) and str(value).strip()]
 
 
-SENSITIVE = {("subjects", "full_name"), ("subjects", "birth_date"), ("subjects", "hometown")}
+SENSITIVE = {("subjects", "full_name"), ("subjects", "birth_date"), ("subjects", "hometown"),
+             ("clinical_patients", "full_name")}
 DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
 
 
@@ -176,7 +191,8 @@ class Snapshot:
     def signature(db: Session) -> tuple:
         records = db.execute(select(func.count(SurveyRecord.id), func.max(SurveyRecord.updated_at))).one()
         subjects = db.scalar(select(func.count()).select_from(SurveySubject))
-        return (records[0], str(records[1]), subjects)
+        clinical = db.execute(select(func.count(ClinicalPatient.id), func.max(ClinicalPatient.updated_at))).one()
+        return (records[0], str(records[1]), subjects, clinical[0], str(clinical[1]))
 
     def ensure(self, db: Session) -> "Snapshot":
         """Dựng lại khi dữ liệu đổi (số phiếu, lần sửa cuối, số đối tượng) hoặc quá ``REFRESH_SECONDS``."""
@@ -257,6 +273,7 @@ class Snapshot:
                 subject.hometown or None, info.get("gender"), age, age_group(age),
             ))
         connection.executemany("INSERT INTO subjects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", subject_rows)
+        self._build_clinical(db, connection, names)
         connection.commit()
         connection.execute("PRAGMA query_only = ON")
         old, self._connection, self.names = self._connection, connection, names
@@ -265,6 +282,41 @@ class Snapshot:
             re.IGNORECASE) if names else None
         if old is not None:
             old.close()
+
+    @staticmethod
+    def _build_clinical(db: Session, connection: sqlite3.Connection, names: set[str]) -> None:
+        """Bệnh án: một dòng mỗi bệnh nhân + một dòng mỗi giá trị đã nhập của từng lần khám.
+
+        Không đưa vào: nơi thường trú, quê quán (định danh) và người làm bệnh án.
+        """
+        patients, values = [], []
+        labels = {type_: {field["key"]: field for field in fields} for type_, fields in CLINICAL_FIELDS.items()}
+        for patient in db.scalars(select(ClinicalPatient)):
+            if patient.type not in CLINICAL_FORMS:
+                continue
+            for value in (patient.full_name, (patient.identity or {}).get("hometown"), (patient.identity or {}).get("address")):
+                if isinstance(value, str) and len(value.split()) >= 2:
+                    names.add(" ".join(value.split()))
+            ordered = sorted(patient.visits, key=lambda visit: (visit.date, visit.created_at))
+            latest = ordered[-1] if ordered else None
+            patients.append((
+                patient.id, patient.type, patient.code, patient.full_name or None, patient.age, age_group(patient.age),
+                patient.sex or None, patient.source, len(ordered), ordered[0].date.isoformat() if ordered else None,
+                latest.date.isoformat() if latest else None,
+                ((latest.fields or {}).get("diagnosis") if latest else None) or None,
+            ))
+            for number, visit in enumerate(ordered, 1):
+                for key, value in (visit.fields or {}).items():
+                    field = labels[patient.type].get(key)
+                    if field is None or key == "author":
+                        continue
+                    for item in value if isinstance(value, list) else [value]:
+                        if str(item).strip():
+                            values.append((patient.id, patient.type, visit.id, visit.date.isoformat(), number,
+                                           int(visit is latest), SECTION_OF[patient.type][key], key, field["label"],
+                                           field["kind"], str(item)))
+        connection.executemany("INSERT INTO clinical_patients VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", patients)
+        connection.executemany("INSERT INTO clinical_fields VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", values)
 
     # ---------- truy vấn ----------
 

@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from .snapshot import (
-    AGE_GROUPS, EXPECTED_FORMS, FORM_TITLES, GROUP_LABEL, QUESTIONS, STATUS_LABEL, STATUS_ORDER, UNKNOWN,
+    CLINICAL_FIELDS, CLINICAL_FORMS, SECTION_OF, AGE_GROUPS, EXPECTED_FORMS, FORM_TITLES, GROUP_LABEL, QUESTIONS, STATUS_LABEL, STATUS_ORDER, UNKNOWN,
     QueryError, Snapshot, code_key, code_prefix, fold,
 )
 
@@ -629,6 +629,8 @@ COLUMN_LABEL = {
     "value": "Trả lời", "question": "Câu", "label": "Nội dung câu", "survey_date": "Ngày khảo sát",
     "gender": "Giới tính", "age": "Tuổi", "age_group": "Nhóm tuổi", "code_prefix": "Đầu mã", "birth_year": "Năm sinh",
     "birth_date": "Ngày sinh", "hometown": "Quê quán", "record_id": "Mã phiếu", "form_title": "Loại phiếu",
+    "code": "Mã bệnh nhân", "type": "Loại bệnh án", "latest_diagnosis": "Chẩn đoán gần nhất", "visits": "Số lần khám",
+    "visit_date": "Ngày khám", "sex": "Giới tính",
 }
 
 
@@ -655,6 +657,12 @@ def run_sql(snapshot: Snapshot, sql: str, purpose: str) -> ToolResult:
         rows.append(line)
     block = table("Kết quả", columns, rows, total=len(rows), truncated=result.truncated,
                   person="person" in lower and "grp" in lower, csv="truy-van")
+    if "patient_id" in lower and "type" in lower:  # bệnh án: cho mở hồ sơ bệnh nhân từ bảng
+        for line, row in zip(rows, result.rows):
+            line["id"], line["clinicalType"] = row[lower.index("patient_id")], row[lower.index("type")]
+        label = "code" if "code" in lower else "patient_id"
+        block["recordKey"], block["recordTypeKey"] = "id", "clinicalType"
+        block["recordLabelKey"] = keys[lower.index(label)]
     visible = [index for index, name in enumerate(lower) if name not in SENSITIVE_COLUMNS]
     # Truy vấn có đọc cột định danh: gửi ít dòng hơn, che cả chuỗi ngày.
     sample = result.rows[:20 if result.sensitive else LLM_ROWS]
@@ -666,6 +674,172 @@ def run_sql(snapshot: Snapshot, sql: str, purpose: str) -> ToolResult:
                 if len(visible) < len(lower) else {})},
         blocks=[block], method=(purpose or "Truy vấn tuỳ chỉnh trên dữ liệu khảo sát.").strip()[:300],
         audit={"sql": sql})
+
+
+# ---------- 10–12. bệnh án (F20 tâm thần phân liệt, F32 trầm cảm) ----------
+
+CLINICAL_TYPES = list(CLINICAL_FORMS)
+CLINICAL_TITLE = {type_: form["title"] for type_, form in CLINICAL_FORMS.items()}
+CLINICAL_FIELD = {type_: {field["key"]: field for field in fields} for type_, fields in CLINICAL_FIELDS.items()}
+
+
+def clinical_field(type_: str, key: str) -> dict[str, Any]:
+    field = CLINICAL_FIELD.get(type_, {}).get(key)
+    if field is None:
+        raise ToolError(f"Không có trường “{key}” trong bệnh án {type_}. Dùng find_clinical_fields để tìm đúng mã trường.")
+    if key == "author":
+        raise ToolError("Trường người làm bệnh án không dùng để thống kê.")
+    return field
+
+
+def find_clinical_fields(snapshot: Snapshot, keyword: str, type_: str | None) -> ToolResult:
+    words = fold(keyword).split()
+    scored = []
+    for form_type, fields in CLINICAL_FIELDS.items():
+        if type_ and form_type != type_:
+            continue
+        for position, item in enumerate(fields):
+            text = fold(f"{item['key']} {item['label']} {SECTION_OF[form_type][item['key']]} {' '.join(item.get('options', []))}")
+            score = sum(1 for word in words if word in text)
+            if score:
+                scored.append((score, form_type, position, item))
+    scored.sort(key=lambda entry: (-entry[0], entry[1], entry[2]))
+    found = [{"type": form_type, "type_title": CLINICAL_TITLE[form_type], "field": item["key"], "label": item["label"],
+              "section": SECTION_OF[form_type][item["key"]], "kind": item["kind"], "options": item.get("options", [])}
+             for score, form_type, _, item in scored[:12] if score >= max(1, len(words) // 2)]
+    return ToolResult(llm={"matches": found, "count": len(found)})
+
+
+def _clinical_scope(type_: str | None, alias: str = "p") -> tuple[str, list[Any]]:
+    if type_:
+        if type_ not in CLINICAL_FORMS:
+            raise ToolError("type phải là F20 hoặc F32.")
+        return f"{alias}.type = ?", [type_]
+    return "1=1", []
+
+
+def clinical_summary(snapshot: Snapshot, type_: str | None, field: str | None) -> ToolResult:
+    where, params = _clinical_scope(type_)
+    if not field:
+        rows = snapshot.query(
+            f"SELECT type, COUNT(*), SUM(visits), SUM(sex = 'Nam'), SUM(sex = 'Nữ'), SUM(source = 'OCR'), "
+            f"ROUND(AVG(age), 1) FROM clinical_patients p WHERE {where} GROUP BY type ORDER BY type", params).rows
+        ages = snapshot.query(f"SELECT age_group, COUNT(*) FROM clinical_patients p WHERE {where} GROUP BY age_group",
+                              params).rows
+        total = sum(row[1] for row in rows)
+        table_rows = [{"type": f"{t} · {CLINICAL_TITLE[t]}", "patients": n, "visits": v or 0, "male": m or 0,
+                       "female": f or 0, "ocr": o or 0, "age": a if a is not None else "—"} for t, n, v, m, f, o, a in rows]
+        order = {label: index for index, label in enumerate([*AGE_GROUPS, UNKNOWN])}
+        blocks = [
+            stats([("Bệnh nhân", total, "navy"), ("Lần khám", sum(row["visits"] for row in table_rows), "blue"),
+                   ("Nam", sum(row["male"] for row in table_rows), "teal"),
+                   ("Nữ", sum(row["female"] for row in table_rows), "amber")]),
+            table("Bệnh án theo loại", [("type", "Loại bệnh án"), ("patients", "Bệnh nhân"), ("visits", "Lần khám"),
+                                        ("male", "Nam"), ("female", "Nữ"), ("age", "Tuổi trung bình"),
+                                        ("ocr", "Từ ảnh (cần đối soát)")], table_rows, csv="benh-an"),
+        ]
+        if total:
+            ordered = sorted(ages, key=lambda row: order.get(row[0], 99))
+            blocks.append(bars("Nhóm tuổi bệnh nhân", [(label, n, pct(n, total)) for label, n in ordered], "bệnh nhân"))
+        return ToolResult(
+            llm={"patients": total, "by_type": [{"type": row["type"], "patients": row["patients"], "visits": row["visits"],
+                                                 "male": row["male"], "female": row["female"], "average_age": row["age"],
+                                                 "from_images": row["ocr"]} for row in table_rows],
+                 "age_groups": dict(ages)},
+            blocks=blocks,
+            method=f"Tính trên {total} bệnh nhân bệnh án" + (f" {type_}" if type_ else " F20 và F32")
+                   + "; đếm theo bệnh nhân.")
+    if not type_:
+        raise ToolError("Cần chọn type (F20 hoặc F32) khi phân tích một trường bệnh án.")
+    meta = clinical_field(type_, field)
+    total = snapshot.query("SELECT COUNT(*) FROM clinical_patients p WHERE p.type = ?", [type_]).rows[0][0]
+    counts = dict(snapshot.query(
+        "SELECT value, COUNT(DISTINCT patient_id) FROM clinical_fields WHERE type = ? AND field = ? AND is_latest = 1 "
+        "GROUP BY value", [type_, field]).rows)
+    answered = snapshot.query("SELECT COUNT(DISTINCT patient_id) FROM clinical_fields WHERE type = ? AND field = ? "
+                              "AND is_latest = 1", [type_, field]).rows[0][0]
+    if meta.get("options"):
+        items = [(option, counts.get(option, 0)) for option in meta["options"]]
+        items += [(value, n) for value, n in counts.items() if value not in meta["options"]]
+    else:
+        items = sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:20]
+    rows = [(value, n, pct(n, answered)) for value, n in items]
+    note = f"{total - answered} bệnh nhân chưa ghi trường này ở lần khám gần nhất." if total - answered else None
+    if meta["kind"] == "multi":
+        note = (note + " " if note else "") + "Trường nhiều lựa chọn: tổng tỷ lệ có thể vượt 100%."
+    return ToolResult(
+        llm={"type": type_, "field": field, "label": meta["label"], "kind": meta["kind"], "patients": total,
+             "answered": answered, "distribution": [{"value": v, "patients": n, "percent_of_answered": pc}
+                                                    for v, n, pc in rows]},
+        blocks=[bars(f"{CLINICAL_TITLE[type_]} · {meta['label']}", rows, "bệnh nhân", note)],
+        method=f"Tính trên {total} bệnh nhân {CLINICAL_TITLE[type_].lower()} ({type_}), lấy lần khám gần nhất của mỗi "
+               "người; tỷ lệ tính trên số bệnh nhân có ghi trường này.")
+
+
+CLINICAL_CONDITION = obj({
+    "field": {"type": "string", "description": "Mã trường bệnh án, VD 'previousDiagnoses'"},
+    "values": {"type": "array", "items": {"type": "string"}, "description": "Giá trị được tính là khớp"},
+})
+
+
+def find_clinical_patients(snapshot: Snapshot, type_: str, conditions: list[dict[str, Any]], match: str,
+                           latest_only: bool) -> ToolResult:
+    if type_ not in CLINICAL_FORMS:
+        raise ToolError("type phải là F20 hoặc F32.")
+    sets, described = [], []
+    for condition in (conditions or [])[:5]:
+        meta = clinical_field(type_, condition.get("field") or "")
+        wanted = [value for value in condition.get("values") or [] if str(value).strip()]
+        if not wanted:
+            raise ToolError("Mỗi điều kiện cần ít nhất một giá trị.")
+        if meta.get("options"):
+            resolved = []
+            for value in wanted:
+                exact = [option for option in meta["options"] if fold(option) == fold(value)]
+                loose = [option for option in meta["options"] if fold(value) in fold(option)]
+                found = exact or (loose if len(loose) == 1 else [])
+                if not found:
+                    raise ToolError(f"Giá trị “{value}” không có trong {meta['label']}. Các lựa chọn: "
+                                    + " | ".join(meta["options"]))
+                resolved.append(found[0])
+            rows = snapshot.query(
+                f"SELECT DISTINCT patient_id FROM clinical_fields WHERE type = ? AND field = ? "
+                f"AND value IN ({','.join('?' * len(resolved))})" + (" AND is_latest = 1" if latest_only else ""),
+                [type_, meta["key"], *resolved], limit=100_000).rows
+        else:
+            resolved = wanted
+            clauses = " OR ".join("lower(value) LIKE ?" for _ in wanted)
+            rows = snapshot.query(
+                f"SELECT DISTINCT patient_id FROM clinical_fields WHERE type = ? AND field = ? AND ({clauses})"
+                + (" AND is_latest = 1" if latest_only else ""),
+                [type_, meta["key"], *[f"%{str(value).lower()}%" for value in wanted]], limit=100_000).rows
+        sets.append({row[0] for row in rows})
+        described.append(f"{meta['label']} là {', '.join(resolved)}")
+    if not sets:
+        raise ToolError("Cần ít nhất một điều kiện.")
+    ids = set.intersection(*sets) if match != "any" else set.union(*sets)
+    patients = [row for row in snapshot.query(
+        "SELECT patient_id, type, code, full_name, age, sex, visits, latest_visit, latest_diagnosis "
+        "FROM clinical_patients WHERE type = ? ORDER BY code", [type_], limit=100_000).rows if row[0] in ids]
+    rows = [{"code": code, "id": pid, "clinicalType": t, "name": name or "—", "age": age if age is not None else "—",
+             "sex": sex or "—", "visits": visits, "latest": latest or "—", "diagnosis": diagnosis or "Chưa ghi nhận"}
+            for pid, t, code, name, age, sex, visits, latest, diagnosis in patients[:LIST_LIMIT]]
+    block = table(f"Bệnh nhân khớp điều kiện ({len(patients)})",
+                  [("code", "Mã bệnh nhân"), ("name", "Họ và tên"), ("age", "Tuổi"), ("sex", "Giới tính"),
+                   ("visits", "Số lần khám"), ("latest", "Khám gần nhất"), ("diagnosis", "Chẩn đoán")],
+                  rows, total=len(patients), truncated=len(patients) > LIST_LIMIT, csv="benh-nhan-benh-an")
+    block["recordKey"], block["recordTypeKey"], block["recordLabelKey"] = "id", "clinicalType", "code"
+    by_sex: dict[str, int] = {}
+    for row in patients:
+        by_sex[row[5] or UNKNOWN] = by_sex.get(row[5] or UNKNOWN, 0) + 1
+    return ToolResult(
+        llm={"type": type_, "matched_patients": len(patients), "by_sex": by_sex,
+             "conditions": described, "match": match, "latest_visit_only": latest_only,
+             "note": "Danh sách họ tên chỉ hiển thị cho người dùng trong bảng bên dưới; bạn không thấy họ tên."},
+        blocks=[block],
+        method=f"Bệnh án {CLINICAL_TITLE[type_].lower()} ({type_}); điều kiện "
+               f"({'tất cả' if match != 'any' else 'một trong các'}): " + "; ".join(described)
+               + (" — chỉ xét lần khám gần nhất." if latest_only else " — xét mọi lần khám."))
 
 
 # ---------- danh mục công cụ ----------
@@ -736,9 +910,30 @@ TOOLS: dict[str, Tool] = {tool.name: tool for tool in [
          lambda s, a: trend(s, a.get("period") or "month", a.get("split") or "none", a.get("filters")),
          {"icon": "trend", "description": "Số phiếu theo ngày, tuần hoặc tháng",
           "examples": ["Số phiếu khảo sát theo tháng của từng nhóm"]}),
+    Tool("find_clinical_fields", "Tra cứu bệnh án",
+         "Tìm trường của bệnh án F20 (tâm thần phân liệt) / F32 (trầm cảm) theo từ khoá để biết mã trường và các lựa chọn.",
+         obj({"keyword": {"type": "string"}, "type": nullable({"type": "string", "enum": ["F20", "F32"]})}),
+         lambda s, a: find_clinical_fields(s, a["keyword"], a.get("type"))),
+    Tool("clinical_summary", "Thống kê bệnh án",
+         "Bệnh án F20/F32: không có field thì tổng quan (số bệnh nhân, lần khám, giới, tuổi); có field thì phân bố giá "
+         "trị của trường đó ở lần khám gần nhất của mỗi bệnh nhân (cần type).",
+         obj({"type": nullable({"type": "string", "enum": ["F20", "F32"]}), "field": nullable({"type": "string"})}),
+         lambda s, a: clinical_summary(s, a.get("type"), a.get("field")),
+         {"icon": "file", "description": "Bệnh nhân tâm thần phân liệt, trầm cảm và nội dung bệnh án",
+          "examples": ["Có bao nhiêu bệnh nhân tâm thần phân liệt và trầm cảm?",
+                       "Bệnh nhân trầm cảm có tiền sử chẩn đoán gì trước đây?"]}),
+    Tool("find_clinical_patients", "Tìm bệnh nhân bệnh án",
+         "Danh sách bệnh nhân bệnh án F20/F32 có giá trị trường khớp điều kiện. Bạn chỉ nhận số lượng; danh sách hiện "
+         "cho người dùng.",
+         obj({"type": {"type": "string", "enum": ["F20", "F32"]},
+              "conditions": {"type": "array", "items": CLINICAL_CONDITION, "description": "1–5 điều kiện"},
+              "match": {"type": "string", "enum": ["all", "any"]},
+              "latest_only": {"type": "boolean", "description": "true: chỉ xét lần khám gần nhất"}}),
+         lambda s, a: find_clinical_patients(s, a["type"], a["conditions"], a.get("match") or "all",
+                                             bool(a.get("latest_only")))),
     Tool("run_sql", "Truy vấn nâng cao",
          "CHỈ dùng khi các công cụ trên không trả lời được. Viết MỘT câu SELECT (SQLite) trên các bảng questions, "
-         "subjects, records, answers. Đặt bí danh cột bằng tiếng Việt dễ hiểu. purpose: mô tả cách tính bằng lời "
+         "subjects, records, answers, clinical_patients, clinical_fields. Đặt bí danh cột bằng tiếng Việt dễ hiểu. purpose: mô tả cách tính bằng lời "
          "thường (không có SQL) để hiển thị cho người dùng.",
          obj({"sql": {"type": "string"}, "purpose": {"type": "string"}}),
          lambda s, a: run_sql(s, a["sql"], a.get("purpose") or "")),

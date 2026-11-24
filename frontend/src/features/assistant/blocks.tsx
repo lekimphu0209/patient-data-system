@@ -89,6 +89,12 @@ function Table({ block, openPerson }: { block: TableBlock; openPerson?: (group: 
       <tbody>{block.rows.map((row, index) => <tr key={index}>{block.columns.map(column => {
         const value = row[column.key]
         const text = value === null || value === undefined || value === '' ? '—' : typeof value === 'number' ? number(value) : value
+        const recordColumn = block.recordLabelKey || 'code'
+        if (block.recordKey && block.recordTypeKey && column.key === recordColumn && row[block.recordKey]) {
+          const hash = `#clinical/${row[block.recordTypeKey]}/${encodeURIComponent(String(row[block.recordKey]))}`
+          return <td key={column.key}><a className="ast-person" href={hash} title="Mở bệnh án của bệnh nhân">
+            {text}<ExternalLink size={12} /></a></td>
+        }
         if (column.key === personColumn && openPerson && block.personKey && block.groupKey && row[block.groupKey]) {
           return <td key={column.key}><button type="button" className="ast-person" title="Mở hồ sơ phiếu của đối tượng"
             onClick={() => openPerson(String(row[block.groupKey!]), String(row[block.personKey!]))}>

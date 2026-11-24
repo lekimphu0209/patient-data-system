@@ -1,0 +1,2257 @@
+{
+ "identity": [
+  {
+   "key": "code",
+   "label": "Mã bệnh nhân",
+   "kind": "text"
+  },
+  {
+   "key": "fullName",
+   "label": "Họ và tên",
+   "kind": "text"
+  },
+  {
+   "key": "age",
+   "label": "Tuổi",
+   "kind": "number"
+  },
+  {
+   "key": "sex",
+   "label": "Giới tính",
+   "kind": "select",
+   "options": [
+    "Nam",
+    "Nữ"
+   ]
+  },
+  {
+   "key": "hometown",
+   "label": "Quê quán / đơn vị",
+   "kind": "text"
+  },
+  {
+   "key": "ethnicity",
+   "label": "Dân tộc",
+   "kind": "text"
+  },
+  {
+   "key": "education",
+   "label": "Trình độ học vấn",
+   "kind": "select",
+   "options": [
+    "Mù chữ",
+    "Tiểu học",
+    "THCS",
+    "THPT",
+    "THCN, CĐ, ĐH, SĐH"
+   ]
+  },
+  {
+   "key": "occupation",
+   "label": "Nghề nghiệp",
+   "kind": "select",
+   "options": [
+    "Nông dân",
+    "Công nhân",
+    "Viên chức",
+    "HSSV",
+    "Bộ đội",
+    "Tự do"
+   ]
+  },
+  {
+   "key": "address",
+   "label": "Nơi thường trú",
+   "kind": "text"
+  },
+  {
+   "key": "residence",
+   "label": "Khu vực thường trú",
+   "kind": "multi",
+   "options": [
+    "Thành thị",
+    "Nông thôn",
+    "Miền núi",
+    "Ven biển"
+   ]
+  },
+  {
+   "key": "marital",
+   "label": "Tình trạng hôn nhân",
+   "kind": "select",
+   "options": [
+    "Đã kết hôn",
+    "Chưa kết hôn",
+    "Ly hôn / ly thân",
+    "Góa"
+   ]
+  }
+ ],
+ "forms": {
+  "F20": {
+   "title": "Tâm thần phân liệt",
+   "sections": [
+    {
+     "key": "admin",
+     "title": "Thủ tục hành chính của lần khám",
+     "fields": [
+      {
+       "key": "researchNo",
+       "label": "Số bệnh án nghiên cứu",
+       "kind": "text"
+      },
+      {
+       "key": "admissionNo",
+       "label": "Số vào viện",
+       "kind": "text"
+      },
+      {
+       "key": "archiveNo",
+       "label": "Số lưu trữ",
+       "kind": "text"
+      },
+      {
+       "key": "admissionDate",
+       "label": "Ngày vào viện",
+       "kind": "date"
+      }
+     ]
+    },
+    {
+     "key": "history",
+     "title": "Hỏi bệnh",
+     "fields": [
+      {
+       "key": "psychoticReason",
+       "label": "Lý do vào viện · Triệu chứng loạn thần",
+       "kind": "multi",
+       "options": [
+        "Nghe có tiếng người nói trong đầu",
+        "Cho rằng có người làm hại, theo dõi hoặc đầu độc mình",
+        "Cho rằng người khác biết hoặc chi phối suy nghĩ của mình",
+        "Tin rằng có người điều khiển hành vi của mình",
+        "Khác"
+       ]
+      },
+      {
+       "key": "psychoticReasonOther",
+       "label": "Triệu chứng loạn thần khác",
+       "kind": "text"
+      },
+      {
+       "key": "behaviorReason",
+       "label": "Lý do vào viện · Rối loạn hành vi",
+       "kind": "multi",
+       "options": [
+        "Có hành vi kỳ dị, khó hiểu",
+        "Kích động, gây gổ hoặc phá phách",
+        "Lang thang, bỏ nhà đi",
+        "Giảm chăm sóc bản thân",
+        "Có hành vi gây hại cho người khác",
+        "Có ý tưởng hoặc hành vi tự sát",
+        "Khác"
+       ]
+      },
+      {
+       "key": "behaviorReasonOther",
+       "label": "Rối loạn hành vi khác",
+       "kind": "text"
+      },
+      {
+       "key": "reasonNotes",
+       "label": "Mô tả lý do vào viện",
+       "kind": "textarea"
+      },
+      {
+       "key": "onsetTime",
+       "label": "Thời gian khởi phát",
+       "kind": "text"
+      },
+      {
+       "key": "durationMonths",
+       "label": "Thời gian bị bệnh (tháng)",
+       "kind": "number"
+      },
+      {
+       "key": "previousDiagnoses",
+       "label": "Chẩn đoán những lần trước",
+       "kind": "multi",
+       "options": [
+        "Trầm cảm",
+        "Hưng cảm",
+        "Tâm thần phân liệt",
+        "Khác"
+       ]
+      },
+      {
+       "key": "previousDiagnosisOther",
+       "label": "Chẩn đoán trước khác, cụ thể",
+       "kind": "text"
+      },
+      {
+       "key": "course",
+       "label": "Tiến triển bệnh",
+       "kind": "select",
+       "options": [
+        "Liên tục",
+        "Từng giai đoạn"
+       ]
+      },
+      {
+       "key": "relapses",
+       "label": "Số lần tái phát bệnh",
+       "kind": "number"
+      },
+      {
+       "key": "priorAdmissions",
+       "label": "Số lần điều trị nội trú trước đây",
+       "kind": "number"
+      },
+      {
+       "key": "medicationCount",
+       "label": "Thuốc đã sử dụng trước vào viện",
+       "kind": "select",
+       "options": [
+        "Không dùng",
+        "1 loại",
+        "2 loại",
+        "≥ 3 loại"
+       ]
+      },
+      {
+       "key": "priorMedication",
+       "label": "Thuốc đã sử dụng, cụ thể",
+       "kind": "textarea"
+      },
+      {
+       "key": "maintenance",
+       "label": "Điều trị củng cố",
+       "kind": "select",
+       "options": [
+        "Đều",
+        "Không đều",
+        "Không điều trị"
+       ]
+      },
+      {
+       "key": "circumstance",
+       "label": "Hoàn cảnh xuất hiện",
+       "kind": "select",
+       "options": [
+        "Sau một căng thẳng tâm lý",
+        "Sau một bệnh thực thể",
+        "Không rõ"
+       ]
+      },
+      {
+       "key": "circumstanceDetails",
+       "label": "Hoàn cảnh xuất hiện, cụ thể",
+       "kind": "textarea"
+      },
+      {
+       "key": "pregnancy",
+       "label": "Thời kỳ mẹ mang thai",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Bất thường"
+       ]
+      },
+      {
+       "key": "birthTrauma",
+       "label": "Sang chấn sản khoa",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "friends",
+       "label": "Mối quan hệ với bạn bè",
+       "kind": "select",
+       "options": [
+        "Cởi mở",
+        "Thu hẹp"
+       ]
+      },
+      {
+       "key": "personalHistory",
+       "label": "Tiền sử bản thân",
+       "kind": "multi",
+       "options": [
+        "Chấn thương sọ não",
+        "Chấn thương tâm lý",
+        "Lạm dụng rượu",
+        "Ma túy",
+        "Bệnh tâm thần khác",
+        "Bệnh lý thực thể"
+       ]
+      },
+      {
+       "key": "personalHistoryDetails",
+       "label": "Bệnh tâm thần khác / bệnh lý thực thể, cụ thể",
+       "kind": "textarea"
+      },
+      {
+       "key": "familyHistory",
+       "label": "Tiền sử gia đình",
+       "kind": "select",
+       "options": [
+        "Không mắc",
+        "Mắc trầm cảm",
+        "Mắc rối loạn tâm thần khác"
+       ]
+      },
+      {
+       "key": "familyHistoryDetails",
+       "label": "Tiền sử gia đình, cụ thể",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "physical",
+     "title": "Khám toàn thân và các cơ quan",
+     "fields": [
+      {
+       "key": "condition",
+       "label": "Thể trạng",
+       "kind": "text"
+      },
+      {
+       "key": "skin",
+       "label": "Da, niêm mạc",
+       "kind": "text"
+      },
+      {
+       "key": "weight",
+       "label": "Cân nặng (kg)",
+       "kind": "number"
+      },
+      {
+       "key": "height",
+       "label": "Chiều cao (cm)",
+       "kind": "number"
+      },
+      {
+       "key": "pulse",
+       "label": "Mạch (lần/phút)",
+       "kind": "number"
+      },
+      {
+       "key": "temperature",
+       "label": "Nhiệt độ (°C)",
+       "kind": "number"
+      },
+      {
+       "key": "bloodPressure",
+       "label": "Huyết áp (mmHg)",
+       "kind": "text"
+      },
+      {
+       "key": "circulation",
+       "label": "Tuần hoàn",
+       "kind": "textarea"
+      },
+      {
+       "key": "respiratory",
+       "label": "Hô hấp",
+       "kind": "textarea"
+      },
+      {
+       "key": "digestive",
+       "label": "Tiêu hóa",
+       "kind": "textarea"
+      },
+      {
+       "key": "urinary",
+       "label": "Tiết niệu",
+       "kind": "textarea"
+      },
+      {
+       "key": "neurology",
+       "label": "Khám thần kinh",
+       "kind": "textarea"
+      },
+      {
+       "key": "otherOrgans",
+       "label": "Các bộ phận khác",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "observation",
+     "title": "Khám tâm thần · Quan sát chung",
+     "fields": [
+      {
+       "key": "contact",
+       "label": "Tiếp xúc",
+       "kind": "select",
+       "options": [
+        "Hợp tác",
+        "Không hợp tác",
+        "Hợp tác hạn chế"
+       ]
+      },
+      {
+       "key": "attitude",
+       "label": "Thái độ",
+       "kind": "multi",
+       "options": [
+        "Tự nhiên",
+        "Thờ ơ",
+        "Né tránh",
+        "Căng thẳng",
+        "Chống đối"
+       ]
+      },
+      {
+       "key": "appearance",
+       "label": "Vệ sinh, trang phục",
+       "kind": "multi",
+       "options": [
+        "Gọn gàng, sạch sẽ",
+        "Lôi thôi, bẩn thỉu",
+        "Không phù hợp thời tiết",
+        "Kỳ dị"
+       ]
+      },
+      {
+       "key": "expression",
+       "label": "Nét mặt",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Buồn rầu",
+        "Lo âu",
+        "Căng thẳng",
+        "Vô cảm"
+       ]
+      },
+      {
+       "key": "observationNotes",
+       "label": "Mô tả quan sát chung",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "conscious",
+     "title": "Khám tâm thần · Ý thức",
+     "fields": [
+      {
+       "key": "orientation0",
+       "label": "Định hướng không gian",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "orientation1",
+       "label": "Định hướng thời gian",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "orientation2",
+       "label": "Định hướng bản thân",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "orientation3",
+       "label": "Định hướng xung quanh",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "consciousNotes",
+       "label": "Mô tả ý thức",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "mood",
+     "title": "Khám tâm thần · Cảm xúc, tình cảm",
+     "fields": [
+      {
+       "key": "mood",
+       "label": "Khí sắc",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Giảm",
+        "Tăng",
+        "Kích thích"
+       ]
+      },
+      {
+       "key": "emotion",
+       "label": "Cảm xúc",
+       "kind": "multi",
+       "options": [
+        "Phù hợp",
+        "Không phù hợp",
+        "Cùn mòn",
+        "Vô cảm",
+        "Dễ xúc động",
+        "Không ổn định"
+       ]
+      },
+      {
+       "key": "negativeSymptoms",
+       "label": "Triệu chứng âm tính",
+       "kind": "multi",
+       "options": [
+        "Giảm biểu lộ cảm xúc",
+        "Giảm đáp ứng cảm xúc",
+        "Giảm giao tiếp",
+        "Thu mình xã hội"
+       ]
+      },
+      {
+       "key": "moodNotes",
+       "label": "Mô tả cảm xúc, tình cảm",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "perception",
+     "title": "Khám tâm thần · Cảm giác, tri giác",
+     "fields": [
+      {
+       "key": "hallucinations",
+       "label": "Ảo giác",
+       "kind": "multi",
+       "options": [
+        "Không có",
+        "Ảo thanh thật",
+        "Ảo thanh giả",
+        "Bình phẩm",
+        "Đàm thoại",
+        "Ra lệnh",
+        "Ảo thị",
+        "Ảo xúc giác",
+        "Ảo khứu",
+        "Ảo vị",
+        "Khác"
+       ]
+      },
+      {
+       "key": "hallucinationsOther",
+       "label": "Ảo giác khác",
+       "kind": "text"
+      },
+      {
+       "key": "perception",
+       "label": "Rối loạn tri giác khác",
+       "kind": "multi",
+       "options": [
+        "Giải thể nhân cách",
+        "Tri giác sai thực tại",
+        "Khác"
+       ]
+      },
+      {
+       "key": "perceptionOther",
+       "label": "Rối loạn tri giác khác, cụ thể",
+       "kind": "text"
+      },
+      {
+       "key": "perceptionNotes",
+       "label": "Mô tả cảm giác, tri giác",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "thinking",
+     "title": "Khám tâm thần · Tư duy",
+     "fields": [
+      {
+       "key": "thoughtForm",
+       "label": "Hình thức tư duy",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Tư duy rời rạc",
+        "Tư duy không liên quan",
+        "Tư duy phi logic",
+        "Tư duy tiếp tuyến",
+        "Tư duy ngắt quãng",
+        "Tư duy lai nhai",
+        "Tư duy dồn dập",
+        "Ngôn ngữ bịa mới"
+       ]
+      },
+      {
+       "key": "thoughtContent",
+       "label": "Nội dung tư duy",
+       "kind": "multi",
+       "options": [
+        "Hoang tưởng bị hại",
+        "Hoang tưởng liên hệ",
+        "Hoang tưởng bị theo dõi",
+        "Hoang tưởng bị chi phối",
+        "Hoang tưởng kỳ quái",
+        "Khác"
+       ]
+      },
+      {
+       "key": "thoughtOther",
+       "label": "Nội dung tư duy khác",
+       "kind": "text"
+      },
+      {
+       "key": "obsession",
+       "label": "Ám ảnh",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thinkingNotes",
+       "label": "Mô tả tư duy",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "attention",
+     "title": "Khám tâm thần · Chú ý, trí nhớ, trí tuệ",
+     "fields": [
+      {
+       "key": "attention",
+       "label": "Chú ý",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Giảm khả năng tập trung",
+        "Dễ bị phân tán",
+        "Khó duy trì chú ý",
+        "Tăng chú ý"
+       ]
+      },
+      {
+       "key": "attentionNotes",
+       "label": "Mô tả chú ý",
+       "kind": "textarea"
+      },
+      {
+       "key": "immediateMemory",
+       "label": "Trí nhớ tức thì",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Giảm"
+       ]
+      },
+      {
+       "key": "recentMemory",
+       "label": "Trí nhớ gần",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Giảm"
+       ]
+      },
+      {
+       "key": "remoteMemory",
+       "label": "Trí nhớ xa",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Giảm"
+       ]
+      },
+      {
+       "key": "memoryDisorders",
+       "label": "Rối loạn trí nhớ",
+       "kind": "multi",
+       "options": [
+        "Không",
+        "Quên thuận chiều",
+        "Quên ngược chiều",
+        "Mất nhớ toàn bộ"
+       ]
+      },
+      {
+       "key": "memoryNotes",
+       "label": "Mô tả trí nhớ",
+       "kind": "textarea"
+      },
+      {
+       "key": "intellect",
+       "label": "Trí tuệ",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Chậm phát triển trí tuệ",
+        "Sa sút trí tuệ"
+       ]
+      },
+      {
+       "key": "intellectNotes",
+       "label": "Mô tả trí tuệ",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "behavior",
+     "title": "Khám tâm thần · Hành vi, tác phong",
+     "fields": [
+      {
+       "key": "motor",
+       "label": "Hoạt động tâm thần vận động",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Kích động",
+        "Giảm vận động",
+        "Bất động",
+        "Căng trương lực",
+        "Định hình",
+        "Phủ định",
+        "Giữ nguyên tư thế"
+       ]
+      },
+      {
+       "key": "behavior",
+       "label": "Hành vi",
+       "kind": "multi",
+       "options": [
+        "Cười nói một mình",
+        "Nói một mình",
+        "Thu mình",
+        "Lang thang",
+        "Gây hấn",
+        "Phá phách",
+        "Hành vi kỳ dị",
+        "Tự chăm sóc kém",
+        "Hành vi tự huỷ hoại",
+        "Hành vi tự sát"
+       ]
+      },
+      {
+       "key": "sleep",
+       "label": "Giấc ngủ",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Mất ngủ đầu giấc",
+        "Mất ngủ giữa giấc",
+        "Mất ngủ cuối giấc",
+        "Mất ngủ toàn bộ",
+        "Ngủ nhiều"
+       ]
+      },
+      {
+       "key": "eating",
+       "label": "Ăn uống",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Chán ăn",
+        "Ăn nhiều",
+        "Từ chối ăn"
+       ]
+      },
+      {
+       "key": "behaviorNotes",
+       "label": "Mô tả hành vi, tác phong",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "lab",
+     "title": "Cận lâm sàng chung",
+     "fields": [
+      {
+       "key": "rbc",
+       "label": "Hồng cầu (T/L)",
+       "kind": "number"
+      },
+      {
+       "key": "hemoglobin",
+       "label": "Huyết sắc tố (g/L)",
+       "kind": "number"
+      },
+      {
+       "key": "wbc",
+       "label": "Bạch cầu (G/L)",
+       "kind": "number"
+      },
+      {
+       "key": "neutrophils",
+       "label": "N (%)",
+       "kind": "number"
+      },
+      {
+       "key": "lymphocytes",
+       "label": "L (%)",
+       "kind": "number"
+      },
+      {
+       "key": "monocytes",
+       "label": "M (%)",
+       "kind": "number"
+      },
+      {
+       "key": "glucose",
+       "label": "Glucose (mmol/L)",
+       "kind": "number"
+      },
+      {
+       "key": "urea",
+       "label": "Ure (mmol/L)",
+       "kind": "number"
+      },
+      {
+       "key": "creatinine",
+       "label": "Creatinin (µmol/L)",
+       "kind": "number"
+      },
+      {
+       "key": "sgot",
+       "label": "SGOT (U/L)",
+       "kind": "number"
+      },
+      {
+       "key": "sgpt",
+       "label": "SGPT (U/L)",
+       "kind": "number"
+      },
+      {
+       "key": "sggt",
+       "label": "SGGT (U/L)",
+       "kind": "number"
+      },
+      {
+       "key": "ecg",
+       "label": "Điện tim",
+       "kind": "textarea"
+      },
+      {
+       "key": "eeg",
+       "label": "Điện não",
+       "kind": "textarea"
+      },
+      {
+       "key": "brainImaging",
+       "label": "CLVT sọ não / MRI",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "otherTests",
+     "title": "Các kết quả cận lâm sàng khác",
+     "fields": [
+      {
+       "key": "otherEEG",
+       "label": "Điện não đồ",
+       "kind": "textarea"
+      },
+      {
+       "key": "fingerprints",
+       "label": "Da vân tay",
+       "kind": "textarea"
+      },
+      {
+       "key": "eyeTracking",
+       "label": "Eye tracking",
+       "kind": "textarea"
+      },
+      {
+       "key": "genes",
+       "label": "Gen",
+       "kind": "textarea"
+      },
+      {
+       "key": "neurotransmitters",
+       "label": "Chất dẫn truyền thần kinh",
+       "kind": "textarea"
+      },
+      {
+       "key": "otherTests",
+       "label": "Khác",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "diagnosis",
+     "title": "Chẩn đoán",
+     "fields": [
+      {
+       "key": "diagnosis",
+       "label": "Chẩn đoán xác định",
+       "kind": "textarea"
+      },
+      {
+       "key": "differential",
+       "label": "Chẩn đoán phân biệt",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "treatment",
+     "title": "Điều trị và xác nhận",
+     "fields": [
+      {
+       "key": "medication",
+       "label": "Loại thuốc / liều lượng thuốc",
+       "kind": "textarea"
+      },
+      {
+       "key": "inpatientDays",
+       "label": "Thời gian điều trị nội trú (ngày)",
+       "kind": "number"
+      },
+      {
+       "key": "agencyConfirmation",
+       "label": "Xác nhận của cơ quan quản lý bệnh nhân",
+       "kind": "textarea"
+      },
+      {
+       "key": "recordDate",
+       "label": "Ngày làm bệnh án",
+       "kind": "date"
+      },
+      {
+       "key": "author",
+       "label": "Người làm bệnh án",
+       "kind": "text"
+      }
+     ]
+    }
+   ]
+  },
+  "F32": {
+   "title": "Trầm cảm",
+   "sections": [
+    {
+     "key": "admin",
+     "title": "Thủ tục hành chính của lần khám",
+     "fields": [
+      {
+       "key": "researchNo",
+       "label": "Số bệnh án nghiên cứu",
+       "kind": "text"
+      },
+      {
+       "key": "admissionNo",
+       "label": "Số vào viện",
+       "kind": "text"
+      },
+      {
+       "key": "archiveNo",
+       "label": "Số lưu trữ",
+       "kind": "text"
+      },
+      {
+       "key": "admissionDate",
+       "label": "Ngày vào viện",
+       "kind": "date"
+      }
+     ]
+    },
+    {
+     "key": "history",
+     "title": "Hỏi bệnh",
+     "fields": [
+      {
+       "key": "reason",
+       "label": "Lý do vào viện",
+       "kind": "multi",
+       "options": [
+        "Buồn chán bi quan quá mức",
+        "Mệt mỏi, mất năng lượng",
+        "Giảm/mất hứng thú sở thích",
+        "Ý tưởng/hành vi tự sát",
+        "Từ chối ăn",
+        "Mất ngủ trầm trọng",
+        "Khác"
+       ]
+      },
+      {
+       "key": "reasonOther",
+       "label": "Lý do vào viện khác",
+       "kind": "textarea"
+      },
+      {
+       "key": "onsetAge",
+       "label": "Tuổi khởi phát",
+       "kind": "number"
+      },
+      {
+       "key": "durationYears",
+       "label": "Thời gian bị bệnh (năm)",
+       "kind": "number"
+      },
+      {
+       "key": "durationMonths",
+       "label": "Thời gian bị bệnh (tháng)",
+       "kind": "number"
+      },
+      {
+       "key": "previousDiagnoses",
+       "label": "Chẩn đoán những lần trước",
+       "kind": "multi",
+       "options": [
+        "Trầm cảm",
+        "Hưng cảm",
+        "Tâm thần phân liệt",
+        "Khác"
+       ]
+      },
+      {
+       "key": "previousDiagnosisOther",
+       "label": "Chẩn đoán trước khác, cụ thể",
+       "kind": "text"
+      },
+      {
+       "key": "course",
+       "label": "Tiến triển bệnh",
+       "kind": "select",
+       "options": [
+        "Liên tục",
+        "Từng giai đoạn"
+       ]
+      },
+      {
+       "key": "relapses",
+       "label": "Số lần tái phát bệnh",
+       "kind": "number"
+      },
+      {
+       "key": "priorAdmissions",
+       "label": "Số lần điều trị nội trú trước đây",
+       "kind": "number"
+      },
+      {
+       "key": "medicationCount",
+       "label": "Thuốc đã sử dụng trước vào viện",
+       "kind": "select",
+       "options": [
+        "Không dùng",
+        "1 loại",
+        "2 loại",
+        "≥ 3 loại"
+       ]
+      },
+      {
+       "key": "priorMedication",
+       "label": "Thuốc đã sử dụng, cụ thể",
+       "kind": "textarea"
+      },
+      {
+       "key": "maintenance",
+       "label": "Điều trị củng cố",
+       "kind": "select",
+       "options": [
+        "Đều",
+        "Không đều",
+        "Không điều trị"
+       ]
+      },
+      {
+       "key": "circumstance",
+       "label": "Hoàn cảnh xuất hiện",
+       "kind": "select",
+       "options": [
+        "Sau một căng thẳng tâm lý",
+        "Sau một bệnh thực thể",
+        "Không rõ"
+       ]
+      },
+      {
+       "key": "circumstanceDetails",
+       "label": "Hoàn cảnh xuất hiện, cụ thể",
+       "kind": "textarea"
+      },
+      {
+       "key": "pregnancy",
+       "label": "Thời kỳ mẹ mang thai",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Bất thường"
+       ]
+      },
+      {
+       "key": "birthTrauma",
+       "label": "Sang chấn sản khoa",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "friends",
+       "label": "Mối quan hệ với bạn bè",
+       "kind": "select",
+       "options": [
+        "Cởi mở",
+        "Thu hẹp"
+       ]
+      },
+      {
+       "key": "personalHistory",
+       "label": "Tiền sử bản thân",
+       "kind": "multi",
+       "options": [
+        "Chấn thương sọ não",
+        "Chấn thương tâm lý",
+        "Lạm dụng rượu",
+        "Ma túy",
+        "Bệnh tâm thần khác",
+        "Bệnh lý thực thể"
+       ]
+      },
+      {
+       "key": "personalHistoryDetails",
+       "label": "Bệnh tâm thần khác / bệnh lý thực thể, cụ thể",
+       "kind": "textarea"
+      },
+      {
+       "key": "familyHistory",
+       "label": "Tiền sử gia đình",
+       "kind": "select",
+       "options": [
+        "Không mắc",
+        "Mắc trầm cảm",
+        "Mắc rối loạn tâm thần khác"
+       ]
+      },
+      {
+       "key": "familyHistoryDetails",
+       "label": "Tiền sử gia đình, cụ thể",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "physical",
+     "title": "Khám toàn thân và các cơ quan",
+     "fields": [
+      {
+       "key": "condition",
+       "label": "Thể trạng",
+       "kind": "text"
+      },
+      {
+       "key": "skin",
+       "label": "Da, niêm mạc",
+       "kind": "text"
+      },
+      {
+       "key": "weight",
+       "label": "Cân nặng (kg)",
+       "kind": "number"
+      },
+      {
+       "key": "height",
+       "label": "Chiều cao (cm)",
+       "kind": "number"
+      },
+      {
+       "key": "pulse",
+       "label": "Mạch (lần/phút)",
+       "kind": "number"
+      },
+      {
+       "key": "temperature",
+       "label": "Nhiệt độ (°C)",
+       "kind": "number"
+      },
+      {
+       "key": "bloodPressure",
+       "label": "Huyết áp (mmHg)",
+       "kind": "text"
+      },
+      {
+       "key": "circulation",
+       "label": "Tuần hoàn",
+       "kind": "textarea"
+      },
+      {
+       "key": "respiratory",
+       "label": "Hô hấp",
+       "kind": "textarea"
+      },
+      {
+       "key": "digestive",
+       "label": "Tiêu hóa",
+       "kind": "textarea"
+      },
+      {
+       "key": "urinary",
+       "label": "Tiết niệu",
+       "kind": "textarea"
+      },
+      {
+       "key": "neurology",
+       "label": "Khám thần kinh",
+       "kind": "textarea"
+      },
+      {
+       "key": "otherOrgans",
+       "label": "Các bộ phận khác",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "observation",
+     "title": "Khám tâm thần · Quan sát chung",
+     "fields": [
+      {
+       "key": "contact",
+       "label": "Tiếp xúc",
+       "kind": "select",
+       "options": [
+        "Hợp tác",
+        "Không hợp tác",
+        "Hợp tác hạn chế"
+       ]
+      },
+      {
+       "key": "attitude",
+       "label": "Thái độ",
+       "kind": "multi",
+       "options": [
+        "Tự nhiên",
+        "Thờ ơ",
+        "Né tránh",
+        "Căng thẳng",
+        "Chống đối"
+       ]
+      },
+      {
+       "key": "appearance",
+       "label": "Vệ sinh, trang phục",
+       "kind": "multi",
+       "options": [
+        "Gọn gàng, sạch sẽ",
+        "Lôi thôi, bẩn thỉu",
+        "Không phù hợp thời tiết",
+        "Kỳ dị"
+       ]
+      },
+      {
+       "key": "expression",
+       "label": "Nét mặt",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Buồn rầu",
+        "Lo âu",
+        "Căng thẳng",
+        "Vô cảm"
+       ]
+      },
+      {
+       "key": "observationNotes",
+       "label": "Mô tả quan sát chung",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "conscious",
+     "title": "Khám tâm thần · Ý thức",
+     "fields": [
+      {
+       "key": "orientation0",
+       "label": "Định hướng không gian",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "orientation1",
+       "label": "Định hướng thời gian",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "orientation2",
+       "label": "Định hướng bản thân",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "orientation3",
+       "label": "Định hướng xung quanh",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Rối loạn"
+       ]
+      },
+      {
+       "key": "consciousNotes",
+       "label": "Mô tả ý thức",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "mood",
+     "title": "Khám tâm thần · Cảm xúc, tình cảm",
+     "fields": [
+      {
+       "key": "mood0",
+       "label": "Khí sắc giảm",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood1",
+       "label": "Giảm hoặc mất các hứng thú, sở thích",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood2",
+       "label": "Giảm và mất nghị lực",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood3",
+       "label": "Tâm trạng bi quan, mất tự tin",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood4",
+       "label": "Căng thẳng, sợ sệt",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood5",
+       "label": "Cảm giác vô dụng",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood6",
+       "label": "Cảm giác buồn chán",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood7",
+       "label": "Dễ bị kích thích",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood8",
+       "label": "Tâm trạng dễ xúc động",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood9",
+       "label": "Cảm xúc không ổn định",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "mood10",
+       "label": "Ý tưởng tự sát",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "moodNotes",
+       "label": "Mô tả cảm xúc, tình cảm",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "perception",
+     "title": "Khám tâm thần · Cảm giác, tri giác",
+     "fields": [
+      {
+       "key": "perception0",
+       "label": "Ảo giác thô sơ",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perception1",
+       "label": "Ảo thanh thật",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perception2",
+       "label": "Ảo thanh giả",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perception3",
+       "label": "Ảo thị giác",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perception4",
+       "label": "Ảo xúc giác",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perception5",
+       "label": "Giải thể nhân cách",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perception6",
+       "label": "Tri giác sai thực tại",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perception7",
+       "label": "Ảo giác khác",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "perceptionNotes",
+       "label": "Mô tả cảm giác, tri giác",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "thinking",
+     "title": "Khám tâm thần · Tư duy",
+     "fields": [
+      {
+       "key": "thoughtNormal",
+       "label": "Hình thức tư duy bình thường",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtForm0",
+       "label": "Suy nghĩ chậm chạp, ít nói",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtForm1",
+       "label": "Nói nhiều",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtForm2",
+       "label": "Không nói",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtForm3",
+       "label": "Quan hệ giao tiếp nghèo nàn",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtForm4",
+       "label": "Tư duy gián đoạn",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent0",
+       "label": "Ám ảnh sợ bị bệnh nặng",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent1",
+       "label": "Ám ảnh sợ khoảng trống",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent2",
+       "label": "Ám ảnh sợ đám đông",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent3",
+       "label": "Hoang tưởng nghi bệnh",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent4",
+       "label": "Hoang tưởng bị hại",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent5",
+       "label": "Hoang tưởng bị theo dõi",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent6",
+       "label": "Ý nghĩ yếu đuối, tự ti, hèn kém",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent7",
+       "label": "Hoang tưởng tự buộc tội",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent8",
+       "label": "Hoang tưởng liên hệ",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thoughtContent9",
+       "label": "Hoang tưởng khác",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "thinkingNotes",
+       "label": "Mô tả tư duy",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "anxiety",
+     "title": "Khám tâm thần · Rối loạn lo âu",
+     "fields": [
+      {
+       "key": "anxiety0",
+       "label": "Lo lắng bệnh không chữa khỏi",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "anxiety1",
+       "label": "Lo lắng về tương lai của bệnh nhân",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "anxiety2",
+       "label": "Cơn hoảng sợ",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "anxiety3",
+       "label": "Tâm trạng thất thường",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "anxiety4",
+       "label": "Khác",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "anxietyNotes",
+       "label": "Mô tả rối loạn lo âu",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "attention",
+     "title": "Khám tâm thần · Chú ý, trí nhớ, trí tuệ",
+     "fields": [
+      {
+       "key": "attention",
+       "label": "Chú ý",
+       "kind": "multi",
+       "options": [
+        "Bình thường",
+        "Giảm khả năng tập trung",
+        "Dễ bị phân tán",
+        "Khó duy trì chú ý",
+        "Tăng chú ý"
+       ]
+      },
+      {
+       "key": "attentionNotes",
+       "label": "Mô tả chú ý",
+       "kind": "textarea"
+      },
+      {
+       "key": "immediateMemory",
+       "label": "Trí nhớ tức thì",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Giảm"
+       ]
+      },
+      {
+       "key": "recentMemory",
+       "label": "Trí nhớ gần",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Giảm"
+       ]
+      },
+      {
+       "key": "remoteMemory",
+       "label": "Trí nhớ xa",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Giảm"
+       ]
+      },
+      {
+       "key": "memoryDisorders",
+       "label": "Rối loạn trí nhớ",
+       "kind": "multi",
+       "options": [
+        "Không",
+        "Quên thuận chiều",
+        "Quên ngược chiều",
+        "Mất nhớ toàn bộ"
+       ]
+      },
+      {
+       "key": "memoryNotes",
+       "label": "Mô tả trí nhớ",
+       "kind": "textarea"
+      },
+      {
+       "key": "intellect",
+       "label": "Trí tuệ",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Chậm phát triển trí tuệ",
+        "Sa sút trí tuệ"
+       ]
+      },
+      {
+       "key": "intellectNotes",
+       "label": "Mô tả trí tuệ",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "somatic",
+     "title": "Khám tâm thần · Các biểu hiện về cơ thể",
+     "fields": [
+      {
+       "key": "somatic0",
+       "label": "Mất ngủ",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic1",
+       "label": "Ngủ nhiều",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic2",
+       "label": "Đau đầu",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic3",
+       "label": "Đau không rõ vị trí",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic4",
+       "label": "Mệt mỏi, đuối sức",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic5",
+       "label": "Chán ăn",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic6",
+       "label": "Ăn nhiều",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic7",
+       "label": "Gầy sút cân",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic8",
+       "label": "Rối loạn tiêu hóa",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic9",
+       "label": "Hồi hộp, đánh trống ngực",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somatic10",
+       "label": "Ra nhiều mồ hôi",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "somaticNotes",
+       "label": "Mô tả các biểu hiện về cơ thể",
+       "kind": "textarea"
+      },
+      {
+       "key": "sexual",
+       "label": "Rối loạn tình dục",
+       "kind": "select",
+       "options": [
+        "Bình thường",
+        "Tăng",
+        "Giảm"
+       ]
+      },
+      {
+       "key": "menstruation",
+       "label": "Rối loạn kinh nguyệt",
+       "kind": "select",
+       "options": [
+        "Mất kinh",
+        "Không đều",
+        "Đều"
+       ]
+      }
+     ]
+    },
+    {
+     "key": "behavior",
+     "title": "Khám tâm thần · Hành vi, tác phong",
+     "fields": [
+      {
+       "key": "behavior0",
+       "label": "Giảm vận động, nằm nhiều",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior1",
+       "label": "Bồn chồn đứng, đi lại nhiều",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior2",
+       "label": "Bất động",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior3",
+       "label": "Kích động",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior4",
+       "label": "Từ chối ăn",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior5",
+       "label": "Né tránh các hoạt động xã hội",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior6",
+       "label": "Xung động tự sát",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior7",
+       "label": "Hành vi tự sát: Cắt mạch máu",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior8",
+       "label": "Hành vi tự sát: Thắt cổ",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior9",
+       "label": "Hành vi tự sát: Nhảy lầu",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior10",
+       "label": "Hành vi tự sát: Uống thuốc",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior11",
+       "label": "Hành vi tự sát: Cắn lưỡi, đập đầu",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior12",
+       "label": "Hành vi tự sát: Nhảy xuống giếng",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior13",
+       "label": "Hành vi tự sát: Uống thuốc diệt cỏ, trừ sâu",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behavior14",
+       "label": "Hành vi khác",
+       "kind": "select",
+       "options": [
+        "Có",
+        "Không"
+       ]
+      },
+      {
+       "key": "behaviorNotes",
+       "label": "Mô tả hành vi, tác phong",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "lab",
+     "title": "Cận lâm sàng chung",
+     "fields": [
+      {
+       "key": "rbc",
+       "label": "Hồng cầu (T/L)",
+       "kind": "number"
+      },
+      {
+       "key": "hemoglobin",
+       "label": "Huyết sắc tố (g/L)",
+       "kind": "number"
+      },
+      {
+       "key": "wbc",
+       "label": "Bạch cầu (G/L)",
+       "kind": "number"
+      },
+      {
+       "key": "neutrophils",
+       "label": "N (%)",
+       "kind": "number"
+      },
+      {
+       "key": "lymphocytes",
+       "label": "L (%)",
+       "kind": "number"
+      },
+      {
+       "key": "monocytes",
+       "label": "M (%)",
+       "kind": "number"
+      },
+      {
+       "key": "glucose",
+       "label": "Glucose (mmol/L)",
+       "kind": "number"
+      },
+      {
+       "key": "urea",
+       "label": "Ure (mmol/L)",
+       "kind": "number"
+      },
+      {
+       "key": "creatinine",
+       "label": "Creatinin (µmol/L)",
+       "kind": "number"
+      },
+      {
+       "key": "sgot",
+       "label": "SGOT (U/L)",
+       "kind": "number"
+      },
+      {
+       "key": "sgpt",
+       "label": "SGPT (U/L)",
+       "kind": "number"
+      },
+      {
+       "key": "sggt",
+       "label": "SGGT (U/L)",
+       "kind": "number"
+      },
+      {
+       "key": "ecg",
+       "label": "Điện tim",
+       "kind": "textarea"
+      },
+      {
+       "key": "eeg",
+       "label": "Điện não",
+       "kind": "textarea"
+      },
+      {
+       "key": "brainImaging",
+       "label": "CLVT sọ não / MRI",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "otherTests",
+     "title": "Các kết quả cận lâm sàng khác",
+     "fields": [
+      {
+       "key": "otherEEG",
+       "label": "Điện não đồ",
+       "kind": "textarea"
+      },
+      {
+       "key": "fingerprints",
+       "label": "Da vân tay",
+       "kind": "textarea"
+      },
+      {
+       "key": "eyeTracking",
+       "label": "Eye tracking",
+       "kind": "textarea"
+      },
+      {
+       "key": "genes",
+       "label": "Gen",
+       "kind": "textarea"
+      },
+      {
+       "key": "neurotransmitters",
+       "label": "Chất dẫn truyền thần kinh",
+       "kind": "textarea"
+      },
+      {
+       "key": "otherTests",
+       "label": "Khác",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "diagnosis",
+     "title": "Chẩn đoán",
+     "fields": [
+      {
+       "key": "diagnosis",
+       "label": "Chẩn đoán xác định",
+       "kind": "textarea"
+      },
+      {
+       "key": "differential",
+       "label": "Chẩn đoán phân biệt",
+       "kind": "textarea"
+      }
+     ]
+    },
+    {
+     "key": "treatment",
+     "title": "Điều trị và xác nhận",
+     "fields": [
+      {
+       "key": "medication",
+       "label": "Loại thuốc / liều lượng thuốc",
+       "kind": "textarea"
+      },
+      {
+       "key": "inpatientDays",
+       "label": "Thời gian điều trị nội trú (ngày)",
+       "kind": "number"
+      },
+      {
+       "key": "agencyConfirmation",
+       "label": "Xác nhận của cơ quan quản lý bệnh nhân",
+       "kind": "textarea"
+      },
+      {
+       "key": "recordDate",
+       "label": "Ngày làm bệnh án",
+       "kind": "date"
+      },
+      {
+       "key": "author",
+       "label": "Người làm bệnh án",
+       "kind": "text"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

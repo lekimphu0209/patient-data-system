@@ -19,6 +19,10 @@ export type TableBlock = {
   csvName: string
   personKey?: string
   groupKey?: string
+  /** Bảng bệnh nhân bệnh án: mở hồ sơ theo id + loại (F20/F32), hiển thị bằng cột ``recordLabelKey``. */
+  recordKey?: string
+  recordTypeKey?: string
+  recordLabelKey?: string
 }
 export type Block = StatsBlock | BarsBlock | TableBlock
 

@@ -24,6 +24,7 @@ from pydantic import ValidationError
 from sqlalchemy import delete, func, or_, select, tuple_
 from sqlalchemy.orm import Session
 
+from app.modules.clinical.models import ClinicalPatient, ClinicalVisit
 from app.modules.documents.models import Document, OcrExtraction
 from app.modules.encounters.models import Encounter
 from app.modules.patients.models import Examination, MedicalHistory, Patient
@@ -44,8 +45,9 @@ FILE_PREFIX = "ingest-"
 NAME_LABEL = re.compile(r"^(Họ và tên|1\. Họ và tên)")
 NO_EVENT = "Không gặp sự kiện đáng kể"
 # Dữ liệu bệnh nhân bị xoá trước khi nạp; tài khoản và file mẫu (storage/templates) giữ nguyên.
-WIPE_MODELS = (SurveyRecord, SurveySubject, OcrExtraction, Examination, MedicalHistory, Document, Encounter, Patient)
-WIPE_FOLDERS = ("surveys", "uploads", "exports", "imports")
+WIPE_MODELS = (SurveyRecord, SurveySubject, ClinicalVisit, ClinicalPatient, OcrExtraction, Examination, MedicalHistory,
+               Document, Encounter, Patient)
+WIPE_FOLDERS = ("surveys", "clinical", "uploads", "exports", "imports")
 # Phiếu sửa sau khi nạp quá khoảng này thì coi là người dùng đã chỉnh, không cho gỡ.
 EDIT_GRACE = timedelta(minutes=2)
 

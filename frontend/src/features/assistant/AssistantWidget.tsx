@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import {
-  AlertCircle, BarChart3, Check, ChevronDown, Copy, Info, LayoutDashboard, ListChecks, Maximize2, Minimize2,
+  AlertCircle, BarChart3, Check, ChevronDown, Copy, FileText, Info, LayoutDashboard, ListChecks, Maximize2, Minimize2,
   RotateCcw, SendHorizontal, Sparkles, Table2, TrendingUp, UserRound, Users, X, type LucideIcon,
 } from 'lucide-react'
 import { askAssistant, assistantError, getSuggestions, type AssistantReply, type Turn } from './api'
@@ -17,7 +17,7 @@ const STORE_KEY = 'ta-assistant-v1'
 const MAX_STORED = 30
 const MAX_LENGTH = 1000
 const ICONS: Record<string, LucideIcon> = {
-  layout: LayoutDashboard, bar: BarChart3, grid: Table2, users: Users, user: UserRound, check: ListChecks, trend: TrendingUp,
+  layout: LayoutDashboard, bar: BarChart3, file: FileText, grid: Table2, users: Users, user: UserRound, check: ListChecks, trend: TrendingUp,
 }
 const STEPS = ['Đang hiểu câu hỏi…', 'Đang truy vấn dữ liệu khảo sát…', 'Đang tính toán số liệu…', 'Đang soạn câu trả lời…']
 const newId = () => Math.random().toString(36).slice(2)
