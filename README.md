@@ -26,6 +26,10 @@ Khi chạy frontend riêng, vào `frontend/`, chạy `npm ci` và `npm run dev`.
 - Thông tin đối tượng dùng chung giữa các phiếu có cùng mã đối tượng trong một nhóm. Phiếu thật lưu trên PostgreSQL. 88 phiếu mẫu lưu riêng trong trình duyệt và được đánh dấu khi xuất Excel.
 - Dữ liệu bệnh án và lần khám của phiên bản trước vẫn lưu trong các bảng cũ. API tương thích tiếp tục phục vụ dữ liệu đó. Việc chuyển hồ sơ cũ sang một trong chín mẫu khảo sát cần quy tắc ánh xạ nghiệp vụ riêng.
 
+## Nạp một lần dữ liệu scan của bệnh viện
+
+`backend/scripts/hospital_ingest.sh` sao lưu, xoá dữ liệu bệnh nhân cũ rồi nạp toàn bộ phiếu trong `data/Đối tượng thanh niên` và `data/Đối tượng nhập ngũ ` (mỗi file chứa phiếu của nhiều người, xếp theo mã). Chạy lại được khi bị ngắt mà không gọi lại VLM. Xem `backend/scripts/hospital_ingest/README.md`.
+
 ## Kiểm tra
 
 ```bash

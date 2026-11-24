@@ -68,3 +68,6 @@ BV103/
 # Downloaded datasets (rclone from Google Drive)
 data/*
 !data/.gitkeep
+
+# Bản sao lưu trước khi nạp dữ liệu bệnh viện (chứa dữ liệu thật)
+backups/
