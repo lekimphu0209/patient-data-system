@@ -1101,10 +1101,6 @@ footer {
   font-size: 10px;
   color: #608273;
 }
-.analysis-select {
-  width: 100%;
-  margin: 10px 0;
-}
 .dangerbtn {
   color: #a16b5b;
 }
@@ -2808,9 +2804,6 @@ h3 {
 .scoring-note {
   font-size: 13px;
   line-height: 1.6;
-}
-.analysis-select {
-  font-size: 14px;
 }
 .mini-stats {
   padding: 24px 0;
@@ -6155,19 +6148,6 @@ main {
 .survey-table tr.selected-row td.actions-col {
   background: #deeff5 !important;
 }
-.sample-tag {
-  display: inline-block;
-  margin-left: 8px;
-  border: 1px solid #d8e1ea;
-  background: #f0f4f8;
-  color: #718394;
-  border-radius: 4px;
-  font-family: Arial,sans-serif;
-  font-size: 11px;
-  padding: 1px 5px;
-  vertical-align: middle;
-  font-weight: 400;
-}
 .survey-table .patient-code {
   white-space: nowrap;
 }
@@ -6953,4 +6933,166 @@ main {
 }
 .notice.amber p + p {
   margin-top: 4px;
+}
+
+/* Đang tải dữ liệu khảo sát: không hiển thị số liệu tạm. */
+.records-loading {
+  margin: 48px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* Ô lọc ngày sinh dạng chọn lịch trong tiêu đề bảng. */
+.survey-table th input.date-filter,.mobile-filter-fields input.date-filter {
+  font-family: inherit;
+  color: var(--ink);
+  min-width: 0;
+  width: 100%;
+}
+.survey-table th input.date-filter:invalid,.survey-table th input.date-filter[value=""] {
+  color: #8a9a9d;
+}
+
+/* Chọn câu hỏi trong "Phân tích câu trả lời". */
+.question-picker {
+  position: relative;
+  margin: 12px 0 14px;
+}
+.question-picker-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 8px 12px;
+  border: 1px solid #cfdcd8;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  font-size: 14px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.question-picker-trigger:hover {
+  border-color: #9cc5bb;
+}
+.question-picker.open .question-picker-trigger,.question-picker-trigger:focus-visible {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px #137b6922;
+  outline: none;
+}
+.question-picker-trigger .ui-icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+  transform: rotate(90deg);
+  transition: transform .15s;
+}
+.question-picker.open .question-picker-trigger .ui-icon {
+  transform: rotate(-90deg);
+}
+.question-picker-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.question-code {
+  flex: none;
+  min-width: 46px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #e8f3f0;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.question-picker-panel {
+  margin-top: 6px;
+  background: #fff;
+  border: 1px solid #d6e2de;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px #0f2e2c1a;
+  overflow: hidden;
+}
+.question-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+.question-picker-search .ui-icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.question-picker-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  padding: 6px 0;
+  font-size: 14px;
+  background: transparent;
+  color: var(--ink);
+}
+.question-picker-count {
+  flex: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.question-picker-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  max-height: min(300px,40vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.question-picker-panel li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.question-picker-panel li.active {
+  background: #f0f6f4;
+}
+.question-picker-panel li.selected {
+  background: #e3f1ed;
+}
+.question-picker-panel li .question-code {
+  margin-top: 1px;
+}
+.question-option-label {
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.question-picker-panel li > .ui-icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--green);
+}
+li.question-picker-empty {
+  cursor: default;
+  justify-content: center;
+  color: var(--muted);
 }

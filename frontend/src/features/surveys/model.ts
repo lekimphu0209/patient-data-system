@@ -41,7 +41,6 @@ export type Survey = {
   answers: Answers
   note: string
   updatedAt?: string
-  sample?: boolean
   ocr?: string | null
   hasOCR?: boolean
   /** File ảnh/PDF đã upload để bóc tách — chỉ gửi khi tạo bản ghi. */
@@ -65,7 +64,6 @@ export const validDate = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value)
   && !Number.isNaN(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value
 export const emptySubject: Subject = { fullName: '', birthDate: '', birthYear: '', hometown: '' }
 export const subjectFields = ['fullName', 'birthDate', 'birthYear', 'hometown'] as const
-export const isSampleCode = (id: string) => /^MAU-(TN|QN)-/i.test(id)
 export const newId = (prefix: string) => `${prefix}-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`
 
 // Mã đối tượng dạng thống nhất (khớp backend ``canonical_code``): chữ in hoa, các phần ngăn
@@ -152,59 +150,9 @@ export function prepareAnswers(form: SurveyForm, answers: Answers, patient: Subj
   return result
 }
 
-const SAMPLE_KEY = 'ta-sample-v7'
-const NAMES = [
-  'Nguyễn Minh Anh', 'Trần Quốc Bảo', 'Lê Hoàng Nam', 'Phạm Đức Minh', 'Vũ Thanh Tùng', 'Đặng Quang Huy',
-  'Nguyễn Hải Đăng', 'Hoàng Tuấn Kiệt', 'Bùi Gia Hưng', 'Đỗ Minh Quân', 'Trần Anh Dũng', 'Lê Ngọc Sơn',
-  'Phạm Duy Khánh', 'Võ Tiến Đạt', 'Nguyễn Văn Long', 'Đinh Thành Trung',
-]
-const TOWNS = ['Hà Nội', 'Bắc Ninh', 'Hải Phòng', 'Ninh Bình', 'Thanh Hóa', 'Nghệ An']
-
-export function readSamples(forms: SurveyForm[]): Survey[] {
+// Phiên bản trước sinh 88 phiếu mẫu giả lập và lưu trong trình duyệt; xoá bản còn sót lại.
+export function dropLegacySamples() {
   try {
-    const stored = localStorage.getItem(SAMPLE_KEY)
-    if (stored) {
-      const rows: Survey[] = JSON.parse(stored)
-      if (Array.isArray(rows) && rows.every(row => row.sample && forms.some(form => form.id === row.form))) return rows
-    }
-  } catch { /* Generate the initial sample set when local storage is unavailable. */ }
-
-  return GROUPS.flatMap(group => {
-    const youth = group === 'youth'
-    const groupForms = forms.filter(form => form.group === group)
-    return Array.from({ length: youth ? 16 : 8 }, (_, index) => {
-      const prefix = youth ? 'MAU-TN-' : 'MAU-QN-'
-      const person = prefix + String(index + 1).padStart(4, '0')
-      const datePart = (value: number) => String(value).padStart(2, '0')
-      const patient: Subject = {
-        fullName: NAMES[index],
-        birthDate: `${youth ? 2005 + index % 3 : 1995 + index % 10}-${datePart(index % 12 + 1)}-${datePart(index % 20 + 1)}`,
-        birthYear: '', hometown: TOWNS[index % TOWNS.length],
-      }
-      return groupForms.map((form, formIndex): Survey => {
-        const offset = index + formIndex
-        const date = new Date(`${today()}T00:00:00Z`)
-        date.setUTCDate(date.getUTCDate() - offset % 8)
-        const answers: Answers = {}
-        form.questions.forEach((question, questionIndex) => {
-          if (offset % 5 === 0 && questionIndex % 4 === 0) return
-          const option = question.options[(index + questionIndex) % question.options.length]
-          answers[question.id] = question.options.length ? (question.multi ? [option] : option) : 'Thông tin mẫu'
-        })
-        return {
-          sample: true, id: prefix + String(index + 1).padStart(3, '0') + '-' + form.id,
-          person, patient, group, form: form.id,
-          unit: (youth ? 'Địa bàn ' : 'Đơn vị ') + ['A', 'B', 'C'][index % 3],
-          date: date.toISOString().slice(0, 10), source: 'Mẫu',
-          status: offset % 5 === 0 ? 'draft' : offset % 4 === 0 ? 'review' : 'complete',
-          conclusion: ['Chờ đánh giá chuyên môn', 'Không ghi nhận bất thường (mẫu)', ''][offset % 3],
-          answers, note: 'Dữ liệu mẫu giả lập để thử chức năng; không phải hồ sơ bệnh nhân thật.',
-          updatedAt: '2026-11-09T01:00:00Z',
-        }
-      })
-    }).flat()
-  })
-}
-export function persistSamples(rows: Survey[]) {
-  localStorage.setItem(SAMPLE_KEY, JSON.stringify(rows))
+    for (const key of Object.keys(localStorage)) if (key.startsWith('ta-sample-')) localStorage.removeItem(key)
+  } catch { /* Trình duyệt chặn localStorage: không có gì để xoá. */ }
 }

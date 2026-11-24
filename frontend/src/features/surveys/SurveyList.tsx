@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { birthLabel, GROUP, initials, SHORT, STATUS, type Group, type ImportAction, type Survey, type SurveyForm } from './model'
+import { birthLabel, GROUP, initials, SHORT, STATUS, today, type Group, type ImportAction, type Survey, type SurveyForm } from './model'
 import { Badge, Icon, Title } from './ui'
 
 const columns = [
-  ['fullName', 'HỌ VÀ TÊN', 'Tìm họ và tên'], ['birthDate', 'NGÀY SINH', 'YYYY-MM hoặc năm'],
+  ['fullName', 'HỌ VÀ TÊN', 'Tìm họ và tên'], ['birthDate', 'NGÀY SINH', 'Lọc theo ngày sinh'],
   ['hometown', 'QUÊ QUÁN', 'Tìm quê quán'], ['conclusion', 'KẾT LUẬN VỀ BỆNH', 'Tìm kết luận'],
   ['form', 'LOẠI PHIẾU KHẢO SÁT', ''],
 ] as const
@@ -15,6 +15,9 @@ type SortKey = typeof columns[number][0] | 'status'
 type Sort = { key: SortKey; direction: number }
 const collator = new Intl.Collator('vi', { numeric: true, sensitivity: 'base' })
 const lower = (text: string) => text.toLocaleLowerCase('vi')
+/** Lọc ngày sinh: khớp đúng ngày; đối tượng chỉ ghi năm sinh thì khớp theo năm. */
+const bornOn = ({ patient }: Survey, date: string) => !date || patient.birthDate === date
+  || (!patient.birthDate && patient.birthYear === date.slice(0, 4))
 
 export function SurveyList({ rows, forms, group, form, openImport, view, viewOriginal, edit, remove, exportRows, pageSize, setPageSize, sort, setSort }: {
   rows: Survey[]
@@ -39,7 +42,8 @@ export function SurveyList({ rows, forms, group, form, openImport, view, viewOri
   const mobileCheckAll = useRef<HTMLInputElement>(null)
   const formsById = useMemo(() => new Map(forms.map(form => [form.id, form])), [forms])
   const scoped = useMemo(() => rows.filter(row => row.group === group && (!form || row.form === form)), [rows, group, form])
-  const units = [...new Set(scoped.map(row => row.unit))].sort()
+  // Bộ lọc "Đơn vị / địa bàn" tạm ẩn: dữ liệu hiện chưa có đơn vị để lọc.
+  // const units = [...new Set(scoped.map(row => row.unit))].sort()
   const titleOf = (row: Survey) => formsById.get(row.form)?.title || row.form
   const valueOf = (row: Survey, key: SortKey) => {
     switch (key) {
@@ -57,7 +61,8 @@ export function SurveyList({ rows, forms, group, form, openImport, view, viewOri
       row.person, row.id, titleOf(row), row.unit,
     ].join(' ')
     return lower(searchable).includes(lower(filters.search))
-      && columns.slice(0, 4).every(([key]) => lower(valueOf(row, key)).includes(lower(filters[key])))
+      && columns.slice(0, 4).every(([key]) => key === 'birthDate' ? bornOn(row, filters.birthDate)
+        : lower(valueOf(row, key)).includes(lower(filters[key])))
       && (filters.form === 'all' || row.form === filters.form)
       && (filters.status === 'all' || row.status === filters.status)
       && (filters.unit === 'all' || row.unit === filters.unit)
@@ -99,6 +104,10 @@ export function SurveyList({ rows, forms, group, form, openImport, view, viewOri
     return sort.key === key ? sort.direction === 1 ? '↑' : '↓' : '↕'
   }
   function columnFilter([key, , placeholder]: typeof columns[number]) {
+    if (key === 'birthDate') {
+      return <input type="date" className="date-filter" aria-label={placeholder} title={placeholder} max={today()}
+        value={filters.birthDate} onChange={event => filter('birthDate', event.target.value)} />
+    }
     if (key === 'form') {
       return <select aria-label="Lọc loại phiếu" value={filters.form} onChange={event => filter('form', event.target.value)}>
         <option value="all">Tất cả loại phiếu</option>
@@ -127,10 +136,11 @@ export function SurveyList({ rows, forms, group, form, openImport, view, viewOri
       <div className="list-controls">
         <div className="searchbox"><Icon name="search" /><input aria-label="Tìm kiếm khảo sát"
           value={filters.search} placeholder="Tìm tên, mã đối tượng, quê quán…" onChange={event => filter('search', event.target.value)} /></div>
+        {/* Tạm ẩn bộ lọc đơn vị / địa bàn (chưa có dữ liệu đơn vị):
         <select aria-label="Lọc đơn vị" value={filters.unit} onChange={event => filter('unit', event.target.value)}>
           <option value="all">Đơn vị / địa bàn</option>
           {units.map(unit => <option key={unit} value={unit}>{unit || 'Chưa có đơn vị'}</option>)}
-        </select>
+        </select> */}
         <select aria-label="Lọc trạng thái" value={filters.status} onChange={event => filter('status', event.target.value)}>
           <option value="all">Tất cả trạng thái</option>
           {(['complete', 'review', 'draft'] as const).map(status => <option key={status} value={status}>{STATUS[status]}</option>)}
@@ -178,7 +188,7 @@ export function SurveyList({ rows, forms, group, form, openImport, view, viewOri
             onChange={event => toggle([row.id], event.target.checked)} /></td>
           <td role="cell" className="subject-cell"><div className="namecell"><span className="personavatar">{initials(row.patient.fullName)}</span><div>
             <div className="patient-name" title={row.patient.fullName}>{row.patient.fullName || 'Chưa có họ tên'}</div>
-            <div className="patient-code">{row.person}{row.sample && <span className="sample-tag">Mẫu</span>}</div>
+            <div className="patient-code">{row.person}</div>
           </div></div></td>
           <td role="cell" className="dobcell"><span className="mobile-field-label">Ngày sinh</span>{birthLabel(row.patient)}</td>
           <td role="cell" className="hometowncell" title={row.patient.hometown}><span className="mobile-field-label">Quê quán</span>{row.patient.hometown || '—'}</td>

@@ -1,4 +1,4 @@
-import { GROUP, isSampleCode, isSkipped, keepsSkippedAnswer, prepareAnswers, progress, resolvePerson, subjectErrors, subjectFields, validDate, validateAnswers,
+import { GROUP, isSkipped, keepsSkippedAnswer, prepareAnswers, progress, resolvePerson, subjectErrors, subjectFields, validDate, validateAnswers,
   type Answers, type Subject, type Survey, type SurveyForm } from './model'
 
 const META = [
@@ -54,7 +54,7 @@ export async function exportWorkbook(rows: Survey[], forms: SurveyForm[]) {
     nhom: GROUP[row.group], ho_va_ten: row.patient.fullName, ngay_sinh: row.patient.birthDate,
     nam_sinh: row.patient.birthYear, que_quan: row.patient.hometown, ket_luan: row.conclusion,
     don_vi: row.unit, ngay_khao_sat: row.date, nguon_nhap: row.source,
-    du_lieu_mau: row.sample ? 'Có' : 'Không', trang_thai: row.status, ghi_chu: row.note,
+    trang_thai: row.status, ghi_chu: row.note,
   })
   const summary = utils.json_to_sheet(rows.map(base))
   summary['!cols'] = [24, 24, 16, 45, 18, 28, 18, 12, 25, 45].map(wch => ({ wch }))
@@ -75,7 +75,7 @@ export async function exportWorkbook(rows: Survey[], forms: SurveyForm[]) {
     ma_bieu_mau: form.id, ma_cau: question.id, cau_hoi: question.label, dap_an: question.options.join(' | '),
   })))), 'Tu_dien')
   utils.book_append_sheet(book, utils.aoa_to_sheet([
-    ['Dữ liệu mẫu', rows.filter(row => row.sample).length], ['Số phiếu xuất', rows.length],
+    ['Số phiếu xuất', rows.length],
     ['Thời điểm xuất', new Date().toISOString()],
   ]), 'Thong_tin')
   writeFile(book, `Suc_khoe_tam_than_${rows.length}_phieu.xlsx`)
@@ -132,7 +132,6 @@ export async function readWorkbook(file: File, form: SurveyForm, records: Survey
     if (!id || !person) errors.push('Thiếu mã phiếu / mã đối tượng')
     if (id.length > 120 || person.length > 120) errors.push('Mã phiếu / mã đối tượng vượt quá 120 ký tự')
     if (seen.has(id)) errors.push('Mã phiếu trùng')
-    if (isSampleCode(id)) errors.push('Mã dành cho dữ liệu mẫu')
     if (value('ma_bieu_mau') !== form.id) errors.push('Sai mã biểu mẫu')
     if (!validDate(date)) errors.push('Ngày khảo sát không hợp lệ')
     if ([patient.fullName, patient.hometown, value('don_vi')].some(text => text.length > 255)) {

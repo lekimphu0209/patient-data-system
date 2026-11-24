@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import {
-  answerText, birthLabel, emptySubject, formatDate, GROUP, hasAnswer, initials, isSampleCode, isSkipped,
+  answerText, birthLabel, emptySubject, formatDate, GROUP, hasAnswer, initials, isSkipped,
   keepsSkippedAnswer, newId, prepareAnswers, progress, resolvePerson, STATUS, subjectErrors, subjectFields, today,
   validateAnswers,
   type Answers, type Status, type Survey, type SurveyForm,
@@ -53,8 +53,8 @@ export function Editor({ form, original, records, busy, save, close, showSource,
       notify('Mã đối tượng và mã phiếu không được để trống.')
       return
     }
-    if (!original && (isSampleCode(recordId) || records.some(row => row.id === recordId))) {
-      notify('Mã phiếu đã tồn tại hoặc dành cho dữ liệu mẫu.')
+    if (!original && records.some(row => row.id === recordId)) {
+      notify('Mã phiếu đã tồn tại.')
       return
     }
     const subject = { ...patient, fullName: patient.fullName.trim(), hometown: patient.hometown.trim() }

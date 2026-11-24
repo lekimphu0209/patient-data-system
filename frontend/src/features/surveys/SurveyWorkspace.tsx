@@ -5,11 +5,12 @@ import { Dashboard } from './Dashboard'
 import { ExcelDialog } from './ExcelDialog'
 import { ExtractDialog } from './ExtractDialog'
 import { OriginalDialog } from './OriginalDialog'
+import { QuestionPicker } from './QuestionPicker'
 import { Editor, RecordDetail, SourceDialog, type DetailTab } from './RecordDialogs'
 import { SurveyList } from './SurveyList'
 import { Icon, Modal } from './ui'
 import { exportWorkbook } from './workbook'
-import { APP_NAME, GROUP, GROUPS, hasAnswer, isSkipped, persistSamples, readSamples, SHORT,
+import { APP_NAME, dropLegacySamples, GROUP, GROUPS, hasAnswer, isSkipped, SHORT,
   type Group, type ImportAction, type Survey, type SurveyForm } from './model'
 import styles from './workspace.css?url'
 
@@ -45,9 +46,7 @@ function Analysis({ form, rows, close }: { form: SurveyForm; rows: Survey[]; clo
     : [...counts].sort((first, second) => second[1] - first[1]).slice(0, 20)
   return <Modal title="Phân tích câu trả lời" close={close} footer={<button className="right" onClick={close}>Đóng</button>}>
     <p className="sub">{GROUP[form.group]} · {form.title} · Chỉ dùng phiếu đã hoàn tất.</p>
-    <select className="analysis-select" aria-label="Chọn câu hỏi phân tích" value={questionId} onChange={event => setQuestionId(event.target.value)}>
-      {form.questions.map(item => <option key={item.id} value={item.id}>{item.id} · {item.label}</option>)}
-    </select>
+    <QuestionPicker questions={form.questions} value={questionId} onChange={setQuestionId} />
     <div className="notice">{valid.length}/{completed.length} phiếu đã hoàn tất có trả lời câu này.</div>
     {valid.length ? <table><thead><tr><th>ĐÁP ÁN / GIÁ TRỊ</th><th>SỐ PHIẾU</th><th>TỶ LỆ</th></tr></thead>
       <tbody>{entries.map(([value, count], index) => <tr key={index}><td title={value}>{value}</td><td>{count}</td>
@@ -62,7 +61,8 @@ export function SurveyWorkspace() {
   const records = useQuery({ queryKey: RECORDS_KEY, queryFn: getRecords })
   return <>
     <link rel="stylesheet" href={styles} />
-    {forms.data ? <Workspace forms={forms.data} records={records.data || []} recordError={records.error} reconnect={records.refetch} />
+    {forms.data ? <Workspace forms={forms.data} records={records.data || []} loading={records.isPending}
+      recordError={records.error} reconnect={records.refetch} />
       : <main>
         {forms.error ? <div className="sync-warning">{surveyError(forms.error)} <button className="smallbtn" onClick={() => forms.refetch()}>Kết nối lại</button></div>
           : <p role="status">Đang tải biểu mẫu khảo sát…</p>}
@@ -70,15 +70,15 @@ export function SurveyWorkspace() {
   </>
 }
 
-function Workspace({ forms, records, recordError, reconnect }: {
+function Workspace({ forms, records, loading, recordError, reconnect }: {
   forms: SurveyForm[]
   records: Survey[]
+  loading: boolean
   recordError: Error | null
   reconnect: () => Promise<unknown>
 }) {
   const client = useQueryClient()
   const [page, setPage] = useState(readPage)
-  const [samples, setSamples] = useState(() => readSamples(forms))
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_KEY) !== 'false')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const mobileMenuButton = useRef<HTMLButtonElement>(null)
@@ -95,8 +95,9 @@ function Workspace({ forms, records, recordError, reconnect }: {
   const [sort, setSort] = useState<Parameters<typeof SurveyList>[0]['sort']>({ key: 'fullName', direction: 1 })
   const [listVersion, setListVersion] = useState(0)
   const activeForm = forms.find(form => form.group === page.group && form.id === page.form)?.id
-  const rows = [...records, ...samples]
+  const rows = records
 
+  useEffect(dropLegacySamples, [])
   useEffect(() => {
     function onHash() {
       setPage(readPage())
@@ -155,10 +156,6 @@ function Workspace({ forms, records, recordError, reconnect }: {
     detailRequest.current++
     setDialog(undefined)
   }
-  function changeSamples(next: Survey[]) {
-    persistSamples(next)
-    setSamples(next)
-  }
   async function reload() {
     await client.invalidateQueries({ queryKey: RECORDS_KEY })
   }
@@ -182,7 +179,7 @@ function Workspace({ forms, records, recordError, reconnect }: {
     const request = ++detailRequest.current
     const form = forms.find(form => form.id === row.form)!
     try {
-      const record = !row.sample && row.hasOCR ? await getRecord(row.id) : row
+      const record = row.hasOCR ? await getRecord(row.id) : row
       if (request === detailRequest.current) {
         setDialog(editing ? { type: 'manual', form, record } : { type: 'view', form, record, tab })
       }
@@ -199,26 +196,17 @@ function Workspace({ forms, records, recordError, reconnect }: {
   }
   function saveManual(record: Survey, editing: boolean) {
     void perform(async () => {
-      if (record.sample) {
-        changeSamples(samples.map(row => row.id === record.id ? record
-          : row.group === record.group && row.person === record.person ? { ...row, patient: record.patient } : row))
-      } else {
-        if (editing) await updateRecord(record)
-        else await createRecords([record])
-        await reload()
-      }
+      if (editing) await updateRecord(record)
+      else await createRecords([record])
+      await reload()
     }, 'Đã lưu thông tin đối tượng và phiếu khảo sát.')
   }
   function remove(selected: Survey[]) {
     void perform(async () => {
-      const real = selected.filter(row => !row.sample).map(row => row.id)
-      const sample = new Set(selected.filter(row => row.sample).map(row => row.id))
-      if (real.length) {
-        await deleteRecords(real)
-        client.setQueryData<Survey[]>(RECORDS_KEY, previous => previous?.filter(row => !real.includes(row.id)))
-      }
-      if (sample.size) changeSamples(samples.filter(row => !sample.has(row.id)))
-      if (real.length) await reload()
+      const ids = selected.map(row => row.id)
+      await deleteRecords(ids)
+      client.setQueryData<Survey[]>(RECORDS_KEY, previous => previous?.filter(row => !ids.includes(row.id)))
+      await reload()
     }, `Đã xóa ${selected.length} phiếu khảo sát.`)
   }
   // Tải file phiếu đã điền: một mẫu đã chọn, hoặc nhiều mẫu của một người (tự tách).
@@ -283,7 +271,8 @@ function Workspace({ forms, records, recordError, reconnect }: {
       <header><div className="header-heading"><strong className="system-name">{APP_NAME}</strong></div></header>
       <main id="main">
         {recordError && <div className="sync-warning">{surveyError(recordError)} <button className="smallbtn" onClick={() => reconnect()}>Kết nối lại</button></div>}
-        {page.group ? <SurveyList key={`${page.group}/${activeForm || 'all'}/${listVersion}`}
+        {loading ? <p className="records-loading" role="status">Đang tải dữ liệu khảo sát…</p>
+          : page.group ? <SurveyList key={`${page.group}/${activeForm || 'all'}/${listVersion}`}
           rows={rows} forms={forms} group={page.group} form={activeForm} pageSize={pageSize} setPageSize={setPageSize} sort={sort} setSort={setSort}
           openImport={action => setDialog({ type: 'pick', group: page.group!, action })}
           view={row => void loadDetail(row, false)} viewOriginal={setOriginal} edit={row => void loadDetail(row, true)}
@@ -335,8 +324,7 @@ function Workspace({ forms, records, recordError, reconnect }: {
         void loadDetail(saved || { ...row, hasOCR: true, hasOriginal: true }, false)
       }} />}
     {dialog?.type === 'view' && <RecordDetail key={dialog.record.id} record={dialog.record} form={dialog.form} forms={forms}
-      related={rows.filter(row => row.group === dialog.record.group && row.person === dialog.record.person
-        && Boolean(row.sample) === Boolean(dialog.record.sample))}
+      related={rows.filter(row => row.group === dialog.record.group && row.person === dialog.record.person)}
       initialTab={dialog.tab} close={close} showSource={() => setSource(dialog.form)} viewOriginal={setOriginal}
       edit={() => setDialog({ type: 'manual', form: dialog.form, record: dialog.record })}
       view={row => void loadDetail(row, false)} exportRecord={() => void exportRows([dialog.record])} />}

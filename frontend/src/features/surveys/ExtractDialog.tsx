@@ -25,7 +25,7 @@ const codeIsDoubtful = (result: BundleResult) => result.codeCandidates.length !=
 /** Ghép kết quả bóc tách với mã đối tượng thành các bản ghi khảo sát (một phiếu một bản ghi). */
 function buildRecords(forms: SurveyForm[], group: Group, result: BundleResult, records: Survey[], person: string,
   codeConfirmed: boolean): Survey[] {
-  const others = records.filter(row => !row.sample && row.group === group && row.person === person)
+  const others = records.filter(row => row.group === group && row.person === person)
   const known = others[0]?.patient
   const subject = result.subject
   const patient = mergeSubject({
@@ -88,7 +88,7 @@ export function ExtractDialog({ form, group, forms, records, close, save, open, 
   const results = useRef<HTMLDivElement>(null)
   const busy = stage === 'upload' || stage === 'read' || stage === 'save'
   const groupForms = forms.filter(item => item.group === group)
-  const persons = useMemo(() => [...new Set(records.filter(row => !row.sample && row.group === group)
+  const persons = useMemo(() => [...new Set(records.filter(row => row.group === group)
     .map(row => row.person))].sort(), [records, group])
   const percent = { idle: 0, upload: 5 + uploaded * 25, read: 55, confirm: 80, save: 90, done: 100 }[stage]
   const localUrl = useMemo(() => file ? URL.createObjectURL(file) : '', [file])
