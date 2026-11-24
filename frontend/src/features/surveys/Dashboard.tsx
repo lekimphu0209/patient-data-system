@@ -57,13 +57,14 @@ function Chart({ rows }: { rows: Survey[] }) {
   </svg>
 }
 
-export function Dashboard({ rows, forms, navigate, add, exportAll, analyze }: {
+// `analyze` chưa dùng khi mục "Phân tích câu trả lời" đang ẩn; bật lại thì thêm vào danh sách dưới.
+export function Dashboard({ rows, forms, navigate, add, exportAll }: {
   rows: Survey[]
   forms: SurveyForm[]
   navigate: (group: Group, form?: string) => void
   add: () => void
   exportAll: () => void
-  analyze: (form: string) => void
+  analyze?: (form: string) => void
 }) {
   const total = rows.length
   const people = new Set(rows.map(row => JSON.stringify([row.group, row.person]))).size
@@ -137,6 +138,7 @@ export function Dashboard({ rows, forms, navigate, add, exportAll, analyze }: {
             {statusOrder.map(status => <div key={status}><span><i style={{ background: STATUS_COLORS[status] }} />{STATUS[status]}</span><b>{nf(statusCounts[status])}</b></div>)}
           </div>
         </section>
+        {/* Tạm ẩn "Phân tích câu trả lời" trên dashboard:
         <form className="dash-analysis" onSubmit={event => {
           event.preventDefault()
           analyze(String(new FormData(event.currentTarget).get('form')))
@@ -146,7 +148,7 @@ export function Dashboard({ rows, forms, navigate, add, exportAll, analyze }: {
             {forms.map(form => <option key={form.id} value={form.id}>{GROUP[form.group]} · {form.title}</option>)}
           </select>
           <button>Mở phân tích</button>
-        </form>
+        </form> */}
       </div>
     </div>
   </div>
